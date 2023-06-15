@@ -5,7 +5,7 @@ build/
 !gradle/wrapper/gradle-wrapper.jar
 !**/src/main/**/build/
 !**/src/test/**/build/
-server/src/main/resources/firebase/
+src/main/resources/logback.xml
 
 ### STS ###
 .apt_generated

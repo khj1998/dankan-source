@@ -1,4 +1,4 @@
-package com.dunji.dankan.config;
+package com.dankan.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -25,7 +25,7 @@ public class SwaggerConfig {
         return new Docket(DocumentationType.OAS_30)
                 .consumes(Set.of("multipart/form-data"))
                 .apiInfo(SwaggerInfo()).select()
-                .apis(RequestHandlerSelectors.basePackage("com.danram.server.controller"))
+                .apis(RequestHandlerSelectors.basePackage("com.dankan.controller"))
                 .paths(PathSelectors.any())
                 .build()
                 .useDefaultResponseMessages(false)
@@ -35,7 +35,7 @@ public class SwaggerConfig {
 
     private ApiInfo SwaggerInfo() {
         return new ApiInfoBuilder()
-                .title("danram Swagger")
+                .title("dankan Swagger")
                 .description("메인 API Swagger 문서")
                 .version("1.0")
                 .build();

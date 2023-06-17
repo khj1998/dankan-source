@@ -17,7 +17,7 @@ import javax.persistence.Table;
 @NoArgsConstructor
 public class Authority {
     @Id
-    @Column(name = "authority_name", columnDefinition = "varchar(512)")
+    @Column(name = "authority_name", columnDefinition = "varchar(12)")
     @ApiModelProperty(example = "ROLE_USER | ROLE_ADMIN")
     private String authorityName;
 

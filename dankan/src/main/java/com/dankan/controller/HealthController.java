@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 @Controller
-@RequestMapping("api/v1/health")
+@RequestMapping("/health")
 @Api(tags = {"HEALTH CHECK"})
 @Slf4j
 public class HealthController {

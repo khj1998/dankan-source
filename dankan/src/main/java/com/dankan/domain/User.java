@@ -5,6 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.Type;
 
@@ -23,34 +24,34 @@ public class User {
     @Id
     @GeneratedValue(generator = "uuid2")
     @GenericGenerator(name = "uuid2", strategy = "uuid2")
-    @Column(name = "user_id",nullable = false,length = 36)
+    @Column(name = "user_id",nullable = false,length = 36,columnDefinition = "varchar")
     @Type(type = "uuid-char")
     private UUID userId;
 
-    @Column(nullable = false)
+    @CreationTimestamp
+    @Column(nullable = false,columnDefinition = "date")
     private LocalDate regDate;
 
-    @Column(nullable = false, unique = true)
+    @Column(nullable = false, unique = true,length = 16,columnDefinition = "varchar")
     private String nickname;
 
-    @Column(nullable = false, unique = true)
+    @Column(nullable = false, unique = true,length = 40,columnDefinition = "varchar")
     private String email;
 
-    @Column(nullable = false)
+    @Column(nullable = false,columnDefinition = "text")
     private String profileImg;
 
-    @Column(nullable = false, unique = true)
+    @Column(unique = true,length = 15,columnDefinition = "varchar")
     private String phoneNum;
 
-    @Column(nullable = false)
+    @Column(nullable = false,columnDefinition = "int")
     private int userType;
 
-    @Column(nullable = false, columnDefinition = "bool")
+    @Column(columnDefinition = "bool")
     private Boolean gender;
 
-    @Column(length = 36)
-    @Type(type = "uuid-char")
-    private UUID univId;
+    @Column(length = 36, columnDefinition = "varchar")
+    private String univEmail;
 
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(

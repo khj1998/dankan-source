@@ -1,7 +1,5 @@
 package com.dankan.controller;
 
-import com.dankan.exception.CommonResponse;
-import com.dankan.exception.code.CommonCode;
 import com.dankan.service.s3.S3UploadService;
 import com.dankan.service.user.UserService;
 import io.swagger.annotations.Api;
@@ -35,8 +33,8 @@ public class UserController {
             }
     )
     @GetMapping("/nickname")
-    public ResponseEntity<CommonResponse> checkDuplicatedNickname(@PathVariable String name) {
-        return ResponseEntity.ok(CommonResponse.toResponse(CommonCode.OK, userService.checkDuplicatedName(name)));
+    public ResponseEntity<Boolean> checkDuplicatedNickname(@PathVariable String name) {
+        return ResponseEntity.ok(userService.checkDuplicatedName(name));
     }
     /**
      * TODO: 이미지 수정 API

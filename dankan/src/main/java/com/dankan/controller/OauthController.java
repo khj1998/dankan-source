@@ -8,13 +8,14 @@ import com.dankan.service.login.SocialLoginType;
 import com.dankan.service.user.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @Slf4j
 @CrossOrigin
 @RestController
-@RequestMapping(value = "/auth")
+@RequestMapping(value = "/login")
 @RequiredArgsConstructor
 public class OauthController {
     private final OAuthService oauthService;
@@ -38,4 +39,3 @@ public class OauthController {
         return ResponseEntity.ok(loginResponseDto);
     }
 }
-

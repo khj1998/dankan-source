@@ -8,7 +8,7 @@ import java.util.Optional;
 
 public interface UserService {
     public boolean checkDuplicatedName(String name);
-    User checkDuplicatedEmail(String name);
-    LoginResponseDto signUp(OauthLoginResponseDto oauthLoginResponseDto);
-    LoginResponseDto signIn(User user);
+    public Optional<User> checkDuplicatedEmail(String name);
+    public LoginResponseDto signUp(OauthLoginResponseDto oauthLoginResponseDto);
+    public LoginResponseDto signIn(User user);
 }

@@ -35,7 +35,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public User checkDuplicatedEmail(String email) {
+    public Optional<User> checkDuplicatedEmail(String email) {
         return userRepository.findByEmail(email);
     }
 

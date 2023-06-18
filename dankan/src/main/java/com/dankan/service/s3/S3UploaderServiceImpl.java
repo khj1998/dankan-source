@@ -2,6 +2,7 @@ package com.dankan.service.s3;
 
 import com.amazonaws.AmazonServiceException;
 import com.amazonaws.SdkClientException;
+import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.AmazonS3Client;
 import com.amazonaws.services.s3.model.*;
 import lombok.RequiredArgsConstructor;
@@ -15,7 +16,7 @@ import java.util.List;
 @Slf4j
 @RequiredArgsConstructor
 public class S3UploaderServiceImpl implements S3UploadService {
-    private final AmazonS3Client amazonS3Client;
+    private final AmazonS3 amazonS3Client;
     @Value("${cloud.aws.s3.bucket}")
     private String bucket;
 

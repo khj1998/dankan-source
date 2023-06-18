@@ -18,7 +18,7 @@ import java.io.IOException;
 
 @Controller
 @RequestMapping("/user")
-@Api(tags = {"사용자 api"})
+@Api(tags = {"사용자 관련 api"})
 @Slf4j
 @RequiredArgsConstructor
 public class UserController {

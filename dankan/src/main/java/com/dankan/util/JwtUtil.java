@@ -23,7 +23,7 @@ public class JwtUtil {
     public static String JWT_SECRET_KEY;
     private static final long EXPIRATION_TIME =  1000 * 60 * 60 * 24 * 365; // 60일
     private static final long REFRESH_TOKEN_EXPIRATION_TIME = 1000 * 60 * 60 * 24 * 365; // 365일
-    public static final long ACCESS_TOKEN_EXPIRE_TIME = 60;
+    public static final long ACCESS_TOKEN_EXPIRE_TIME = 365;
 
     @Value("${jwt.secret}")
     public void setKey(String key) {
@@ -75,8 +75,7 @@ public class JwtUtil {
                 .parseClaimsJws(token)
                 .getBody();
 
-
-        return body.get("id", UUID.class);
+        return UUID.fromString(body.get("id", String.class));
     }
 
     /**

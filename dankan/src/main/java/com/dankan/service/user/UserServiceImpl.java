@@ -5,12 +5,13 @@ import com.dankan.domain.Token;
 import com.dankan.domain.User;
 import com.dankan.dto.response.login.LoginResponseDto;
 import com.dankan.dto.response.login.OauthLoginResponseDto;
-import com.dankan.exception.user.UserNotFoundException;
+import com.dankan.exception.user.UserIdNotFoundException;
+import com.dankan.exception.user.UserNameNotFoundException;
 import com.dankan.repository.TokenRepository;
 import com.dankan.repository.UserRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.transaction.annotation.Transactional;
-import java.time.LocalDateTime;
+
 import java.util.Arrays;
 import java.util.Optional;
 
@@ -29,7 +30,7 @@ public class UserServiceImpl implements UserService {
     public boolean checkDuplicatedName(String name) {
         final Optional<User> user = userRepository.findByNickname(name);
 
-        user.orElseThrow(() -> new UserNotFoundException(name));
+        user.orElseThrow(() -> new UserNameNotFoundException(name));
 
         return true;
     }
@@ -62,7 +63,8 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public LoginResponseDto signIn(User user) {
-        Token token = tokenRepository.findByUserId(user.getUserId());
+        Token token = tokenRepository.findByUserId(user.getUserId()).orElseThrow(() -> new UserIdNotFoundException(user.getUserId().toString()));
+
         return LoginResponseDto.of(user,token);
     }
 }

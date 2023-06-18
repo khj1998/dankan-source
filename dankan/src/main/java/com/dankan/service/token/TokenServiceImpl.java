@@ -3,6 +3,8 @@ package com.dankan.service.token;
 import com.dankan.domain.Token;
 import com.dankan.dto.response.login.TokenResponseDto;
 import com.dankan.dto.resquest.token.TokenRequestDto;
+import com.dankan.exception.token.TokenNotFoundException;
+import com.dankan.exception.user.UserIdNotFoundException;
 import com.dankan.repository.TokenRepository;
 import com.dankan.repository.UserRepository;
 import com.dankan.util.JwtUtil;
@@ -27,16 +29,15 @@ public class TokenServiceImpl implements TokenService {
     public TokenResponseDto reissueAccessToken(final TokenRequestDto tokenRequestDto) {
         String accessToken = JwtUtil.getAccessToken();
 
-        Optional<Token> result = tokenRepository.findTokenByAccessTokenAndRefreshToken(accessToken, tokenRequestDto.getRefreshToken());
+        Token token = tokenRepository.findTokenByAccessTokenAndRefreshToken(accessToken, tokenRequestDto.getRefreshToken())
+                .orElseThrow(() -> new TokenNotFoundException(JwtUtil.getMemberId().toString()));
 
-        log.info("access token: {}", result.get().getAccessToken());
-
-        Token token = result.orElseThrow(() -> new RuntimeException());
 
         token.setAccessToken(
                 JwtUtil.createJwt(
                         userRepository.findById(
-                                JwtUtil.getMemberId()).orElseThrow(() -> new RuntimeException())
+                                JwtUtil.getMemberId()).orElseThrow(() -> new UserIdNotFoundException(JwtUtil.getMemberId().toString()))
+
                 )
         );
 

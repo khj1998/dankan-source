@@ -25,6 +25,8 @@
 
 `Remove:` 파일을 삭제하는 작업만 수행한 경우
 
+`Except:` 예외 처리 코드 추가 또는 변경
+
 <hr>
 
 ### Code Convention

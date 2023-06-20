@@ -13,6 +13,7 @@ import lombok.extern.slf4j.Slf4j;
 
 import java.time.LocalDateTime;
 import java.util.Optional;
+import java.util.UUID;
 
 @RequiredArgsConstructor
 @Slf4j
@@ -30,27 +31,36 @@ public class TokenServiceImpl implements TokenService {
         String accessToken = JwtUtil.getAccessToken();
 
         Token token = tokenRepository.findTokenByAccessTokenAndRefreshToken(accessToken, tokenRequestDto.getRefreshToken())
-                .orElseThrow(() -> new TokenNotFoundException(JwtUtil.getMemberId().toString()));
+                .orElseThrow(() -> new TokenNotFoundException(tokenRequestDto.getUserId().toString()));
 
+        log.info("token1 called");
 
         token.setAccessToken(
                 JwtUtil.createJwt(
-                        userRepository.findById(
-                                JwtUtil.getMemberId()).orElseThrow(() -> new UserIdNotFoundException(JwtUtil.getMemberId().toString()))
-
+                        userRepository.findById(tokenRequestDto.getUserId()).orElseThrow(
+                                () -> new UserIdNotFoundException(tokenRequestDto.getUserId().toString()))
                 )
         );
+
+        log.info("token2 called");
 
         token.setAccessTokenExpiredAt(LocalDateTime.now().plusDays(JwtUtil.ACCESS_TOKEN_EXPIRE_TIME));
 
         tokenRepository.save(token);
 
         return TokenResponseDto.builder()
-                .id(JwtUtil.getMemberId())
+                .id(tokenRequestDto.getUserId())
                 .accessToken(token.getAccessToken())
                 .refreshToken(token.getRefreshToken())
                 .accessTokenExpiredAt(token.getAccessTokenExpiredAt())
                 .refreshTokenExpiredAt(token.getRefreshTokenExpiredAt())
                 .build();
+    }
+
+    @Override
+    public TokenResponseDto findByUserId(final UUID id) {
+        Token token = tokenRepository.findByUserId(id).orElseThrow(() -> new TokenNotFoundException(id.toString()));
+
+        return TokenResponseDto.of(token);
     }
 }

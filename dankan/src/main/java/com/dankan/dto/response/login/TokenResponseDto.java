@@ -1,5 +1,6 @@
 package com.dankan.dto.response.login;
 
+import com.dankan.domain.Token;
 import lombok.Builder;
 import lombok.Getter;
 
@@ -14,4 +15,14 @@ public class TokenResponseDto {
     private UUID id;
     private LocalDateTime accessTokenExpiredAt;
     private LocalDateTime refreshTokenExpiredAt;
+
+    public static TokenResponseDto of(Token token) {
+        return TokenResponseDto.builder()
+                .accessToken(token.getAccessToken())
+                .refreshToken(token.getRefreshToken())
+                .id(token.getUserId())
+                .accessTokenExpiredAt(token.getAccessTokenExpiredAt())
+                .refreshTokenExpiredAt(token.getRefreshTokenExpiredAt())
+                .build();
+    }
 }

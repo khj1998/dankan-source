@@ -42,7 +42,6 @@ public class SecurityConfig {
                         "/swagger-ui/**",
                         "/v3/api-docs/**",
                         "/swagger-resources/**",
-                        "/health/**",
                         "/token/**"
                 );
             }
@@ -57,7 +56,10 @@ public class SecurityConfig {
                 .cors().disable()
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and()
                 .addFilterAfter(new JwtCustomFilter(userRepository), UsernamePasswordAuthenticationFilter.class)
-                .authorizeRequests().anyRequest().permitAll()
+                .authorizeRequests()
+                .antMatchers("/user/**").hasAnyAuthority("ROLE_ADMIN", "ROLE_USER")
+                .antMatchers("/admin/**").hasAnyAuthority("ROLE_ADMIN")
+                .anyRequest().denyAll()
                 .and().build();
     }
 }

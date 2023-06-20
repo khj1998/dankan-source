@@ -1,10 +1,7 @@
 package com.dankan.domain;
 
 import io.swagger.annotations.ApiModelProperty;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.Type;
@@ -18,6 +15,7 @@ import java.util.*;
 @AllArgsConstructor
 @Builder
 @Entity
+@Setter
 @Table(name = "users")
 public class User {
 

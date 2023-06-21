@@ -12,7 +12,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 import java.time.LocalDateTime;
-import java.util.Optional;
 import java.util.UUID;
 
 @RequiredArgsConstructor
@@ -30,7 +29,7 @@ public class TokenServiceImpl implements TokenService {
     public TokenResponseDto reissueAccessToken(final TokenRequestDto tokenRequestDto) {
         String accessToken = JwtUtil.getAccessToken();
 
-        Token token = tokenRepository.findTokenByAccessTokenAndRefreshToken(accessToken, tokenRequestDto.getRefreshToken())
+        Token token = tokenRepository.findTokenByAccessTokenAndRefreshToken(accessToken, JwtUtil.getRefreshToken())
                 .orElseThrow(() -> new TokenNotFoundException(tokenRequestDto.getUserId().toString()));
 
         log.info("token1 called");

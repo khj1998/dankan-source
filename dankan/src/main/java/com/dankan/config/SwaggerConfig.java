@@ -3,6 +3,7 @@ package com.dankan.config;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import springfox.documentation.builders.ApiInfoBuilder;
+import springfox.documentation.builders.HttpAuthenticationBuilder;
 import springfox.documentation.builders.PathSelectors;
 import springfox.documentation.builders.RequestHandlerSelectors;
 import springfox.documentation.service.ApiInfo;
@@ -58,6 +59,7 @@ public class SwaggerConfig {
 
     private HttpAuthenticationScheme bearerAuthSecurityScheme() {
         return HttpAuthenticationScheme.JWT_BEARER_BUILDER
+                .description("access token")
                 .name(REFERENCE)
                 .build();
     }

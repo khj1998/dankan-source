@@ -5,8 +5,11 @@ import com.dankan.domain.Token;
 import com.dankan.domain.User;
 import com.dankan.dto.response.login.LoginResponseDto;
 import com.dankan.dto.response.login.OauthLoginResponseDto;
-import com.dankan.exception.code.ValidErrorCode;
-import com.dankan.exception.user.UserException;
+import com.dankan.dto.response.logout.LogoutResponseDto;
+import com.dankan.dto.response.user.UserResponseDto;
+import com.dankan.exception.token.TokenNotFoundException;
+import com.dankan.exception.user.UserNameExistException;
+import com.dankan.exception.user.UserIdNotFoundException;
 import com.dankan.repository.TokenRepository;
 import com.dankan.repository.UserRepository;
 import com.dankan.util.JwtUtil;
@@ -14,8 +17,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
-import java.util.Arrays;
-import java.util.Optional;
+import java.util.*;
 
 @Slf4j
 @Transactional
@@ -32,13 +34,47 @@ public class UserServiceImpl implements UserService {
     public boolean checkDuplicatedName(String name) {
         final Optional<User> user = userRepository.findByNickname(name);
 
-        user.orElseThrow(() -> new UserException(ValidErrorCode.NICKNAME_ALREADY_EXIST));
+        if(user.isEmpty()) {
+            return false;
+        }
 
         return true;
     }
 
     @Override
-    public User checkDuplicatedEmail(String email) {
+    public UserResponseDto modifyNickName(final String name) {
+        boolean isDuplicated = checkDuplicatedName(name);
+
+        log.info("duplicated: {}", isDuplicated);
+
+        if(isDuplicated == true) {
+            throw new UserNameExistException(name);
+        }
+        else
+        {
+            User user = userRepository.findById(JwtUtil.getMemberId()).orElseThrow(() -> new UserIdNotFoundException(JwtUtil.getMemberId().toString()));
+
+            user.setNickname(name);
+
+            userRepository.save(user);
+
+            return UserResponseDto.of(user);
+        }
+    }
+
+    @Override
+    public UserResponseDto modifyProfileImg(final String imgUrl) {
+        User user = userRepository.findById(JwtUtil.getMemberId()).orElseThrow(() -> new UserIdNotFoundException(JwtUtil.getMemberId().toString()));
+
+        user.setProfileImg(imgUrl);
+
+        userRepository.save(user);
+
+        return UserResponseDto.of(user);
+    }
+
+    @Override
+    public Optional<User> checkDuplicatedEmail(String email) {
         return userRepository.findByEmail(email);
     }
 
@@ -65,7 +101,59 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public LoginResponseDto signIn(User user) {
-        Token token = tokenRepository.findByUserId(user.getUserId());
+        Token token = tokenRepository.findByUserId(user.getUserId()).orElseThrow(() -> new UserIdNotFoundException(user.getUserId().toString()));
+
         return LoginResponseDto.of(user,token);
+    }
+
+    @Override
+    public UserResponseDto findUserByNickname() {
+        User user = userRepository.findById(JwtUtil.getMemberId()).orElseThrow(() -> new UserIdNotFoundException(JwtUtil.getMemberId().toString()));
+
+        return UserResponseDto.of(user);
+    }
+
+    @Override
+    public List<UserResponseDto> findAll() {
+        List<UserResponseDto> result = new ArrayList<>();
+
+        for(User user : userRepository.findAll()) {
+            result.add(UserResponseDto.of(user));
+        }
+
+        return result;
+    }
+
+    @Override
+    public UserResponseDto findUserByNickname(String name) {
+        log.info("name: {}", name);
+        User user = userRepository.findByNickname(name).orElseThrow(() -> new UserNameExistException(name));
+
+        return UserResponseDto.of(user);
+    }
+
+    @Override
+    public void deleteUser() {
+        userRepository.deleteById(JwtUtil.getMemberId());
+
+    }
+
+    @Override
+    public void deleteUser(final String name) {
+        userRepository.delete(userRepository.findByNickname(name).orElseThrow(() -> new UserNameExistException(name)));
+    }
+
+    @Override
+    public LogoutResponseDto logout() {
+        String expiredAccessToken = JwtUtil.logout();
+
+        Token token = tokenRepository.findByUserId(JwtUtil.getMemberId()).orElseThrow(() -> new TokenNotFoundException(JwtUtil.getMemberId().toString()));
+
+        token.setAccessToken(expiredAccessToken);
+        token.setAccessTokenExpiredAt(LocalDateTime.now().minusYears(1L));
+
+        tokenRepository.save(token);
+
+        return new LogoutResponseDto(expiredAccessToken);
     }
 }

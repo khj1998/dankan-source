@@ -1,11 +1,13 @@
 package com.dankan.controller;
 
+import io.swagger.annotations.Api;
 import lombok.AllArgsConstructor;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/review")
+@Api(tags = {"후기 관련 api"})
 @AllArgsConstructor
 public class ReviewController {
     /**

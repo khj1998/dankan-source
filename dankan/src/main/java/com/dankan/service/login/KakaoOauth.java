@@ -29,9 +29,6 @@ public class KakaoOauth implements SocialOauth {
     private String kakaoApiKey;
 
     @Value("${KAKAO_REDIRECT_URL}")
-    private String kakaoRedirectUrl;
-
-    @Value("${KAKAO_TOKEN_REDIRECT_URI}")
     private String kakaoTokenRedirectURI;
 
     private final Gson gson;

@@ -73,7 +73,7 @@ public class JwtCustomFilter extends OncePerRequestFilter {
         if(member.isEmpty()) {
             log.error("JWT Token is not valid");
 
-            response.sendError(HttpServletResponse.SC_FORBIDDEN, "JWT Token is not valid");
+            response.sendError(HttpServletResponse.SC_NOT_FOUND, "JWT Token is not valid");
 
             filterChain.doFilter(request, response);
 

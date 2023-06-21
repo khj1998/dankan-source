@@ -2,6 +2,7 @@ package com.dankan.util;
 
 import com.dankan.domain.User;
 import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import lombok.extern.slf4j.Slf4j;
@@ -12,6 +13,7 @@ import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
 import javax.servlet.http.HttpServletRequest;
+import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -21,9 +23,9 @@ import java.util.UUID;
 @Component
 public class JwtUtil {
     public static String JWT_SECRET_KEY;
-    private static final long EXPIRATION_TIME =  1000 * 60 * 60 * 24 * 365; // 60일
+    private static final long EXPIRATION_TIME =  1000 * 60 * 60 * 24 * 365; // 365일
     private static final long REFRESH_TOKEN_EXPIRATION_TIME = 1000 * 60 * 60 * 24 * 365; // 365일
-    public static final long ACCESS_TOKEN_EXPIRE_TIME = 60;
+    public static final long ACCESS_TOKEN_EXPIRE_TIME = 365;
 
     @Value("${jwt.secret}")
     public void setKey(String key) {
@@ -32,10 +34,27 @@ public class JwtUtil {
 
     public static String createJwt(User user) {
         Date now = new Date();
+
         Date expiredDate = new Date(now.getTime() + EXPIRATION_TIME);
 
         Map<String, Object> claims = new HashMap<>();
         claims.put("id", user.getUserId());
+
+        return Jwts.builder()
+                .setClaims(claims)
+                .setIssuedAt(now)
+                .setExpiration(expiredDate)
+                .signWith(SignatureAlgorithm.HS256, JWT_SECRET_KEY)
+                .compact();
+    }
+
+    public static String logout() {
+        Date now = new Date();
+
+        Date expiredDate = new Date(now.getTime() - EXPIRATION_TIME);
+
+        Map<String, Object> claims = new HashMap<>();
+        claims.put("id", JwtUtil.getMemberId());
 
         return Jwts.builder()
                 .setClaims(claims)
@@ -56,14 +75,24 @@ public class JwtUtil {
     }
 
     public static boolean isExpired(String token) {
-        Date expiredDate = Jwts.parserBuilder()
-                .setSigningKey(JWT_SECRET_KEY)
-                .build()
-                .parseClaimsJws(token)
-                .getBody()
-                .getExpiration();
+        boolean isExpired = true;
 
-        return expiredDate.before(new Date());
+        try {
+            Date expiredDate = Jwts.parserBuilder()
+                    .setSigningKey(JWT_SECRET_KEY)
+                    .build()
+                    .parseClaimsJws(token)
+                    .getBody()
+                    .getExpiration();
+
+            isExpired = false;
+        }
+        catch (ExpiredJwtException ex) {
+            log.error("jwt is expired");
+            isExpired = true;
+        }
+
+        return isExpired;
     }
 
     public static UUID getMemberId() {
@@ -75,8 +104,7 @@ public class JwtUtil {
                 .parseClaimsJws(token)
                 .getBody();
 
-
-        return body.get("id", UUID.class);
+        return UUID.fromString(body.get("id", String.class));
     }
 
     /**

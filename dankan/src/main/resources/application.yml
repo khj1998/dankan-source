@@ -63,3 +63,7 @@ sns:
   kakao:
     key: ${KAKAO_API_KEY}
     url: ${KAKAO_REDIRECT_URL}
+sms:
+  key: ${SMS_API_KEY}
+  secret: ${SMS_API_SECRET_KEY}
+  phoneNumber: ${PHONE_NUMBER}

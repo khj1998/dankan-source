@@ -6,6 +6,8 @@ import com.dankan.repository.TokenRepository;
 import com.dankan.repository.UserRepository;
 import com.dankan.service.s3.S3UploadService;
 import com.dankan.service.s3.S3UploaderServiceImpl;
+import com.dankan.service.sms.SmsService;
+import com.dankan.service.sms.SmsServiceImpl;
 import com.dankan.service.token.TokenService;
 import com.dankan.service.token.TokenServiceImpl;
 import com.dankan.service.user.UserService;
@@ -38,5 +40,10 @@ public class SpringConfig {
     @Bean
     public TokenService tokenService() {
         return new TokenServiceImpl(tokenRepository, userRepository);
+    }
+
+    @Bean
+    public SmsService smsService() {
+        return new SmsServiceImpl();
     }
 }

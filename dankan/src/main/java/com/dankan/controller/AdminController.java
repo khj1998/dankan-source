@@ -2,7 +2,10 @@ package com.dankan.controller;
 
 import com.dankan.dto.response.login.TokenResponseDto;
 import com.dankan.dto.response.user.UserResponseDto;
+import com.dankan.dto.resquest.certification.CertificationRequestDto;
+import com.dankan.dto.resquest.certification.SendMessageRequestDto;
 import com.dankan.repository.TokenRepository;
+import com.dankan.service.sms.SmsService;
 import com.dankan.service.token.TokenService;
 import com.dankan.service.user.UserService;
 import io.swagger.annotations.Api;
@@ -17,6 +20,7 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 
 import javax.websocket.server.PathParam;
 import java.util.List;
@@ -30,6 +34,7 @@ import java.util.UUID;
 public class AdminController {
     private final UserService userService;
     private final TokenService tokenService;
+    private final SmsService smsService;
 
     @Operation(summary = "특정 사용자 정보 api", description = "특정 사용자 정보 조회")
     @ApiResponses(
@@ -88,5 +93,35 @@ public class AdminController {
         userService.deleteUser(name);
 
         return ResponseEntity.ok().build();
+    }
+
+    @Operation(summary = "핸드폰 본인 인증 문자 발송 api", description = "핸드폰 본인 인증 문자 발송")
+    @ApiResponses(
+            value = {
+                    @ApiResponse(responseCode = "200", description = "본인 인증 메시지 보내기 환료"),
+                    @ApiResponse(responseCode = "401", description = "토큰 만료"),
+                    @ApiResponse(responseCode = "403", description = "관리자 권한 없음"),
+                    @ApiResponse(responseCode = "404", description = "해당 멤버 없음"),
+            }
+    )
+    @PostMapping("/user/message")
+    public ResponseEntity sendIdentifyMessage(@RequestBody SendMessageRequestDto SendMessageRequestDto) {
+        smsService.sendMessage(SendMessageRequestDto.getPhoneNumber());
+
+        return ResponseEntity.ok().build();
+    }
+
+    @Operation(summary = "사용자 핸드폰 인증 api", description = "사용자 핸드폰 인증")
+    @ApiResponses(
+            value = {
+                    @ApiResponse(responseCode = "200", description = "핸드폰 인증 환료"),
+                    @ApiResponse(responseCode = "401", description = "토큰 만료"),
+                    @ApiResponse(responseCode = "403", description = "관리자 권한 없음"),
+                    @ApiResponse(responseCode = "404", description = "해당 멤버 없음"),
+            }
+    )
+    @PostMapping("/user/verify")
+    public ResponseEntity<Boolean> verifyUser(@RequestBody CertificationRequestDto certificationRequestDto) {
+        return ResponseEntity.ok(smsService.verifyNumber(certificationRequestDto));
     }
 }

@@ -3,6 +3,7 @@ package com.dankan.controller;
 import com.dankan.dto.response.logout.LogoutResponseDto;
 import com.dankan.dto.response.user.UserResponseDto;
 import com.dankan.service.s3.S3UploadService;
+import com.dankan.service.sms.SmsService;
 import com.dankan.service.user.UserService;
 import io.swagger.annotations.Api;
 import io.swagger.v3.oas.annotations.Operation;
@@ -16,7 +17,9 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.websocket.server.PathParam;
 import java.io.IOException;
+import java.util.Random;
 
 @Controller
 @RequestMapping("/user")
@@ -26,6 +29,7 @@ import java.io.IOException;
 public class UserController {
     private final UserService userService;
     private final S3UploadService s3UploadService;
+    private final SmsService smsService;
 
     @Operation(summary = "닉네임 중복 체크 api", description = "닉네임 중복 체크")
     @ApiResponses(
@@ -114,8 +118,4 @@ public class UserController {
     public ResponseEntity<LogoutResponseDto> logout() {
         return ResponseEntity.ok(userService.logout());
     }
-    /**
-     * TODO: 대학교 이메일 인증 API
-     * TODO: 핸드폰 인증
-     * */
 }

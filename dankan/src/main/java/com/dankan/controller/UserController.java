@@ -118,7 +118,4 @@ public class UserController {
     public ResponseEntity<LogoutResponseDto> logout() {
         return ResponseEntity.ok(userService.logout());
     }
-    /**
-     * TODO: 대학교 이메일 인증 API
-     * */
 }

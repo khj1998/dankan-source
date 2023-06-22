@@ -9,5 +9,4 @@ import java.util.UUID;
 @Setter
 public class TokenRequestDto {
     private UUID userId;
-    private String refreshToken;
 }

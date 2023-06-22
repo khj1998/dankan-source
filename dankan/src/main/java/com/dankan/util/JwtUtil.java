@@ -136,4 +136,19 @@ public class JwtUtil {
 
         return token;
     }
+
+    public static String getRefreshToken() {
+        HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.currentRequestAttributes()).getRequest();
+        String authorizationHeader = request.getHeader("RefreshToken");
+        String token = null;
+        if (authorizationHeader != null && authorizationHeader.startsWith("Bearer ")) {
+            token = authorizationHeader.substring(7);
+        }
+        else
+        {
+            throw new RuntimeException();
+        }
+
+        return token;
+    }
 }

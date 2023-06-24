@@ -8,7 +8,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: clone repository
-        run: git clone https://username:${{ secrets.PAT }}@github.com/MJU-CapstoneDesign/back-end.git
+        run: git clone https://username:${{ secrets.PAT }}@github.com/Nestsoft-Team/Dankan-Backend.git
         
       - name: Set up Java 
         run: |
@@ -20,13 +20,13 @@ jobs:
       
       - name: CI
         run: |
-          cd back-end/server
+          cd Dankan-Backend/dankan/ 
           ./gradlew bootjar
 
       - name: CD
         run: |
           echo "${{ secrets.KEY }}" > ssh_key
           chmod 400 ssh_key
-          scp -o "StrictHostKeyChecking no" -i ssh_key ./back-end/server/build/libs/*.jar ${{ secrets.SERVER_USERNAME }}@${{ secrets.SERVER_HOST }}:/home/ubuntu/api-server
+          scp -o "StrictHostKeyChecking no" -i ssh_key ./Dankan-Backend/dankan/build/libs/*.jar ${{ secrets.SERVER_USERNAME }}@${{ secrets.SERVER_HOST }}:/home/ubuntu/api-server
           ssh -i ssh_key -o "StrictHostKeyChecking no" ${{ secrets.SERVER_USERNAME }}@${{ secrets.SERVER_HOST }} "docker compose down && docker compose build && docker compose up -d"
         shell: bash

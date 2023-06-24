@@ -1,7 +1,7 @@
 package com.dankan.service.token;
 
 import com.dankan.dto.response.login.TokenResponseDto;
-import com.dankan.dto.resquest.token.TokenRequestDto;
+import com.dankan.dto.request.token.TokenRequestDto;
 
 import java.util.UUID;
 

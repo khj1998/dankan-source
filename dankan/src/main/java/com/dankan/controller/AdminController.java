@@ -1,10 +1,13 @@
 package com.dankan.controller;
 
+import com.dankan.dto.request.email.EmailCodeRequestDto;
+import com.dankan.dto.request.email.EmailRequestDto;
 import com.dankan.dto.response.login.TokenResponseDto;
 import com.dankan.dto.response.user.UserResponseDto;
-import com.dankan.dto.resquest.certification.CertificationRequestDto;
-import com.dankan.dto.resquest.certification.SendMessageRequestDto;
-import com.dankan.repository.TokenRepository;
+import com.dankan.dto.request.sns.CertificationRequestDto;
+import com.dankan.dto.request.sns.SendMessageRequestDto;
+import com.dankan.service.email.EmailService;
+import com.dankan.service.email.EmailServiceImpl;
 import com.dankan.service.sms.SmsService;
 import com.dankan.service.token.TokenService;
 import com.dankan.service.user.UserService;
@@ -35,6 +38,7 @@ public class AdminController {
     private final UserService userService;
     private final TokenService tokenService;
     private final SmsService smsService;
+    private final EmailService emailService;
 
     @Operation(summary = "특정 사용자 정보 api", description = "특정 사용자 정보 조회")
     @ApiResponses(
@@ -123,5 +127,33 @@ public class AdminController {
     @PostMapping("/user/verify")
     public ResponseEntity<Boolean> verifyUser(@RequestBody CertificationRequestDto certificationRequestDto) {
         return ResponseEntity.ok(smsService.verifyNumber(certificationRequestDto));
+    }
+
+    @Operation(summary = "대학교 인증 메일 발송 api", description = "대학교 인증 메일 발송")
+    @ApiResponses(
+            value = {
+                    @ApiResponse(responseCode = "200", description = "발송 환료"),
+                    @ApiResponse(responseCode = "401", description = "토큰 만료"),
+                    @ApiResponse(responseCode = "403", description = "권한 없음"),
+                    @ApiResponse(responseCode = "404", description = "해당 멤버 없음"),
+            }
+    )
+    @PostMapping("/univ/mail")
+    public ResponseEntity<String> mailConfirm(@RequestBody EmailRequestDto email) throws Exception {
+        return ResponseEntity.ok(emailService.sendSimpleMessage(email.getEmail()));
+    }
+
+    @Operation(summary = "대학교 인증 코드 확인 api")
+    @ApiResponses(
+            value = {
+                    @ApiResponse(responseCode = "200", description = "발송 환료"),
+                    @ApiResponse(responseCode = "401", description = "토큰 만료"),
+                    @ApiResponse(responseCode = "403", description = "권한 없음"),
+                    @ApiResponse(responseCode = "404", description = "해당 멤버 없음"),
+            }
+    )
+    @PostMapping("univ/verify-code")
+    public ResponseEntity<Boolean> verifyEmailCode(@RequestBody EmailCodeRequestDto emailCodeRequestDto) {
+        return ResponseEntity.ok(emailService.verifyCode(emailCodeRequestDto));
     }
 }

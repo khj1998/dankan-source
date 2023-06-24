@@ -1,5 +1,6 @@
 package com.dankan.service.user;
 
+import com.dankan.domain.Authority;
 import com.dankan.domain.User;
 import com.dankan.dto.response.login.LoginResponseDto;
 import com.dankan.dto.response.login.OauthLoginResponseDto;
@@ -22,4 +23,5 @@ public interface UserService {
     public void deleteUser();
     public void deleteUser(String name);
     public LogoutResponseDto logout();
+    public List<Authority> getAuthorities();
 }

@@ -43,7 +43,7 @@ public class User {
     private String phoneNum;
 
     @Column(nullable = false,columnDefinition = "int")
-    private int userType;
+    private Long userType;
 
     @Column(columnDefinition = "bool")
     private Boolean gender;

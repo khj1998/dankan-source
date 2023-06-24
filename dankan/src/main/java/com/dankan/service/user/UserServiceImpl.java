@@ -10,6 +10,7 @@ import com.dankan.dto.response.user.UserResponseDto;
 import com.dankan.exception.token.TokenNotFoundException;
 import com.dankan.exception.user.UserNameExistException;
 import com.dankan.exception.user.UserIdNotFoundException;
+import com.dankan.exception.user.UserNameNotFoundException;
 import com.dankan.repository.TokenRepository;
 import com.dankan.repository.UserRepository;
 import com.dankan.util.JwtUtil;
@@ -32,7 +33,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public boolean checkDuplicatedName(String name) {
-        final Optional<User> user = userRepository.findByNickname(name);
+        final Optional<UserResponseDto> user = userRepository.findByNickname(name);
 
         if(user.isEmpty()) {
             return false;
@@ -89,7 +90,7 @@ public class UserServiceImpl implements UserService {
                 .email(oauthLoginResponseDto.getEmail())
                 .nickname(oauthLoginResponseDto.getNickname())
                 .profileImg(oauthLoginResponseDto.getProfilImg())
-                .userType(0) // 카카오 로그인, 그외 로그인 타입을 객체 지향적으로 분리해 of를 쓸 예정입니다. 더 고민해봐야해요.
+                .userType(0L) // 카카오 로그인, 그외 로그인 타입을 객체 지향적으로 분리해 of를 쓸 예정입니다. 더 고민해봐야해요.
                 .build();
         userRepository.save(user);
 
@@ -108,28 +109,21 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserResponseDto findUserByNickname() {
-        User user = userRepository.findById(JwtUtil.getMemberId()).orElseThrow(() -> new UserIdNotFoundException(JwtUtil.getMemberId().toString()));
-
-        return UserResponseDto.of(user);
+        return userRepository.findByUserId(JwtUtil.getMemberId()).orElseThrow(
+                () -> new UserIdNotFoundException(JwtUtil.getMemberId().toString())
+        );
     }
 
     @Override
     public List<UserResponseDto> findAll() {
-        List<UserResponseDto> result = new ArrayList<>();
-
-        for(User user : userRepository.findAll()) {
-            result.add(UserResponseDto.of(user));
-        }
-
-        return result;
+        return userRepository.findUserList();
     }
 
     @Override
     public UserResponseDto findUserByNickname(String name) {
-        log.info("name: {}", name);
-        User user = userRepository.findByNickname(name).orElseThrow(() -> new UserNameExistException(name));
-
-        return UserResponseDto.of(user);
+        return userRepository.findByNickname(name).orElseThrow(
+                () -> new UserNameNotFoundException(name)
+        );
     }
 
     @Override
@@ -140,7 +134,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public void deleteUser(final String name) {
-        userRepository.delete(userRepository.findByNickname(name).orElseThrow(() -> new UserNameExistException(name)));
+        userRepository.delete(userRepository.findUserByNickname(name).orElseThrow(() -> new UserNameExistException(name)));
     }
 
     @Override
@@ -155,5 +149,12 @@ public class UserServiceImpl implements UserService {
         tokenRepository.save(token);
 
         return new LogoutResponseDto(expiredAccessToken);
+    }
+
+    @Override
+    public List<Authority> getAuthorities() {
+        return userRepository.findUserByUserId(JwtUtil.getMemberId()).orElseThrow(
+                () -> new UserIdNotFoundException(JwtUtil.getMemberId().toString())
+        ).getAuthorities();
     }
 }

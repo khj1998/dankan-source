@@ -18,7 +18,7 @@ public class LoginResponseDto {
     private String profilImg;
     private String phoneNum;
     private Boolean gender;
-    private int userType;
+    private Long userType;
     private String univEmail;
 
     public static LoginResponseDto of(User user, Token token) {

@@ -1,6 +1,7 @@
 package com.dankan.dto.response.user;
 
 import com.dankan.domain.User;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
@@ -9,6 +10,7 @@ import java.util.UUID;
 
 @Getter
 @Setter
+@AllArgsConstructor
 @Builder
 public class UserResponseDto {
     private UUID userId;

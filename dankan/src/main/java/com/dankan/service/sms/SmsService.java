@@ -1,6 +1,6 @@
 package com.dankan.service.sms;
 
-import com.dankan.dto.resquest.certification.CertificationRequestDto;
+import com.dankan.dto.request.sns.CertificationRequestDto;
 
 public interface SmsService {
     public void sendMessage(String phoneNum);

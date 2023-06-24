@@ -9,19 +9,6 @@ spring:
     url: jdbc:mysql://${DB_HOST}:${DB_PORT}/${DB_SCHEMA}?allowPublicKeyRetrieval=true&useSSL=false&serverTimezone=Asia/Seoul&characterEncoding=UTF-8
     username: ${DB_USERNAME}
     password: ${DB_PASSWORD}
-  #spring:
-  #  # H2 Setting Info (H2 Console? ???? ?? ???? ??)
-  #  h2:
-  #    console:
-  #      enabled: true  # H2 Console? ???? ?? (H2 Console? H2 Database? UI? ????? ??)
-  #      path: /h2-console  # H2 Console? Path
-  #  # Database Setting Info (Database? H2? ???? ?? H2?? ?? ??)
-  #  datasource:
-  #    driver-class-name: org.h2.Driver  # Database? H2? ?????.
-  #    url: jdbc:h2:~/test  # H2 ?? ??
-  #    username: sa  # H2 ?? ? ??? username ?? (??? ??? ??)
-  #    password:  # H2 ?? ? ??? password ?? (??? ??? ??)
-
   jpa:
     database: mysql
     database-platform: org.hibernate.dialect.MySQL8Dialect
@@ -67,3 +54,7 @@ sms:
   key: ${SMS_API_KEY}
   secret: ${SMS_API_SECRET_KEY}
   phoneNumber: ${PHONE_NUMBER}
+mail:
+  id: ${NAVER_ID}
+  password: ${NAVER_PASSWORD}
+

@@ -1,6 +1,11 @@
 package com.dankan.service.sms;
 
-import com.dankan.dto.resquest.certification.CertificationRequestDto;
+import com.dankan.domain.User;
+import com.dankan.dto.request.sns.CertificationRequestDto;
+import com.dankan.exception.user.PhoneNumberNotFoundException;
+import com.dankan.exception.user.UserIdNotFoundException;
+import com.dankan.repository.UserRepository;
+import com.dankan.util.JwtUtil;
 import lombok.extern.slf4j.Slf4j;
 import net.nurigo.java_sdk.api.Message;
 import net.nurigo.java_sdk.exceptions.CoolsmsException;
@@ -20,8 +25,10 @@ public class SmsServiceImpl implements SmsService {
     private String ph;
     private static HashMap<String, String> userNum;
     private final Random random;
+    private final UserRepository userRepository;
 
-    public SmsServiceImpl() {
+    public SmsServiceImpl(final UserRepository userRepository) {
+        this.userRepository = userRepository;
         userNum = new HashMap<>();
         random = new Random();
     }
@@ -61,6 +68,14 @@ public class SmsServiceImpl implements SmsService {
     @Override
     public Boolean verifyNumber(CertificationRequestDto certificationRequestDto) {
         if(userNum.get(certificationRequestDto.getPhoneNumber()).equals(certificationRequestDto.getNumber().toString())) {
+            User user = userRepository.findByPhoneNum(certificationRequestDto.getPhoneNumber()).orElseThrow(
+                    () -> new PhoneNumberNotFoundException(certificationRequestDto.getPhoneNumber())
+            );
+
+            user.setPhoneNum(certificationRequestDto.getPhoneNumber());
+
+            userRepository.save(user);
+
             return true;
         }
 

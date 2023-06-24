@@ -1,9 +1,7 @@
 package com.dankan.exception;
 
 import com.dankan.exception.token.TokenNotFoundException;
-import com.dankan.exception.user.UserNameExistException;
-import com.dankan.exception.user.UserIdNotFoundException;
-import com.dankan.exception.user.UserNameNotFoundException;
+import com.dankan.exception.user.*;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -31,7 +29,19 @@ public class ApiExceptionHandler {
 
     @ExceptionHandler(UserNameExistException.class)
     public ResponseEntity<ApiErrorResponse> handleException(UserNameExistException ex) {
-        ApiErrorResponse response = new ApiErrorResponse("ERROR-0004", ex.getMessage() + " is duplicated");
+        ApiErrorResponse response = new ApiErrorResponse("ERROR-0004", "member name: " + ex.getMessage() + " is duplicated");
         return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(EmailNotFoundException.class)
+    public ResponseEntity<ApiErrorResponse> handleException(EmailNotFoundException ex) {
+        ApiErrorResponse response = new ApiErrorResponse("ERROR-0005", "member email: " + ex.getMessage() + " is not exit");
+        return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
+    }
+
+    @ExceptionHandler(PhoneNumberNotFoundException.class)
+    public ResponseEntity<ApiErrorResponse> handleException(PhoneNumberNotFoundException ex) {
+        ApiErrorResponse response = new ApiErrorResponse("ERROR-0005", "member phone number: " + ex.getMessage() + " is not exit");
+        return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
     }
 }

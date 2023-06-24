@@ -1,4 +1,4 @@
-package com.dankan.dto.resquest.token;
+package com.dankan.dto.request.token;
 
 import lombok.Getter;
 import lombok.Setter;

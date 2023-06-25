@@ -67,6 +67,9 @@ dependencies {
     //coolsms
     implementation 'net.nurigo:sdk:4.3.0'
     implementation fileTree(dir: 'libs', include: ['*.jar'])
+
+    //slack
+    implementation 'com.github.maricn:logback-slack-appender:1.4.0'
 }
 
 tasks.named('test') {

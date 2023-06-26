@@ -43,12 +43,12 @@ public class ReportServiceImpl implements ReportService {
         Post post = postRepository.findById(roomReportRequestDto.getPostId())
                 .orElseThrow(() -> new PostNotFoundException(roomReportRequestDto.getPostId()));
 
-        UUID roomId = post.getRoomId();
+        Long roomId = post.getRoomId();
 
         Room room = roomRepository.findById(roomId)
                 .orElseThrow(() -> new RoomNotFoundException(roomId));
 
-        PostReport postReport = PostReport.of(room, roomReportRequestDto.getReportType(),userId);
+        PostReport postReport = PostReport.of(room, userId);
         postReportRepository.save(postReport);
 
         return RoomReportResponseDto.of(true);
@@ -61,7 +61,7 @@ public class ReportServiceImpl implements ReportService {
         RoomReview roomReview = reviewRepository.findById(reviewReportRequestDto.getReviewId())
                 .orElseThrow(() -> new ReviewNotFoundException(reviewReportRequestDto.getReviewId()));
 
-        ReviewReport reviewReport = ReviewReport.of(userId, reviewReportRequestDto.getReportType(), roomReview);
+        ReviewReport reviewReport = ReviewReport.of(userId, roomReview);
         reviewReportRepository.save(reviewReport);
 
         return ReviewReportResponseDto.of(true);

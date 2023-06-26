@@ -8,7 +8,7 @@ public class ReviewNotFoundException extends RuntimeException {
     private String message;
     private ErrorCode code;
 
-    public ReviewNotFoundException(UUID id) {
+    public ReviewNotFoundException(Long id) {
         super(id.toString());
         this.message = id.toString();
     }

@@ -40,8 +40,8 @@ public class PostServiceImpl implements PostService {
 
     @Override
     @Transactional(readOnly = true)
-    public PostResponseDto getPostByRoomId(UUID roomId) {
-        UUID userId = JwtUtil.getMemberId();
+    public PostResponseDto getPostByRoomId(Long roomId) {
+        Long userId = JwtUtil.getMemberId();
         Room room = roomRepository.findById(roomId)
                 .orElseThrow(() -> new RoomNotFoundException(roomId));
         Post post = postRepository.findByRoomId(roomId)
@@ -113,7 +113,7 @@ public class PostServiceImpl implements PostService {
     // 이미지 가져와야함
     @Override
     @Transactional(readOnly = true)
-    public PostDetailResponseDto findPostDetail(UUID postId) {
+    public PostDetailResponseDto findPostDetail(Long postId) {
         UUID userId = JwtUtil.getMemberId();
         Integer postHeartCount;
 
@@ -157,7 +157,7 @@ public class PostServiceImpl implements PostService {
 
     @Override
     @Transactional
-    public void deletePost(UUID postId) {
+    public void deletePost(Long postId) {
         UUID userId = JwtUtil.getMemberId();
         Post post = postRepository.findByPostIdAndUserId(postId,userId)
                         .orElseThrow(() -> new PostNotFoundException(postId));

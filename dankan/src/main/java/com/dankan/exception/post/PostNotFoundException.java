@@ -13,7 +13,7 @@ public class PostNotFoundException extends RuntimeException {
     private String message;
     private ErrorCode code;
 
-    public PostNotFoundException(UUID id) {
+    public PostNotFoundException(Long id) {
         super(id.toString());
         this.message = id.toString();
     }

@@ -27,7 +27,6 @@ public class ReviewDetailResponseDto {
                 .nickname(user.getNickname())
                 .startedAt(roomReview.getResidencePeriod().getStartedAt())
                 .endAt(roomReview.getResidencePeriod().getEndAt())
-                .totalRate(roomReview.getRoomReviewRate().getTotalRate())
                 .content(roomReview.getContent())
                 .updatedAt(roomReview.getUpdatedAt())
                 .build();

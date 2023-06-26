@@ -3,7 +3,6 @@ package com.dankan.service.review;
 import com.dankan.domain.Room;
 import com.dankan.domain.RoomReview;
 import com.dankan.domain.User;
-import com.dankan.domain.embedded.RoomReviewRate;
 import com.dankan.dto.response.review.ReviewDetailResponseDto;
 import com.dankan.dto.response.review.ReviewRateResponseDto;
 import com.dankan.dto.response.review.ReviewResponseDto;
@@ -59,7 +58,7 @@ public class ReviewServiceImpl implements ReviewService {
 
     @Override
     @Transactional
-    public void deleteReview(UUID reviewId) {
+    public void deleteReview(Long reviewId) {
         UUID userId = JwtUtil.getMemberId();
         RoomReview roomReview = reviewRepository.findByUserIdAndReviewId(userId,reviewId)
                 .orElseThrow(() -> new ReviewNotFoundException(reviewId));
@@ -108,18 +107,16 @@ public class ReviewServiceImpl implements ReviewService {
     @Transactional(readOnly = true)
     public ReviewRateResponseDto findReviewRate(String address) {
         Long reviewCount;
-        RoomReviewRate roomReviewRate = RoomReviewRate.init();
         Room room = roomRepository.findFirstByRoomAddress_Address(address)
                 .orElseThrow(() -> new RoomNotFoundException(address));
 
         List<RoomReview> reviewList = reviewRepository.findByAddress(address);
         for (RoomReview roomReview : reviewList) {
-            roomReviewRate.plusRate(roomReview);
         }
 
         reviewCount = (long) reviewList.size();
 
-        return ReviewRateResponseDto.of(roomReviewRate,room, reviewCount);
+        return ReviewRateResponseDto.of(room, reviewCount);
     }
 
     @Override

@@ -5,7 +5,8 @@ import com.dankan.domain.embedded.RoomCost;
 import com.dankan.domain.embedded.RoomDiscussion;
 import com.dankan.domain.embedded.RoomOption;
 import com.dankan.domain.embedded.RoomStructure;
-import com.dankan.dto.resquest.post.PostRoomRequestDto;
+import com.dankan.dto.request.post.PostRoomCreateRequestDto;
+import com.dankan.enum_converter.DealTypeEnum;
 import com.dankan.enum_converter.PriceTypeEnum;
 import com.dankan.enum_converter.RoomTypeEnum;
 import io.swagger.annotations.ApiModel;
@@ -51,48 +52,49 @@ public class Room {
     @Embedded
     private RoomAddress roomAddress;
 
-    public static Room of(PostRoomRequestDto postRoomRequestDto, UUID userId) {
-        String[] addressParts = postRoomRequestDto.getAddress().split(" ");
+    public static Room of(PostRoomCreateRequestDto postRoomCreateRequestDto, UUID userId) {
+        String[] addressParts = postRoomCreateRequestDto.getAddress().split(" ");
 
         RoomCost cost = RoomCost.builder()
-                .dealType(postRoomRequestDto.getDealType())
-                .priceType(PriceTypeEnum.getPriceTypeValue(postRoomRequestDto.getPriceType()))
-                .deposit(postRoomRequestDto.getDeposit())
-                .price(postRoomRequestDto.getPrice())
-                .managementCost(postRoomRequestDto.getManagementCost())
-                .managementType(postRoomRequestDto.getManagementType())
+                .dealType(postRoomCreateRequestDto.getDealType())
+                .priceType(PriceTypeEnum.getPriceTypeValue(postRoomCreateRequestDto.getPriceType()))
+                .deposit(postRoomCreateRequestDto.getDeposit())
+                .price(postRoomCreateRequestDto.getPrice())
+                .managementCost(postRoomCreateRequestDto.getManagementCost())
+                .managementType(postRoomCreateRequestDto.getManagementType())
                 .build();
 
         RoomStructure structure = RoomStructure.builder()
-                .roomType(RoomTypeEnum.getRoomTypeValue(postRoomRequestDto.getRoomType()))
-                .totalFloor(postRoomRequestDto.getTotalFloor())
-                .floor(postRoomRequestDto.getFloor())
-                .structure(postRoomRequestDto.getStructure())
-                .roomSize(postRoomRequestDto.getRoomSize())
-                .realRoomSize(postRoomRequestDto.getRealRoomSize())
+                .roomType(RoomTypeEnum.getRoomTypeValue(postRoomCreateRequestDto.getRoomType()))
+                .totalFloor(postRoomCreateRequestDto.getTotalFloor())
+                .floor(postRoomCreateRequestDto.getFloor())
+                .structure(postRoomCreateRequestDto.getStructure())
+                .roomSize(postRoomCreateRequestDto.getRoomSize())
+                .realRoomSize(postRoomCreateRequestDto.getRealRoomSize())
                 .build();
 
         RoomOption option = RoomOption.builder()
-                .elevatorOption(postRoomRequestDto.getElevators())
-                .roomOptions(postRoomRequestDto.getOptions())
-                .roomEtcOptions(postRoomRequestDto.getEtcOptions())
+                .elevatorOption(postRoomCreateRequestDto.getElevators())
+                .roomOptions(postRoomCreateRequestDto.getOptions())
+                .roomEtcOptions(postRoomCreateRequestDto.getEtcOptions())
                 .build();
 
         RoomDiscussion discussion = RoomDiscussion.builder()
-                .isDiscussion(postRoomRequestDto.getIsDiscussion())
-                .moveInStart(postRoomRequestDto.getMoveInStart())
-                .moveInEnd(postRoomRequestDto.getMoveInEnd())
+                .isDiscussion(postRoomCreateRequestDto.getIsDiscussion())
+                .moveInStart(postRoomCreateRequestDto.getMoveInStart())
+                .moveInEnd(postRoomCreateRequestDto.getMoveInEnd())
                 .build();
+
 
         RoomAddress address = RoomAddress.builder()
                 .doo(addressParts[0])
                 .si(addressParts[1])
                 .gu(addressParts[2])
                 .dong(addressParts[3])
-                .latitude(postRoomRequestDto.getLatitude())
-                .longitude(postRoomRequestDto.getLongitude())
-                .address(postRoomRequestDto.getAddress())
-                .addressDetail(postRoomRequestDto.getAddressDetails())
+                .latitude(postRoomCreateRequestDto.getLatitude())
+                .longitude(postRoomCreateRequestDto.getLongitude())
+                .address(postRoomCreateRequestDto.getAddress())
+                .addressDetail(postRoomCreateRequestDto.getAddressDetail())
                 .build();
 
         return Room.builder()

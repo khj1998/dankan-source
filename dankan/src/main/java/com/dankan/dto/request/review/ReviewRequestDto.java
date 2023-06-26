@@ -1,8 +1,6 @@
-package com.dankan.dto.resquest.review;
+package com.dankan.dto.request.review;
 
 import lombok.Getter;
-
-import java.time.LocalDate;
 import java.util.Date;
 
 @Getter

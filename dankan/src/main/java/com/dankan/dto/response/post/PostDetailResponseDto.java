@@ -7,7 +7,6 @@ import com.dankan.enum_converter.PriceTypeEnum;
 import com.dankan.enum_converter.RoomTypeEnum;
 import lombok.*;
 
-import java.time.LocalDate;
 import java.util.Date;
 import java.util.UUID;
 
@@ -47,6 +46,7 @@ public class PostDetailResponseDto {
     private Long isDiscussion; //입주기간 협의 가능여부
     private Date moveInStart; //입주 가능 시작일
     private Date moveInEnd; //입주 가능 마지막 일
+    private String imgUrls;
 
     // room_address 응답
     //private UUID roomId;
@@ -57,7 +57,7 @@ public class PostDetailResponseDto {
     private Double latitude;
     private Double longitude;
 
-    public static PostDetailResponseDto of(Post post, Room room,PostHeart postHeart,Integer heartCount) {
+    public static PostDetailResponseDto of(Post post, Room room,PostHeart postHeart,Integer heartCount,String imgUrls) {
         Boolean isHearted = false;
         String dealType;
 
@@ -100,6 +100,7 @@ public class PostDetailResponseDto {
                 .isDiscussion(room.getRoomDiscussion().getIsDiscussion())
                 .moveInStart(room.getRoomDiscussion().getMoveInStart())
                 .moveInEnd(room.getRoomDiscussion().getMoveInEnd())
+                .imgUrls(imgUrls)
 
                 .doo(room.getRoomAddress().getDoo())
                 .si(room.getRoomAddress().getSi())

@@ -2,7 +2,7 @@ package com.dankan.domain;
 
 import com.dankan.domain.embedded.ResidencePeriod;
 import com.dankan.domain.embedded.RoomReviewRate;
-import com.dankan.dto.resquest.review.ReviewRequestDto;
+import com.dankan.dto.request.review.ReviewRequestDto;
 import com.dankan.enum_converter.SatisfyEnum;
 import io.swagger.annotations.ApiModel;
 import lombok.*;
@@ -11,7 +11,6 @@ import org.hibernate.annotations.Type;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import javax.persistence.*;
-import java.time.LocalDate;
 import java.util.Date;
 import java.util.UUID;
 
@@ -45,6 +44,9 @@ public class RoomReview {
 
     @UpdateTimestamp
     private Date updatedAt;
+
+    @Column(name = "image_url",columnDefinition = "text")
+    private String imageUrl;
 
     @Embedded
     private ResidencePeriod residencePeriod;

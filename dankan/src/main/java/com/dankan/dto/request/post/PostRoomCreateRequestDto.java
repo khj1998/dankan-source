@@ -1,4 +1,4 @@
-package com.dankan.dto.resquest.post;
+package com.dankan.dto.request.post;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Getter;
@@ -11,15 +11,14 @@ import java.util.UUID;
 @Getter
 @Setter
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class PostRoomRequestDto {
+public class PostRoomCreateRequestDto {
     // 게시물 속성
-    private UUID postId;
     private String title;
     private String content;
 
     // 매물 속성 
     private String address;
-    private String addressDetails;
+    private String addressDetail;
     private Double latitude;
     private Double longitude;
     private Boolean dealType;

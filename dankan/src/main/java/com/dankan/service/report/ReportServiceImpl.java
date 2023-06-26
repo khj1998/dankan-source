@@ -1,11 +1,12 @@
 package com.dankan.service.report;
 
 import com.dankan.domain.*;
-import com.dankan.dto.response.report.ReviewReportResponseDto;
-import com.dankan.dto.response.report.RoomReportResponseDto;
-import com.dankan.dto.resquest.report.ReviewReportRequestDto;
-import com.dankan.dto.resquest.report.RoomReportRequestDto;
+import com.dankan.dto.request.report.ReviewReportRequestDto;
+import com.dankan.dto.response.report.ReportResponseDto;
+import com.dankan.dto.request.report.RoomReportRequestDto;
 import com.dankan.exception.post.PostNotFoundException;
+import com.dankan.exception.report.PostReportNotFoundException;
+import com.dankan.exception.report.ReviewReportNotFoundException;
 import com.dankan.exception.review.ReviewNotFoundException;
 import com.dankan.exception.room.RoomNotFoundException;
 import com.dankan.repository.*;
@@ -38,7 +39,7 @@ public class ReportServiceImpl implements ReportService {
 
     @Override
     @Transactional
-    public RoomReportResponseDto addPostReport(RoomReportRequestDto roomReportRequestDto) {
+    public ReportResponseDto addPostReport(RoomReportRequestDto roomReportRequestDto) {
         UUID userId = JwtUtil.getMemberId();
         Post post = postRepository.findById(roomReportRequestDto.getPostId())
                 .orElseThrow(() -> new PostNotFoundException(roomReportRequestDto.getPostId()));
@@ -51,12 +52,12 @@ public class ReportServiceImpl implements ReportService {
         PostReport postReport = PostReport.of(room, roomReportRequestDto.getReportType(),userId);
         postReportRepository.save(postReport);
 
-        return RoomReportResponseDto.of(true);
+        return ReportResponseDto.of(true);
     }
 
     @Override
     @Transactional
-    public ReviewReportResponseDto addReviewReport(ReviewReportRequestDto reviewReportRequestDto) {
+    public ReportResponseDto addReviewReport(ReviewReportRequestDto reviewReportRequestDto) {
         UUID userId = JwtUtil.getMemberId();
         RoomReview roomReview = reviewRepository.findById(reviewReportRequestDto.getReviewId())
                 .orElseThrow(() -> new ReviewNotFoundException(reviewReportRequestDto.getReviewId()));
@@ -64,6 +65,36 @@ public class ReportServiceImpl implements ReportService {
         ReviewReport reviewReport = ReviewReport.of(userId, reviewReportRequestDto.getReportType(), roomReview);
         reviewReportRepository.save(reviewReport);
 
-        return ReviewReportResponseDto.of(true);
+        return ReportResponseDto.of(true);
+    }
+
+    @Override
+    @Transactional
+    public ReportResponseDto findPostReport(UUID reportId) {
+        PostReport postReport = postReportRepository.findById(reportId)
+                .orElseThrow(() -> new PostReportNotFoundException(reportId));
+
+        return ReportResponseDto.of(postReport);
+    }
+
+    @Override
+    @Transactional
+    public void removePostReport(UUID reportId) {
+        postReportRepository.deleteById(reportId);
+    }
+
+    @Override
+    @Transactional
+    public ReportResponseDto findReviewReport(UUID reportId) {
+        ReviewReport reviewReport = reviewReportRepository.findById(reportId)
+                .orElseThrow(() -> new ReviewReportNotFoundException(reportId));
+
+        return ReportResponseDto.of(reviewReport);
+    }
+
+    @Override
+    @Transactional
+    public void removeReviewReport(UUID reportId) {
+        reviewReportRepository.deleteById(reportId);
     }
 }

@@ -1,4 +1,4 @@
-package com.dankan.dto.resquest.post;
+package com.dankan.dto.request.post;
 
 import lombok.Getter;
 import lombok.Setter;

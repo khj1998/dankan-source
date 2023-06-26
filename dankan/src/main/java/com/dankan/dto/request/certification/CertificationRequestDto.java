@@ -1,4 +1,4 @@
-package com.dankan.dto.resquest.certification;
+package com.dankan.dto.request.certification;
 
 import lombok.Getter;
 import lombok.Setter;

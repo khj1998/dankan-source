@@ -1,22 +1,28 @@
 package com.dankan.controller;
 
+import com.dankan.dto.request.review.ReviewImageRequestDto;
+import com.dankan.dto.request.room.RoomImageRequestDto;
 import com.dankan.dto.response.review.ReviewDetailResponseDto;
+import com.dankan.dto.response.review.ReviewImageResponseDto;
 import com.dankan.dto.response.review.ReviewRateResponseDto;
 import com.dankan.dto.response.review.ReviewResponseDto;
-import com.dankan.dto.resquest.review.ReviewDetailRequestDto;
-import com.dankan.dto.resquest.review.ReviewRequestDto;
+import com.dankan.dto.request.review.ReviewDetailRequestDto;
+import com.dankan.dto.request.review.ReviewRequestDto;
+import com.dankan.dto.response.room.RoomImageResponseDto;
 import com.dankan.service.review.ReviewService;
+import com.dankan.service.s3.S3UploadService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
-import io.swagger.models.auth.In;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
-import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.UUID;
 
@@ -36,6 +42,7 @@ public class ReviewController {
      * */
 
     private final ReviewService reviewService;
+    private final S3UploadService s3UploadService;
 
     @ApiOperation("매물 후기 조회 API")
     @ApiResponses({
@@ -84,8 +91,7 @@ public class ReviewController {
             @ApiResponse(responseCode = "404",description = "매물 상세 리뷰 조회에 실패함")
     })
     @PostMapping("/detail")
-    public ResponseEntity<List<ReviewDetailResponseDto>> getReviewDetail(
-            @RequestBody ReviewDetailRequestDto reviewDetailRequestDto) {
+    public ResponseEntity<List<ReviewDetailResponseDto>> getReviewDetail(@RequestBody ReviewDetailRequestDto reviewDetailRequestDto) {
         List<ReviewDetailResponseDto> responseDtoList = reviewService.findReviewDetail(reviewDetailRequestDto);
         return ResponseEntity.ok(responseDtoList);
     }
@@ -100,6 +106,26 @@ public class ReviewController {
     @PostMapping
     public ResponseEntity<ReviewResponseDto> addReview(@RequestBody ReviewRequestDto reviewRequestDto) {
         ReviewResponseDto responseDto = reviewService.addReview(reviewRequestDto);
+        return ResponseEntity.ok(responseDto);
+    }
+
+    @ApiOperation("리뷰 이미지 등록 API")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200",description = "리뷰 이미지 등록 성공"),
+            @ApiResponse(responseCode = "401",description = "인증되지 않은 사용자"),
+            @ApiResponse(responseCode = "403",description = "유저가 Member | Admin 권한이 없음"),
+            @ApiResponse(responseCode = "404",description = "리뷰 이미지 등록 실패")
+    })
+    @PostMapping(value = "/image",consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<ReviewImageResponseDto> addReviewImage(@ModelAttribute ReviewImageRequestDto reviewImageRequestDto) throws IOException {
+        String imgUrl = null;
+
+        for (MultipartFile multipartFile : reviewImageRequestDto.getMultipartFileList()) {
+            imgUrl = s3UploadService.upload(multipartFile, "room-image") + " ";
+        }
+
+        ReviewImageResponseDto responseDto = reviewService.addReviewImage(reviewImageRequestDto.getReviewId(),imgUrl);
+
         return ResponseEntity.ok(responseDto);
     }
 

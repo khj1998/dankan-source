@@ -1,6 +1,6 @@
 package com.dankan.domain;
 
-import com.dankan.dto.resquest.post.PostRoomRequestDto;
+import com.dankan.dto.request.post.PostRoomCreateRequestDto;
 import io.swagger.annotations.ApiModel;
 import lombok.*;
 import org.hibernate.annotations.GenericGenerator;
@@ -8,7 +8,6 @@ import org.hibernate.annotations.Type;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import javax.persistence.*;
-import java.time.LocalDate;
 import java.util.Date;
 import java.util.UUID;
 
@@ -46,12 +45,12 @@ public class Post {
     @Column(name = "content",nullable = false,columnDefinition = "varchar")
     private String content;
 
-    public static Post of(PostRoomRequestDto postRoomRequestDto,UUID userId,UUID roomId) {
+    public static Post of(PostRoomCreateRequestDto postRoomCreateRequestDto, UUID userId, UUID roomId) {
         return Post.builder()
                 .userId(userId)
                 .roomId(roomId)
-                .title(postRoomRequestDto.getTitle())
-                .content(postRoomRequestDto.getContent())
+                .title(postRoomCreateRequestDto.getTitle())
+                .content(postRoomCreateRequestDto.getContent())
                 .build();
     }
 }

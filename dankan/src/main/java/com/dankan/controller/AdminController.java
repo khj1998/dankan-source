@@ -2,12 +2,13 @@ package com.dankan.controller;
 
 import com.dankan.dto.request.email.EmailCodeRequestDto;
 import com.dankan.dto.request.email.EmailRequestDto;
-import com.dankan.dto.response.login.TokenResponseDto;
-import com.dankan.dto.response.user.UserResponseDto;
 import com.dankan.dto.request.sns.CertificationRequestDto;
-import com.dankan.dto.request.sns.SendMessageRequestDto;
+import com.dankan.dto.response.login.TokenResponseDto;
+import com.dankan.dto.response.report.ReportResponseDto;
+import com.dankan.dto.response.user.UserResponseDto;
+import com.dankan.dto.request.certification.SendMessageRequestDto;
+import com.dankan.service.report.ReportService;
 import com.dankan.service.email.EmailService;
-import com.dankan.service.email.EmailServiceImpl;
 import com.dankan.service.sms.SmsService;
 import com.dankan.service.token.TokenService;
 import com.dankan.service.user.UserService;
@@ -38,6 +39,7 @@ public class AdminController {
     private final UserService userService;
     private final TokenService tokenService;
     private final SmsService smsService;
+    private final ReportService reportService;
     private final EmailService emailService;
 
     @Operation(summary = "특정 사용자 정보 api", description = "특정 사용자 정보 조회")
@@ -127,6 +129,66 @@ public class AdminController {
     @PostMapping("/user/verify")
     public ResponseEntity<Boolean> verifyUser(@RequestBody CertificationRequestDto certificationRequestDto) {
         return ResponseEntity.ok(smsService.verifyNumber(certificationRequestDto));
+    }
+
+    @Operation(summary = "특정 게시물 신고 조회 api",description = "특정 게시물 신고 조회")
+    @ApiResponses(
+            value = {
+                    @ApiResponse(responseCode = "200", description = "특정 게시물 신고 조회 완료"),
+                    @ApiResponse(responseCode = "401", description = "토큰 만료"),
+                    @ApiResponse(responseCode = "403", description = "관리자 권한 없음"),
+                    @ApiResponse(responseCode = "404", description = "해당 맴버 없음")
+            }
+    )
+    @GetMapping("/post-report/find")
+    public ResponseEntity<ReportResponseDto> findPostReport(@RequestParam("reportId") UUID reportId) {
+        ReportResponseDto reportResponseDto = reportService.findPostReport(reportId);
+        return ResponseEntity.ok(reportResponseDto);
+    }
+
+    @Operation(summary = "특정 게시물 신고 삭제 api",description = "특정 게시물 신고 삭제")
+    @ApiResponses(
+            value = {
+                    @ApiResponse(responseCode = "200", description = "특정 게시물 신고 삭제 완료"),
+                    @ApiResponse(responseCode = "401", description = "토큰 만료"),
+                    @ApiResponse(responseCode = "403", description = "관리자 권한 없음"),
+                    @ApiResponse(responseCode = "404", description = "해당 맴버 없음")
+            }
+    )
+    @DeleteMapping("/post-report/remove")
+    public ResponseEntity removePostReport(@RequestParam("reportId") UUID reportId) {
+        reportService.removePostReport(reportId);
+        return ResponseEntity.ok().build();
+    }
+
+    @Operation(summary = "특정 리뷰 신고 조회 api",description = "특정 리뷰 신고 조회")
+    @ApiResponses(
+            value = {
+                    @ApiResponse(responseCode = "200", description = "특정 리뷰 신고 조회 완료"),
+                    @ApiResponse(responseCode = "401", description = "토큰 만료"),
+                    @ApiResponse(responseCode = "403", description = "관리자 권한 없음"),
+                    @ApiResponse(responseCode = "404", description = "해당 맴버 없음")
+            }
+    )
+    @GetMapping("/review-report/find")
+    public ResponseEntity<ReportResponseDto> findReviewReport(@RequestParam("reportId") UUID reportId) {
+        ReportResponseDto reportResponseDto = reportService.findReviewReport(reportId);
+        return ResponseEntity.ok(reportResponseDto);
+    }
+    
+    @Operation(summary = "특정 리뷰 신고 삭제 api",description = "특정 리뷰 신고 삭제")
+    @ApiResponses(
+            value = {
+                    @ApiResponse(responseCode = "200", description = "특정 리뷰 신고 삭제 완료"),
+                    @ApiResponse(responseCode = "401", description = "토큰 만료"),
+                    @ApiResponse(responseCode = "403", description = "관리자 권한 없음"),
+                    @ApiResponse(responseCode = "404", description = "해당 맴버 없음")
+            }
+    )
+    @DeleteMapping("/review-report/remove")
+    public ResponseEntity removeReviewReport(@RequestParam("reportId") UUID reportId) {
+        reportService.removeReviewReport(reportId);
+        return ResponseEntity.ok().build();
     }
 
     @Operation(summary = "대학교 인증 메일 발송 api", description = "대학교 인증 메일 발송")

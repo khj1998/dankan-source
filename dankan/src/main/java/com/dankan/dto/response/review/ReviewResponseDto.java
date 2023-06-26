@@ -3,13 +3,10 @@ package com.dankan.dto.response.review;
 import com.dankan.domain.Room;
 import com.dankan.domain.RoomReview;
 import com.dankan.domain.User;
-import com.dankan.domain.embedded.RoomReviewRate;
-import com.dankan.dto.resquest.review.ReviewRequestDto;
 import com.dankan.enum_converter.RoomTypeEnum;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.*;
 
-import java.time.LocalDate;
 import java.util.Date;
 import java.util.UUID;
 
@@ -36,8 +33,9 @@ public class ReviewResponseDto {
     private String address;
     private String addressDetail;
     private String roomType;
+    private String imgUrl;
 
-    public static ReviewResponseDto of(User user, RoomReview roomReview, Room room) {
+    public static ReviewResponseDto of(User user, RoomReview roomReview, Room room,String imageUrl) {
         Date currentDate = new Date();
 
         return ReviewResponseDto.builder()
@@ -56,14 +54,16 @@ public class ReviewResponseDto {
                 .address(roomReview.getAddress())
                 .addressDetail(roomReview.getAddressDetail())
                 .roomType(RoomTypeEnum.getRoomTypeName(room.getRoomStructure().getRoomType()))
+                .imgUrl(imageUrl)
                 .build();
     }
 
-    public static ReviewResponseDto of(Room room,RoomReview roomReview) {
+    public static ReviewResponseDto of(Room room,RoomReview roomReview,String imgUrl) {
         return ReviewResponseDto.builder()
                 .address(room.getRoomAddress().getAddress())
                 .roomType(RoomTypeEnum.getRoomTypeName(room.getRoomStructure().getRoomType()))
                 .totalRate(roomReview.getRoomReviewRate().getTotalRate())
+                .imgUrl(imgUrl)
                 .build();
     }
 }

@@ -24,7 +24,7 @@ public class ReviewRateResponseDto {
     private Double avgHostRate;
     private Double avgFacilityRate;
 
-    public static ReviewRateResponseDto of(RoomReviewRate roomReviewRate, Room room, Long reviewCount) {
+    public static ReviewRateResponseDto of(RoomReviewRate roomReviewRate, Room room, Long reviewCount,String imageUrl) {
         Double avgTotalRate;
         Double avgCleanRate;
         Double avgNoiseRate;
@@ -52,6 +52,7 @@ public class ReviewRateResponseDto {
                 .address(room.getRoomAddress().getAddress())
                 .roomType(RoomTypeEnum.getRoomTypeName(room.getRoomStructure().getRoomType()))
                 .reviewCount(reviewCount)
+                .imageUrl(imageUrl)
                 .avgTotalRate(avgTotalRate)
                 .avgCleanRate(avgCleanRate)
                 .avgNoiseRate(avgNoiseRate)

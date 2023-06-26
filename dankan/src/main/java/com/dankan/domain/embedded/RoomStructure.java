@@ -26,7 +26,7 @@ public class RoomStructure {
     @Column(name = "structure",nullable = false,length = 24,columnDefinition = "varchar")
     private String structure;
 
-    @Column(name = "room_size",nullable = false,columnDefinition = "int")
+    @Column(name = "room_size",nullable = false,columnDefinition = "double")
     private Double roomSize;
 
     @Column(name = "real_room_size",nullable = false,columnDefinition = "double")

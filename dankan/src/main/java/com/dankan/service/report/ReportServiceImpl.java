@@ -39,11 +39,11 @@ public class ReportServiceImpl implements ReportService {
     @Override
     @Transactional
     public RoomReportResponseDto addPostReport(RoomReportRequestDto roomReportRequestDto) {
-        UUID userId = JwtUtil.getMemberId();
+        Long userId = JwtUtil.getMemberId();
         Post post = postRepository.findById(roomReportRequestDto.getPostId())
                 .orElseThrow(() -> new PostNotFoundException(roomReportRequestDto.getPostId()));
 
-        UUID roomId = post.getRoomId();
+        Long roomId = post.getRoomId();
 
         Room room = roomRepository.findById(roomId)
                 .orElseThrow(() -> new RoomNotFoundException(roomId));
@@ -57,7 +57,7 @@ public class ReportServiceImpl implements ReportService {
     @Override
     @Transactional
     public ReviewReportResponseDto addReviewReport(ReviewReportRequestDto reviewReportRequestDto) {
-        UUID userId = JwtUtil.getMemberId();
+        Long userId = JwtUtil.getMemberId();
         RoomReview roomReview = reviewRepository.findById(reviewReportRequestDto.getReviewId())
                 .orElseThrow(() -> new ReviewNotFoundException(reviewReportRequestDto.getReviewId()));
 

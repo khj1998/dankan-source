@@ -79,8 +79,8 @@ public class AdminController {
             }
     )
     @GetMapping("/token/info")
-    public ResponseEntity<TokenResponseDto> getTokenInfo(@RequestParam(value = "id") String id) {
-        return ResponseEntity.ok(tokenService.findByUserId(UUID.fromString(id)));
+    public ResponseEntity<TokenResponseDto> getTokenInfo(@RequestParam(value = "id") Long id) {
+        return ResponseEntity.ok(tokenService.findByUserId(id));
     }
 
     @Operation(summary = "사용자 탈퇴 api", description = "사용자 회원 탈퇴")

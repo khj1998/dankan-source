@@ -66,7 +66,7 @@ public class JwtCustomFilter extends OncePerRequestFilter {
         }
 
         // 유저 식별
-        UUID memberId = JwtUtil.getMemberId();
+        Long memberId = JwtUtil.getMemberId();
 
         Optional<User> member = userRepository.findById(memberId);
 

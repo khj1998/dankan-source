@@ -37,7 +37,7 @@ public class PostController {
             @ApiResponse(responseCode = "404",description = "매물 번호 조회에 실패함")
     })
     @GetMapping
-    public ResponseEntity<PostResponseDto> getPostByRoomId(@RequestParam("roomId") UUID roomId) {
+    public ResponseEntity<PostResponseDto> getPostByRoomId(@RequestParam("roomId") Long roomId) {
         PostResponseDto responseDto = postService.getPostByRoomId(roomId);
         return ResponseEntity.ok(responseDto);
     }
@@ -89,7 +89,7 @@ public class PostController {
             @ApiResponse(responseCode = "404",description = "매매 게시물 상세 조회에 실패함")
     })
     @GetMapping("/detail")
-    public ResponseEntity<PostDetailResponseDto> getPostDetail(@RequestParam("postId") UUID postId) {
+    public ResponseEntity<PostDetailResponseDto> getPostDetail(@RequestParam("postId") Long postId) {
         PostDetailResponseDto responseDto = postService.findPostDetail(postId);
         return ResponseEntity.ok(responseDto);
     }
@@ -156,7 +156,7 @@ public class PostController {
             @ApiResponse(responseCode = "404",description = "매매 게시물 삭제에 실패함")
     })
     @DeleteMapping("/delete")
-    public ResponseEntity deletePost(@RequestParam UUID postId) {
+    public ResponseEntity deletePost(@RequestParam Long postId) {
         postService.deletePost(postId);
         return ResponseEntity.ok().build();
     }

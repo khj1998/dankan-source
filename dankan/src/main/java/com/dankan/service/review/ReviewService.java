@@ -17,5 +17,5 @@ public interface ReviewService {
     List<ReviewResponseDto> findRecentReview(Integer pages);
     List<ReviewResponseDto> findReviewByStar(Integer pages);
 
-    void deleteReview(UUID reviewId);
+    void deleteReview(Long reviewId);
 }

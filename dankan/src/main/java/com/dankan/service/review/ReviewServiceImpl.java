@@ -44,7 +44,7 @@ public class ReviewServiceImpl implements ReviewService {
     @Override
     @Transactional
     public ReviewResponseDto addReview(ReviewRequestDto reviewRequestDto) {
-        UUID userId = JwtUtil.getMemberId();
+        Long userId = JwtUtil.getMemberId();
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new UserIdNotFoundException(userId.toString()));
 
@@ -59,8 +59,8 @@ public class ReviewServiceImpl implements ReviewService {
 
     @Override
     @Transactional
-    public void deleteReview(UUID reviewId) {
-        UUID userId = JwtUtil.getMemberId();
+    public void deleteReview(Long reviewId) {
+        Long userId = JwtUtil.getMemberId();
         RoomReview roomReview = reviewRepository.findByUserIdAndReviewId(userId,reviewId)
                 .orElseThrow(() -> new ReviewNotFoundException(reviewId));
         reviewRepository.delete(roomReview);
@@ -131,7 +131,7 @@ public class ReviewServiceImpl implements ReviewService {
         List<RoomReview> roomReviewList = reviewRepository.findByAddress(reviewDetailRequestDto.getAddress(),pageable);
 
         for (RoomReview roomReview : roomReviewList) {
-            UUID userId = roomReview.getUserId();
+            Long userId = roomReview.getUserId();
             User user = userRepository.findById(userId)
                     .orElseThrow(() -> new UserIdNotFoundException(userId.toString()));
             ReviewDetailResponseDto reviewDetailResponseDto = ReviewDetailResponseDto.of(user,roomReview);

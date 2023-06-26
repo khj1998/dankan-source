@@ -21,7 +21,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
 
 @Slf4j
 public class PostServiceImpl implements PostService {
@@ -40,8 +39,8 @@ public class PostServiceImpl implements PostService {
 
     @Override
     @Transactional(readOnly = true)
-    public PostResponseDto getPostByRoomId(UUID roomId) {
-        UUID userId = JwtUtil.getMemberId();
+    public PostResponseDto getPostByRoomId(Long roomId) {
+        Long userId = JwtUtil.getMemberId();
         Room room = roomRepository.findById(roomId)
                 .orElseThrow(() -> new RoomNotFoundException(roomId));
         Post post = postRepository.findByRoomId(roomId)
@@ -55,7 +54,7 @@ public class PostServiceImpl implements PostService {
     @Override
     @Transactional(readOnly = true)
     public List<PostResponseDto> findRecentPost(Integer pages) {
-        UUID userId = JwtUtil.getMemberId();
+        Long userId = JwtUtil.getMemberId();
         List<PostResponseDto> responseDtoList = new ArrayList<>();
         Sort sort = Sort.by(Sort.Direction.DESC,"updatedAt");
         Pageable pageable = PageRequest.of(pages,5,sort);
@@ -76,7 +75,7 @@ public class PostServiceImpl implements PostService {
     @Transactional(readOnly = true)
     public List<PostResponseDto> findHeartPost(Integer pages) {
         List<PostResponseDto> postResponseDtoList = new ArrayList<>();
-        UUID userId = JwtUtil.getMemberId();
+        Long userId = JwtUtil.getMemberId();
         Pageable pageable = PageRequest.of(pages,5);
         List<PostHeart> postHeartList = postHeartRepository.findByUserId(userId,pageable);
 
@@ -96,7 +95,7 @@ public class PostServiceImpl implements PostService {
     @Transactional(readOnly = true)
     public List<PostResponseDto> findMyPost(Integer pages) {
         List<PostResponseDto> postResponseDtoList = new ArrayList<>();
-        UUID userId = JwtUtil.getMemberId();
+        Long userId = JwtUtil.getMemberId();
         Pageable pageable = PageRequest.of(pages,5);
         List<Post> postList = postRepository.findByUserId(userId,pageable);
 
@@ -113,8 +112,8 @@ public class PostServiceImpl implements PostService {
     // 이미지 가져와야함
     @Override
     @Transactional(readOnly = true)
-    public PostDetailResponseDto findPostDetail(UUID postId) {
-        UUID userId = JwtUtil.getMemberId();
+    public PostDetailResponseDto findPostDetail(Long postId) {
+        Long userId = JwtUtil.getMemberId();
         Integer postHeartCount;
 
         Post post = postRepository.findById(postId)
@@ -132,7 +131,7 @@ public class PostServiceImpl implements PostService {
     @Override
     @Transactional
     public PostCreateResponseDto addPost(PostRoomRequestDto postRoomRequestDto) {
-        UUID userId = JwtUtil.getMemberId();
+        Long userId = JwtUtil.getMemberId();
         Room room = Room.of(postRoomRequestDto,userId);
         roomRepository.save(room);
 
@@ -145,7 +144,7 @@ public class PostServiceImpl implements PostService {
     @Override
     @Transactional
     public PostEditResponseDto editPost(PostRoomRequestDto postRoomRequestDto) {
-        UUID userId = JwtUtil.getMemberId();
+        Long userId = JwtUtil.getMemberId();
         Post post = postRepository.findByPostIdAndUserId(postRoomRequestDto.getPostId(), userId)
                         .orElseThrow(() -> new PostNotFoundException(postRoomRequestDto.getPostId()));
         post.setTitle(postRoomRequestDto.getTitle());
@@ -157,8 +156,8 @@ public class PostServiceImpl implements PostService {
 
     @Override
     @Transactional
-    public void deletePost(UUID postId) {
-        UUID userId = JwtUtil.getMemberId();
+    public void deletePost(Long postId) {
+        Long userId = JwtUtil.getMemberId();
         Post post = postRepository.findByPostIdAndUserId(postId,userId)
                         .orElseThrow(() -> new PostNotFoundException(postId));
         postRepository.delete(post);
@@ -167,7 +166,7 @@ public class PostServiceImpl implements PostService {
     @Override
     @Transactional
     public PostHeartResponseDto heartPost(PostHeartRequestDto postHeartRequestDto) {
-        UUID userId = JwtUtil.getMemberId();
+        Long userId = JwtUtil.getMemberId();
         PostHeart postHeart = postHeartRepository.findByUserIdAndPostId(userId,postHeartRequestDto.getPostId());
 
         if (postHeart == null) {

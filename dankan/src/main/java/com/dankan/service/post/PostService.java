@@ -8,13 +8,13 @@ import java.util.List;
 import java.util.UUID;
 
 public interface PostService {
-    PostResponseDto getPostByRoomId(UUID roomId);
+    PostResponseDto getPostByRoomId(Long roomId);
     PostCreateResponseDto addPost(PostRoomRequestDto postRoomRequestDto);
     PostEditResponseDto editPost(PostRoomRequestDto postRoomRequestDto);
     List<PostResponseDto> findRecentPost(Integer pages);
     List<PostResponseDto> findHeartPost(Integer pages);
     List<PostResponseDto> findMyPost(Integer pages);
-    PostDetailResponseDto findPostDetail(UUID postId);
-    void deletePost(UUID postId);
+    PostDetailResponseDto findPostDetail(Long postId);
+    void deletePost(Long postId);
     PostHeartResponseDto heartPost(PostHeartRequestDto postHeartRequestDto);
 }

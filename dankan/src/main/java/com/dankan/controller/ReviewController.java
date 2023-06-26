@@ -109,7 +109,7 @@ public class ReviewController {
             @ApiResponse(responseCode = "404",description = "매물 후기 삭제에 실패함")
     })
     @DeleteMapping("/remove")
-    public ResponseEntity removeReview(@RequestParam("reviewId") UUID reviewId) {
+    public ResponseEntity removeReview(@RequestParam("reviewId") Long reviewId) {
         reviewService.deleteReview(reviewId);
         return ResponseEntity.ok().build();
     }

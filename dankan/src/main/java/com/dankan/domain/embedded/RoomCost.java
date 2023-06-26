@@ -12,13 +12,6 @@ import javax.persistence.Embeddable;
 @NoArgsConstructor
 @AllArgsConstructor
 public class RoomCost {
-
-    @Column(name = "price_type",nullable = false,columnDefinition = "int")
-    private Long priceType;
-
-    @Column(name ="deal_type",nullable = false,columnDefinition = "tinyint")
-    private Boolean dealType;
-
     @Column(name = "deposit",nullable = false,columnDefinition = "int")
     private Long deposit;
 
@@ -27,7 +20,4 @@ public class RoomCost {
 
     @Column(name = "management_cost",nullable = false,columnDefinition = "double")
     private Double managementCost;
-
-    @Column(name = "managementType",nullable = false,length = 64,columnDefinition = "varchar")
-    private String managementType;
 }

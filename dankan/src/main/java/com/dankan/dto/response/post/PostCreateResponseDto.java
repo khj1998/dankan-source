@@ -58,14 +58,6 @@ public class PostCreateResponseDto {
     public static PostCreateResponseDto of(Post post, Room room) {
         LocalDate currentDate = LocalDate.now();
 
-        String dealType;
-
-        if (room.getRoomCost().getDealType()) {
-            dealType = "양도";
-        } else {
-            dealType = "단기임대";
-        }
-
         return PostCreateResponseDto.builder()
                 .postId(post.getPostId())
                 .updatedAt(currentDate)
@@ -74,21 +66,13 @@ public class PostCreateResponseDto {
                 .isHearted(false)
 
                 .roomId(room.getRoomId()) // 매물 번호
-                .dealType(dealType)
-                .roomType(RoomTypeEnum.getRoomTypeName(room.getRoomStructure().getRoomType()))
-                .elevators(room.getRoomOption().getElevatorOption())
-                .priceType(PriceTypeEnum.getPriceTypeName(room.getRoomCost().getPriceType()))
                 .deposit(room.getRoomCost().getDeposit())
                 .price(room.getRoomCost().getPrice())
                 .managementCost(room.getRoomCost().getManagementCost())
-                .managementType(room.getRoomCost().getManagementType())
                 .totalFloor(room.getRoomStructure().getTotalFloor())
                 .floor(room.getRoomStructure().getFloor())
-                .structure(room.getRoomStructure().getStructure())
                 .roomSize(room.getRoomStructure().getRoomSize())
                 .realRoomSize(room.getRoomStructure().getRealRoomSize())
-                .options(room.getRoomOption().getRoomOptions())
-                .etcOptions(room.getRoomOption().getRoomEtcOptions())
                 .isDiscussion(room.getRoomDiscussion().getIsDiscussion())
                 .moveInStart(room.getRoomDiscussion().getMoveInStart())
                 .moveInEnd(room.getRoomDiscussion().getMoveInEnd())

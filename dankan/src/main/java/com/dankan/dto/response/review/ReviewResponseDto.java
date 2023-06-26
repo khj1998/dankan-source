@@ -17,7 +17,7 @@ import java.util.UUID;
 @Builder
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class ReviewResponseDto {
-    private UUID reviewId;
+    private Long reviewId;
     private Date updatedAt;
     private String nickName;
     private String univ;
@@ -42,25 +42,16 @@ public class ReviewResponseDto {
                 .updatedAt(currentDate)
                 .nickName(user.getNickname())
                 .content(roomReview.getContent())
-                .totalRate(roomReview.getRoomReviewRate().getTotalRate())
-                .cleanRate(roomReview.getRoomReviewRate().getCleanRate())
-                .noiseRate(roomReview.getRoomReviewRate().getNoiseRate())
-                .accessRate(roomReview.getRoomReviewRate().getAccessRate())
-                .hostRate(roomReview.getRoomReviewRate().getHostRate())
-                .facilityRate(roomReview.getRoomReviewRate().getFacilityRate())
                 .startedAt(roomReview.getResidencePeriod().getStartedAt())
                 .endAt(roomReview.getResidencePeriod().getEndAt())
                 .address(roomReview.getAddress())
                 .addressDetail(roomReview.getAddressDetail())
-                .roomType(RoomTypeEnum.getRoomTypeName(room.getRoomStructure().getRoomType()))
                 .build();
     }
 
     public static ReviewResponseDto of(Room room,RoomReview roomReview) {
         return ReviewResponseDto.builder()
                 .address(room.getRoomAddress().getAddress())
-                .roomType(RoomTypeEnum.getRoomTypeName(room.getRoomStructure().getRoomType()))
-                .totalRate(roomReview.getRoomReviewRate().getTotalRate())
                 .build();
     }
 }

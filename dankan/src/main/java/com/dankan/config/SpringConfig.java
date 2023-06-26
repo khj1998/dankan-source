@@ -37,7 +37,6 @@ public class SpringConfig {
     private final PostRepository postRepository;
     private final AmazonS3 amazonS3Client;
     private final RoomRepository roomRepository;
-    private final RoomImageRepository roomImageRepository;
     private final PostHeartRepository postHeartRepository;
     private final PostReportRepository postReportRepository;
     private final ReviewRepository reviewRepository;
@@ -49,7 +48,6 @@ public class SpringConfig {
     public SpringConfig(final UserRepository userRepository, final AmazonS3 amazonS3Client, final TokenRepository tokenRepository
                         , final PostRepository postRepository
                         , final RoomRepository roomRepository
-                        , final RoomImageRepository roomImageRepository
                         , final PostHeartRepository postHeartRepository
                         , final PostReportRepository postReportRepository
                         , final ReviewRepository reviewRepository
@@ -59,7 +57,6 @@ public class SpringConfig {
         this.tokenRepository = tokenRepository;
         this.postRepository = postRepository;
         this.roomRepository = roomRepository;
-        this.roomImageRepository = roomImageRepository;
         this.postHeartRepository = postHeartRepository;
         this.postReportRepository = postReportRepository;
         this.reviewRepository = reviewRepository;
@@ -91,7 +88,7 @@ public class SpringConfig {
 
     @Bean
     public RoomService roomService() {
-        return new RoomServiceImpl(roomRepository,roomImageRepository);
+        return new RoomServiceImpl(roomRepository);
     }
 
     @Bean

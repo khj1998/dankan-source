@@ -3,7 +3,6 @@ package com.dankan.domain;
 import com.dankan.domain.embedded.RoomAddress;
 import com.dankan.domain.embedded.RoomCost;
 import com.dankan.domain.embedded.RoomDiscussion;
-import com.dankan.domain.embedded.RoomOption;
 import com.dankan.domain.embedded.RoomStructure;
 import com.dankan.dto.request.post.PostRoomRequestDto;
 import com.dankan.enum_converter.PriceTypeEnum;
@@ -30,14 +29,14 @@ public class Room {
     @Column(name = "user_id",nullable = false, columnDefinition = "bigint")
     private Long userId;
 
+    @Column(name = "elevator_option",nullable = false,columnDefinition = "tinyint")
+    private Long elevatorOption;
+
     @Embedded
     private RoomCost roomCost;
 
     @Embedded
     private RoomStructure roomStructure;
-
-    @Embedded
-    private RoomOption roomOption;
 
     @Embedded
     private RoomDiscussion roomDiscussion;
@@ -49,27 +48,16 @@ public class Room {
         String[] addressParts = postRoomRequestDto.getAddress().split(" ");
 
         RoomCost cost = RoomCost.builder()
-                .dealType(postRoomRequestDto.getDealType())
-                .priceType(PriceTypeEnum.getPriceTypeValue(postRoomRequestDto.getPriceType()))
                 .deposit(postRoomRequestDto.getDeposit())
                 .price(postRoomRequestDto.getPrice())
                 .managementCost(postRoomRequestDto.getManagementCost())
-                .managementType(postRoomRequestDto.getManagementType())
                 .build();
 
         RoomStructure structure = RoomStructure.builder()
-                .roomType(RoomTypeEnum.getRoomTypeValue(postRoomRequestDto.getRoomType()))
                 .totalFloor(postRoomRequestDto.getTotalFloor())
                 .floor(postRoomRequestDto.getFloor())
-                .structure(postRoomRequestDto.getStructure())
                 .roomSize(postRoomRequestDto.getRoomSize())
                 .realRoomSize(postRoomRequestDto.getRealRoomSize())
-                .build();
-
-        RoomOption option = RoomOption.builder()
-                .elevatorOption(postRoomRequestDto.getElevators())
-                .roomOptions(postRoomRequestDto.getOptions())
-                .roomEtcOptions(postRoomRequestDto.getEtcOptions())
                 .build();
 
         RoomDiscussion discussion = RoomDiscussion.builder()
@@ -93,7 +81,7 @@ public class Room {
                 .userId(userId)
                 .roomCost(cost)
                 .roomStructure(structure)
-                .roomOption(option)
+                .elevatorOption(postRoomRequestDto.getElevators())
                 .roomDiscussion(discussion)
                 .roomAddress(address)
                 .build();

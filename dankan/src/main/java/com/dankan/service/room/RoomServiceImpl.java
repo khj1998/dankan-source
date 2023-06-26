@@ -12,12 +12,9 @@ import java.util.List;
 @Transactional
 public class RoomServiceImpl implements RoomService {
     private final RoomRepository roomRepository;
-    private final RoomImageRepository roomImageRepository;
 
-    public RoomServiceImpl(final RoomRepository roomRepository,
-                           final RoomImageRepository roomImageRepository) {
+    public RoomServiceImpl(final RoomRepository roomRepository) {
         this.roomRepository = roomRepository;
-        this.roomImageRepository = roomImageRepository;
     }
 
     @Override

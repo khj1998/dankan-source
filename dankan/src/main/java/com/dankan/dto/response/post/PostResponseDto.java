@@ -31,23 +31,13 @@ public class PostResponseDto {
 
     public static PostResponseDto of(Post post, Room room, PostHeart postHeart) {
         Boolean isHearted = postHeart!=null;
-        String dealType;
-
-        if (room.getRoomCost().getDealType()) {
-            dealType = "양도";
-        } else {
-            dealType = "단기임대";
-        }
 
         return PostResponseDto.builder()
                 .postId(post.getPostId())
-                .dealType(dealType)
                 .isHearted(isHearted)
-                .priceType(PriceTypeEnum.getPriceTypeName(room.getRoomCost().getPriceType()))
                 .price(room.getRoomCost().getPrice())
                 .deposit(room.getRoomCost().getDeposit())
                 .address(room.getRoomAddress().getAddress())
-                .structure(room.getRoomStructure().getStructure())
                 .floor(room.getRoomStructure().getFloor())
                 .roomSize(room.getRoomStructure().getRoomSize())
                 .roomRealSize(room.getRoomStructure().getRealRoomSize())
@@ -55,22 +45,12 @@ public class PostResponseDto {
     }
 
     public static PostResponseDto of(Post post,Room room) {
-        String dealType;
-
-        if (room.getRoomCost().getDealType()) {
-            dealType = "양도";
-        } else {
-            dealType = "단기임대";
-        }
 
         return PostResponseDto.builder()
                 .postId(post.getPostId())
-                .dealType(dealType)
-                .priceType(PriceTypeEnum.getPriceTypeName(room.getRoomCost().getPriceType()))
                 .price(room.getRoomCost().getPrice())
                 .deposit(room.getRoomCost().getDeposit())
                 .address(room.getRoomAddress().getAddress())
-                .structure(room.getRoomStructure().getStructure())
                 .floor(room.getRoomStructure().getFloor())
                 .roomSize(room.getRoomStructure().getRoomSize())
                 .roomRealSize(room.getRoomStructure().getRealRoomSize())

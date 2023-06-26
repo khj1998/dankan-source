@@ -43,9 +43,6 @@ public class RoomReview {
     @Embedded
     private ResidencePeriod residencePeriod;
 
-    @Embedded
-    private RoomReviewRate roomReviewRate;
-
     @Column(name = "address",nullable = false,length = 100,columnDefinition = "varchar")
     private String address;
 
@@ -58,21 +55,11 @@ public class RoomReview {
                 .endAt(reviewRequestDto.getEndAt())
                 .build();
 
-        RoomReviewRate reviewRate = RoomReviewRate.builder()
-                .totalRate(reviewRequestDto.getTotalRate())
-                .accessRate(SatisfyEnum.getSatisfyValue(reviewRequestDto.getAccessRate()))
-                .cleanRate(SatisfyEnum.getSatisfyValue(reviewRequestDto.getCleanRate()))
-                .hostRate(SatisfyEnum.getSatisfyValue(reviewRequestDto.getHostRate()))
-                .facilityRate(SatisfyEnum.getSatisfyValue(reviewRequestDto.getFacilityRate()))
-                .noiseRate(SatisfyEnum.getSatisfyValue(reviewRequestDto.getNoiseRate()))
-                .build();
-
         return RoomReview.builder()
                 .userId(user.getUserId())
                 .roomId(roomId)
                 .content(reviewRequestDto.getContent())
                 .residencePeriod(period)
-                .roomReviewRate(reviewRate)
                 .address(reviewRequestDto.getAddress())
                 .addressDetail(reviewRequestDto.getAddressDetail())
                 .build();

@@ -1,17 +1,13 @@
 package com.dankan.domain;
 
 import com.dankan.domain.embedded.ResidencePeriod;
-import com.dankan.domain.embedded.RoomReviewRate;
 import com.dankan.dto.request.review.ReviewRequestDto;
-import com.dankan.enum_converter.SatisfyEnum;
 import io.swagger.annotations.ApiModel;
 import lombok.*;
-import org.hibernate.annotations.Type;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import javax.persistence.*;
 import java.util.Date;
-import java.util.UUID;
 
 @ApiModel(value = "매물 후기 엔티티")
 @Getter

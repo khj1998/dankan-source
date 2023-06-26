@@ -86,6 +86,7 @@ public class UserServiceImpl implements UserService {
                 .build();
 
         User user = User.builder()
+                .userId(System.currentTimeMillis())
                 .authorities(Arrays.asList(authority))
                 .email(oauthLoginResponseDto.getEmail())
                 .nickname(oauthLoginResponseDto.getNickname())

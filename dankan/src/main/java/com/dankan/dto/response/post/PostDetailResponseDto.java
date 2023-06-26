@@ -18,7 +18,7 @@ import java.util.UUID;
 @Builder
 public class PostDetailResponseDto {
     // post 응답
-    private UUID postId;
+    private Long postId;
     private Date updatedAt;
     private String title;
     private String content;
@@ -26,7 +26,7 @@ public class PostDetailResponseDto {
     private Integer heartCount;
 
     // room 응답
-    private UUID itemNumber;
+    private Long itemNumber;
     private String address;
     private String addressDetails;
     private String dealType;

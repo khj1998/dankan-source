@@ -1,4 +1,4 @@
-package com.dankan.dto.resquest.report;
+package com.dankan.dto.request.report;
 
 import lombok.Getter;
 
@@ -6,6 +6,6 @@ import java.util.UUID;
 
 @Getter
 public class ReviewReportRequestDto {
-    private UUID reviewId;
+    private Long reviewId;
     private String reportType;
 }

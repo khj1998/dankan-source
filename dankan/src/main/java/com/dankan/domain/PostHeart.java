@@ -2,11 +2,9 @@ package com.dankan.domain;
 
 import io.swagger.annotations.ApiModel;
 import lombok.*;
-import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.Type;
 
 import javax.persistence.*;
-import java.util.UUID;
 
 @ApiModel(value = "찜한 게시물 엔티티")
 @Getter
@@ -18,21 +16,17 @@ import java.util.UUID;
 @Table(name = "post_heart")
 public class PostHeart {
     @Id
-    @GeneratedValue(generator = "uuid2")
-    @GenericGenerator(name = "uuid2", strategy = "uuid2")
-    @Column(name = "post_heart_id",nullable = false,length = 36,columnDefinition = "varchar")
-    @Type(type = "uuid-char")
-    private UUID postHeartId;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "post_heart_id", columnDefinition = "int")
+    private Long postHeartId;
 
-    @Column(name = "post_id",nullable = false,length = 36,columnDefinition = "varchar")
-    @Type(type = "uuid-char")
-    private UUID postId;
+    @Column(name = "post_id",nullable = false, columnDefinition = "int")
+    private Long postId;
 
-    @Column(name = "user_id",nullable = false,length = 36,columnDefinition = "varchar")
-    @Type(type = "uuid-char")
-    private UUID userId;
+    @Column(name = "user_id",nullable = false, columnDefinition = "bigint")
+    private Long userId;
 
-    public static PostHeart of(UUID postId, UUID userId) {
+    public static PostHeart of(Long postId, Long userId) {
         return PostHeart.builder()
                 .postId(postId)
                 .userId(userId)

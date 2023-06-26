@@ -17,14 +17,14 @@ import java.util.UUID;
 @Builder
 public class PostCreateResponseDto {
     // post 응답
-    private UUID postId;
+    private Long postId;
     private LocalDate updatedAt;
     private String title;
     private String content;
     private Boolean isHearted;
 
     // room 응답
-    private UUID roomId;
+    private Long roomId;
     private String address;
     private String addressDetails;
     private String dealType;

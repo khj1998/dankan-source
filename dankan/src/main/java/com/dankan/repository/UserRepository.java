@@ -12,11 +12,11 @@ import java.util.Optional;
 import java.util.UUID;
 
 @Repository
-public interface UserRepository extends JpaRepository<User, UUID> {
+public interface UserRepository extends JpaRepository<User, Long> {
     @Query(value = "select new com.dankan.dto.response.user.UserResponseDto(user.userId, user.email, user .nickname, user.gender, user.phoneNum, " +
             "user.profileImg, user.univEmail) from User user " +
             "where user.userId = :id")
-    public Optional<UserResponseDto> findByUserId(@Param("id") UUID id);
+    public Optional<UserResponseDto> findByUserId(@Param("id") Long id);
 
     @Query(value = "select new com.dankan.dto.response.user.UserResponseDto(user.userId, user.email, user .nickname, user.gender, user.phoneNum, " +
             "user.profileImg, user.univEmail) from User user " +
@@ -29,7 +29,7 @@ public interface UserRepository extends JpaRepository<User, UUID> {
 
     public Optional<User> findByPhoneNum(String phoneNum);
 
-    public Optional<User> findUserByUserId(UUID uuid);
+    public Optional<User> findUserByUserId(Long uuid);
 
     @Query(value = "select new com.dankan.dto.response.user.UserResponseDto(user.userId, user.email, user .nickname, user.gender, user.phoneNum, " +
             "user.profileImg, user.univEmail) from User user")

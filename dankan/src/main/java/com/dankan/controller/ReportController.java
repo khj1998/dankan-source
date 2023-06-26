@@ -2,8 +2,8 @@ package com.dankan.controller;
 
 import com.dankan.dto.response.report.ReviewReportResponseDto;
 import com.dankan.dto.response.report.RoomReportResponseDto;
-import com.dankan.dto.resquest.report.ReviewReportRequestDto;
-import com.dankan.dto.resquest.report.RoomReportRequestDto;
+import com.dankan.dto.request.report.ReviewReportRequestDto;
+import com.dankan.dto.request.report.RoomReportRequestDto;
 import com.dankan.service.report.ReportService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;

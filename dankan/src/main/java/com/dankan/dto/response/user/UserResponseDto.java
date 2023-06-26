@@ -13,7 +13,7 @@ import java.util.UUID;
 @AllArgsConstructor
 @Builder
 public class UserResponseDto {
-    private UUID userId;
+    private Long userId;
     private String email;
     private String nickname;
     private Boolean gender;

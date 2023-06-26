@@ -1,7 +1,6 @@
 package com.dankan.service.room;
 
 import com.dankan.dto.response.room.RoomImageResponseDto;
-import com.dankan.repository.RoomImageRepository;
 import com.dankan.repository.RoomRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.transaction.annotation.Transactional;

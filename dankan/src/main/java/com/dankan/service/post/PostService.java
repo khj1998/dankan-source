@@ -1,8 +1,8 @@
 package com.dankan.service.post;
 
 import com.dankan.dto.response.post.*;
-import com.dankan.dto.resquest.post.PostHeartRequestDto;
-import com.dankan.dto.resquest.post.PostRoomRequestDto;
+import com.dankan.dto.request.post.PostHeartRequestDto;
+import com.dankan.dto.request.post.PostRoomRequestDto;
 
 import java.util.List;
 import java.util.UUID;

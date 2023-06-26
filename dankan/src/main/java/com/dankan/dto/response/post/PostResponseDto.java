@@ -17,7 +17,7 @@ import java.util.UUID;
 @Builder
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class PostResponseDto {
-    private UUID postId;
+    private Long postId;
     private String dealType;
     private Boolean isHearted;
     private String priceType;

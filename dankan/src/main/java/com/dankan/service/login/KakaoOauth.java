@@ -70,7 +70,7 @@ public class KakaoOauth implements SocialOauth {
         return OauthLoginResponseDto.builder()
                 .email(jsonObject.get("email").getAsString())
                 .nickname(jsonObject.get("nickname").getAsString())
-                .profilImg(jsonObject.get("picture").getAsString())
+                .profileImg(jsonObject.get("picture").getAsString())
                 .build();
     }
 

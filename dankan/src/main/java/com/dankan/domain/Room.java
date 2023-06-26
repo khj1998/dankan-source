@@ -5,16 +5,13 @@ import com.dankan.domain.embedded.RoomCost;
 import com.dankan.domain.embedded.RoomDiscussion;
 import com.dankan.domain.embedded.RoomOption;
 import com.dankan.domain.embedded.RoomStructure;
-import com.dankan.dto.resquest.post.PostRoomRequestDto;
+import com.dankan.dto.request.post.PostRoomRequestDto;
 import com.dankan.enum_converter.PriceTypeEnum;
 import com.dankan.enum_converter.RoomTypeEnum;
 import io.swagger.annotations.ApiModel;
 import lombok.*;
-import org.hibernate.annotations.GenericGenerator;
-import org.hibernate.annotations.Type;
 
 import javax.persistence.*;
-import java.util.UUID;
 
 @ApiModel(value = "매물 엔티티")
 @Getter
@@ -26,15 +23,12 @@ import java.util.UUID;
 public class Room {
 
     @Id
-    @GeneratedValue(generator = "uuid2")
-    @GenericGenerator(name = "uuid2", strategy = "uuid2")
-    @Column(name = "room_id",nullable = false,length = 36,columnDefinition = "varchar")
-    @Type(type = "uuid-char")
-    private UUID roomId;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "room_id", columnDefinition = "int")
+    private Long roomId;
 
-    @Column(name = "user_id",nullable = false,length = 36,columnDefinition = "varchar")
-    @Type(type = "uuid-char")
-    private UUID userId;
+    @Column(name = "user_id",nullable = false, columnDefinition = "bigint")
+    private Long userId;
 
     @Embedded
     private RoomCost roomCost;
@@ -51,7 +45,7 @@ public class Room {
     @Embedded
     private RoomAddress roomAddress;
 
-    public static Room of(PostRoomRequestDto postRoomRequestDto, UUID userId) {
+    public static Room of(PostRoomRequestDto postRoomRequestDto, Long userId) {
         String[] addressParts = postRoomRequestDto.getAddress().split(" ");
 
         RoomCost cost = RoomCost.builder()

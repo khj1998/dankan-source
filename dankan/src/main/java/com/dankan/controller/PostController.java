@@ -2,8 +2,8 @@ package com.dankan.controller;
 
 import com.dankan.dto.response.post.*;
 import com.dankan.dto.response.room.RoomImageResponseDto;
-import com.dankan.dto.resquest.post.PostHeartRequestDto;
-import com.dankan.dto.resquest.post.PostRoomRequestDto;
+import com.dankan.dto.request.post.PostHeartRequestDto;
+import com.dankan.dto.request.post.PostRoomRequestDto;
 import com.dankan.service.post.PostService;
 import com.dankan.service.room.RoomService;
 import io.swagger.annotations.Api;

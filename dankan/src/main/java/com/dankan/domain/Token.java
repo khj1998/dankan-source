@@ -2,12 +2,9 @@ package com.dankan.domain;
 
 import com.dankan.util.JwtUtil;
 import lombok.*;
-import org.hibernate.annotations.GenericGenerator;
-import org.hibernate.annotations.Type;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
-import java.util.UUID;
 
 @Getter
 @Setter
@@ -18,9 +15,8 @@ import java.util.UUID;
 @Builder
 public class Token {
     @Id
-    @Column(name = "user_id",nullable = false,length = 36,columnDefinition = "varchar")
-    @Type(type = "uuid-char")
-    private UUID userId;
+    @Column(name = "user_id",nullable = false, columnDefinition = "bigint")
+    private Long userId;
 
     @Column(name = "access_token", columnDefinition = "mediumtext")
     private String accessToken;

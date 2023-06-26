@@ -11,7 +11,7 @@ import java.util.UUID;
 @AllArgsConstructor
 @Builder
 public class PostEditResponseDto {
-    private UUID postId;
+    private Long postId;
     private String title;
     private String content;
 

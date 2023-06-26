@@ -4,9 +4,8 @@ package com.dankan.service.review;
 import com.dankan.dto.response.review.ReviewDetailResponseDto;
 import com.dankan.dto.response.review.ReviewRateResponseDto;
 import com.dankan.dto.response.review.ReviewResponseDto;
-import com.dankan.dto.resquest.review.ReviewDetailRequestDto;
-import com.dankan.dto.resquest.review.ReviewRequestDto;
-import org.springframework.data.domain.Pageable;
+import com.dankan.dto.request.review.ReviewDetailRequestDto;
+import com.dankan.dto.request.review.ReviewRequestDto;
 
 import java.util.List;
 import java.util.UUID;

@@ -1,4 +1,4 @@
-package com.dankan.dto.resquest.room;
+package com.dankan.dto.request.room;
 
 import lombok.Getter;
 

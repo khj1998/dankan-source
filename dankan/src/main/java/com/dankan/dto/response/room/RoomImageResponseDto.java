@@ -9,6 +9,6 @@ import java.util.UUID;
 @Getter
 @Setter
 public class RoomImageResponseDto {
-    private UUID roomId;
+    private Long roomId;
     private List<String> image;
 }

@@ -3,13 +3,10 @@ package com.dankan.dto.response.review;
 import com.dankan.domain.Room;
 import com.dankan.domain.RoomReview;
 import com.dankan.domain.User;
-import com.dankan.domain.embedded.RoomReviewRate;
-import com.dankan.dto.resquest.review.ReviewRequestDto;
 import com.dankan.enum_converter.RoomTypeEnum;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.*;
 
-import java.time.LocalDate;
 import java.util.Date;
 import java.util.UUID;
 

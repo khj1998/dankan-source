@@ -21,9 +21,8 @@ public class User {
     @Column(name = "user_id",nullable = false, columnDefinition = "bigint")
     private Long userId;
 
-    @CreationTimestamp
-    @Column(nullable = false,columnDefinition = "date")
-    private LocalDate regDate;
+    @Column(name = "date_id", nullable = false, columnDefinition = "int")
+    private Long dateId;
 
     @Column(nullable = false, unique = true,length = 16,columnDefinition = "varchar")
     private String nickname;

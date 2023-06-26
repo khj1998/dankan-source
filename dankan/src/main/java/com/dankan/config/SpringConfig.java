@@ -44,6 +44,7 @@ public class SpringConfig {
     private final UnivRepository univRepository;
     private final JavaMailSender javaMailSender;
     private final String mail;
+    private final DateLogRepository dateLogRepository;
 
     public SpringConfig(final UserRepository userRepository, final AmazonS3 amazonS3Client, final TokenRepository tokenRepository
                         , final PostRepository postRepository
@@ -51,7 +52,7 @@ public class SpringConfig {
                         , final PostHeartRepository postHeartRepository
                         , final PostReportRepository postReportRepository
                         , final ReviewRepository reviewRepository
-                        , final ReviewReportRepository reviewReportRepository, final UnivRepository univRepository, final JavaMailSender javaMailSender, @Value("${mail.id}") String mail) {
+                        , final ReviewReportRepository reviewReportRepository, final UnivRepository univRepository, final JavaMailSender javaMailSender, @Value("${mail.id}") String mail, final DateLogRepository dateLogRepository) {
         this.userRepository = userRepository;
         this.amazonS3Client = amazonS3Client;
         this.tokenRepository = tokenRepository;
@@ -64,11 +65,12 @@ public class SpringConfig {
         this.univRepository = univRepository;
         this.javaMailSender = javaMailSender;
         this.mail = mail;
+        this.dateLogRepository = dateLogRepository;
     }
 
     @Bean
     public UserService userService() {
-        return new UserServiceImpl(userRepository,tokenRepository);
+        return new UserServiceImpl(userRepository,tokenRepository, dateLogRepository);
     }
 
     @Bean

@@ -3,6 +3,7 @@ package com.dankan.domain;
 import io.swagger.annotations.ApiModel;
 import lombok.*;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
@@ -14,9 +15,10 @@ import javax.persistence.Table;
 @AllArgsConstructor
 @Builder
 @Entity
-@Table(name = "option")
-public class Option {
+@Table(name = "options")
+public class Options {
     @Id
-    private String key;
+    @Column(name = "code_key",length = 16,columnDefinition = "varchar")
+    private String codeKey;
     private Long value;
 }

@@ -18,8 +18,8 @@ public class RoomDiscussion {
     private Long isDiscussion;
 
     @Column(name = "move_in_start",nullable = false,columnDefinition = "date")
-    private Date moveInStart;
+    private LocalDate moveInStart;
 
     @Column(name = "move_in_end",nullable = false,columnDefinition = "date")
-    private Date moveInEnd;
+    private LocalDate moveInEnd;
 }

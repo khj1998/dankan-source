@@ -7,6 +7,7 @@ import com.dankan.enum_converter.RoomTypeEnum;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.*;
 
+import java.time.LocalDate;
 import java.util.Date;
 import java.util.UUID;
 
@@ -18,7 +19,7 @@ import java.util.UUID;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class ReviewResponseDto {
     private Long reviewId;
-    private Date updatedAt;
+    private LocalDate updatedAt;
     private String nickName;
     private String univ;
     private String content;
@@ -28,18 +29,17 @@ public class ReviewResponseDto {
     private Long accessRate;
     private Long hostRate;
     private Long facilityRate;
-    private Date startedAt;
-    private Date endAt;
+    private LocalDate startedAt;
+    private LocalDate endAt;
     private String address;
     private String addressDetail;
     private String roomType;
 
     public static ReviewResponseDto of(User user, RoomReview roomReview, Room room) {
-        Date currentDate = new Date();
 
         return ReviewResponseDto.builder()
                 .reviewId(roomReview.getReviewId())
-                .updatedAt(currentDate)
+                .updatedAt(LocalDate.now())
                 .nickName(user.getNickname())
                 .content(roomReview.getContent())
                 .startedAt(roomReview.getResidencePeriod().getStartedAt())

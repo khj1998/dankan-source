@@ -7,11 +7,11 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 
 @Getter
 @ResponseStatus(HttpStatus.BAD_REQUEST)
-public class InvalidRoomTypeException extends RuntimeException {
+public class InvalidStructureTypeException extends RuntimeException {
     private String message;
     private ErrorCode code;
 
-    public InvalidRoomTypeException(String inputValue) {
+    public InvalidStructureTypeException(String inputValue) {
         super(inputValue);
         this.message = inputValue;
     }

@@ -38,6 +38,6 @@ public class PostRoomRequestDto {
     private String options;
     private String etcOptions;
     private Long isDiscussion; //입주기간 협의 가능여부
-    private Date moveInStart; //입주 가능 시작일
-    private Date moveInEnd; //입주 가능 마지막 일
+    private LocalDate moveInStart; //입주 가능 시작일
+    private LocalDate moveInEnd; //입주 가능 마지막 일
 }

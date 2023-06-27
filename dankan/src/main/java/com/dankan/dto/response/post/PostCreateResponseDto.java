@@ -1,14 +1,12 @@
 package com.dankan.dto.response.post;
 
+import com.dankan.domain.Options;
 import com.dankan.domain.Post;
 import com.dankan.domain.Room;
-import com.dankan.enum_converter.PriceTypeEnum;
-import com.dankan.enum_converter.RoomTypeEnum;
+import com.dankan.enum_converter.*;
 import lombok.*;
 
 import java.time.LocalDate;
-import java.util.Date;
-import java.util.UUID;
 
 @Setter
 @Getter
@@ -43,8 +41,8 @@ public class PostCreateResponseDto {
     private String options;
     private String etcOptions;
     private Long isDiscussion; //입주기간 협의 가능여부
-    private Date moveInStart; //입주 가능 시작일
-    private Date moveInEnd; //입주 가능 마지막 일
+    private LocalDate moveInStart; //입주 가능 시작일
+    private LocalDate moveInEnd; //입주 가능 마지막 일
 
     // room_address 응답
     //private UUID roomId;
@@ -57,6 +55,43 @@ public class PostCreateResponseDto {
 
     public static PostCreateResponseDto of(Post post, Room room) {
         LocalDate currentDate = LocalDate.now();
+        String dealType = "";
+        String roomType = "";
+        String priceType = "";
+        String managementType = "";
+        String structure = "";
+        String options = "";
+        String etcOptions = "";
+
+        for (Options option : room.getOptionsList()) {
+            if (option.getCodeKey().equals("DealType")) {
+                dealType = option.getValue().equals(0L) ? "단기임대" : "양도";
+            }
+
+            if (option.getCodeKey().equals("RoomType")) {
+                roomType = RoomTypeEnum.getRoomTypeName(option.getValue());
+            }
+
+            if (option.getCodeKey().equals("PriceType")) {
+                priceType = PriceTypeEnum.getPriceTypeName(option.getValue());
+            }
+
+            if (option.getCodeKey().equals("ManagementType")) {
+                managementType += ManagementTypeEnum.getManagementTypeName(option.getValue());
+            }
+
+            if (option.getCodeKey().equals("Structure")) {
+                structure = StructureTypeEnum.getStructureTypeName(option.getValue());
+            }
+
+            if (option.getCodeKey().equals("Option")) {
+                options += OptionTypeEnum.getOptionTypeName(option.getValue());
+            }
+
+            if (option.getCodeKey().equals("EtcOption")) {
+                etcOptions += EtcOptionTypeEnum.getEtcOptionTypeName(option.getValue());
+            }
+        }
 
         return PostCreateResponseDto.builder()
                 .postId(post.getPostId())
@@ -66,6 +101,13 @@ public class PostCreateResponseDto {
                 .isHearted(false)
 
                 .roomId(room.getRoomId()) // 매물 번호
+                .dealType(dealType)
+                .roomType(roomType)
+                .priceType(priceType)
+                .managementType(managementType)
+                .structure(structure)
+                .options(options)
+                .etcOptions(etcOptions)
                 .deposit(room.getRoomCost().getDeposit())
                 .price(room.getRoomCost().getPrice())
                 .managementCost(room.getRoomCost().getManagementCost())

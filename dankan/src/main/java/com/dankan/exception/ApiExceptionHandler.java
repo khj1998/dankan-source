@@ -4,10 +4,7 @@ import com.dankan.exception.post.PostNotFoundException;
 import com.dankan.exception.review.ReviewNotFoundException;
 import com.dankan.exception.room.RoomNotFoundException;
 import com.dankan.exception.token.TokenNotFoundException;
-import com.dankan.exception.type.InvalidPriceTypeException;
-import com.dankan.exception.type.InvalidRoomImageTypeException;
-import com.dankan.exception.type.InvalidRoomTypeException;
-import com.dankan.exception.type.InvalidSatisfyException;
+import com.dankan.exception.type.*;
 import com.dankan.exception.user.UserIdNotFoundException;
 import com.dankan.exception.user.UserNameNotFoundException;
 import com.dankan.exception.user.*;
@@ -57,19 +54,19 @@ public class ApiExceptionHandler {
     @ExceptionHandler(InvalidPriceTypeException.class)
     public ResponseEntity<ApiErrorResponse> handleException(InvalidPriceTypeException ex) {
         ApiErrorResponse response = new ApiErrorResponse("ERROR-0007","Invalid price type : "+ex.getMessage());
-        return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
+        return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
     }
 
     @ExceptionHandler(InvalidRoomTypeException.class)
     public ResponseEntity<ApiErrorResponse> handleException(InvalidRoomTypeException ex) {
         ApiErrorResponse response = new ApiErrorResponse("ERROR-0008","Invalid room type : "+ex.getMessage());
-        return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
+        return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
     }
 
     @ExceptionHandler(InvalidRoomImageTypeException.class)
     public ResponseEntity<ApiErrorResponse> handleException(InvalidRoomImageTypeException ex) {
         ApiErrorResponse response = new ApiErrorResponse("ERROR-0009","Invalid room image type : "+ex.getMessage());
-        return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
+        return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
     }
 
     @ExceptionHandler(InvalidSatisfyException.class)
@@ -94,5 +91,23 @@ public class ApiExceptionHandler {
     public ResponseEntity<ApiErrorResponse> handleException(PhoneNumberNotFoundException ex) {
         ApiErrorResponse response = new ApiErrorResponse("ERROR-0013", "member phone number: " + ex.getMessage() + " is not exit");
         return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
+    }
+
+    @ExceptionHandler(InvalidOptionTypeException.class)
+    public ResponseEntity<ApiErrorResponse> handleException(InvalidOptionTypeException ex) {
+        ApiErrorResponse response = new ApiErrorResponse("ERROR-0014", "Invalid option type : " + ex.getMessage());
+        return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(InvalidEtcOptionTypeException.class)
+    public ResponseEntity<ApiErrorResponse> handleException(InvalidEtcOptionTypeException ex) {
+        ApiErrorResponse response = new ApiErrorResponse("ERROR-0015", "Invalid option type : " + ex.getMessage());
+        return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(InvalidManagementTypeException.class)
+    public ResponseEntity<ApiErrorResponse> handleException(InvalidManagementTypeException ex) {
+        ApiErrorResponse response = new ApiErrorResponse("ERROR-0016", "Invalid management type : " + ex.getMessage());
+        return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
     }
 }

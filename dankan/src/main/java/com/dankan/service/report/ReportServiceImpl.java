@@ -13,6 +13,7 @@ import com.dankan.util.JwtUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
 import java.util.UUID;
 
 @Slf4j
@@ -23,17 +24,20 @@ public class ReportServiceImpl implements ReportService {
     private final PostRepository postRepository;
     private final RoomRepository roomRepository;
     private final ReviewRepository reviewRepository;
+    private final DateLogRepository dateLogRepository;
 
     public ReportServiceImpl(PostReportRepository postReportRepository
                       ,ReviewReportRepository reviewReportRepository
                       ,PostRepository postRepository
                       ,RoomRepository roomRepository
-                      ,ReviewRepository reviewRepository) {
+                      ,ReviewRepository reviewRepository
+                      ,DateLogRepository dateLogRepository) {
         this.postReportRepository = postReportRepository;
         this.reviewReportRepository = reviewReportRepository;
         this.postRepository = postRepository;
         this.roomRepository = roomRepository;
         this.reviewRepository = reviewRepository;
+        this.dateLogRepository = dateLogRepository;
     }
 
     @Override
@@ -48,7 +52,15 @@ public class ReportServiceImpl implements ReportService {
         Room room = roomRepository.findById(roomId)
                 .orElseThrow(() -> new RoomNotFoundException(roomId));
 
-        PostReport postReport = PostReport.of(room, userId);
+        DateLog dateLog = DateLog.builder()
+                .userId(userId)
+                .createdAt(LocalDate.now())
+                .lastUserId(userId)
+                .updatedAt(LocalDate.now())
+                .build();
+        dateLogRepository.save(dateLog);
+
+        PostReport postReport = PostReport.of(room, userId,dateLog.getId());
         postReportRepository.save(postReport);
 
         return RoomReportResponseDto.of(true);
@@ -61,7 +73,15 @@ public class ReportServiceImpl implements ReportService {
         RoomReview roomReview = reviewRepository.findById(reviewReportRequestDto.getReviewId())
                 .orElseThrow(() -> new ReviewNotFoundException(reviewReportRequestDto.getReviewId()));
 
-        ReviewReport reviewReport = ReviewReport.of(userId, roomReview);
+        DateLog dateLog = DateLog.builder()
+                .userId(userId)
+                .createdAt(LocalDate.now())
+                .lastUserId(userId)
+                .updatedAt(LocalDate.now())
+                .build();
+        dateLogRepository.save(dateLog);
+
+        ReviewReport reviewReport = ReviewReport.of(userId,dateLog.getId(),roomReview);
         reviewReportRepository.save(reviewReport);
 
         return ReviewReportResponseDto.of(true);

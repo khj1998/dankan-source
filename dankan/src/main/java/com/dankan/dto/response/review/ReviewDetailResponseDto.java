@@ -16,11 +16,11 @@ import java.util.List;
 public class ReviewDetailResponseDto {
     private String nickname;
     private String univ;
-    private Date startedAt;
-    private Date endAt;
+    private LocalDate startedAt;
+    private LocalDate endAt;
     private Long totalRate;
     private String content;
-    private Date updatedAt;
+    private LocalDate updatedAt;
 
     public static ReviewDetailResponseDto of(User user, RoomReview roomReview) {
         return ReviewDetailResponseDto.builder()

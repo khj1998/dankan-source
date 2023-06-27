@@ -26,10 +26,14 @@ public class PostHeart {
     @Column(name = "user_id",nullable = false, columnDefinition = "bigint")
     private Long userId;
 
-    public static PostHeart of(Long postId, Long userId) {
+    @Column(name = "date_id", columnDefinition = "int")
+    private Long dateId;
+
+    public static PostHeart of(Long postId, Long userId,Long dateId) {
         return PostHeart.builder()
                 .postId(postId)
                 .userId(userId)
+                .dateId(dateId)
                 .build();
     }
 }

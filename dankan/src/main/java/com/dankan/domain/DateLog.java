@@ -2,6 +2,8 @@ package com.dankan.domain;
 
 import io.swagger.annotations.ApiModel;
 import lombok.*;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 
 import javax.persistence.*;
 import java.time.LocalDate;

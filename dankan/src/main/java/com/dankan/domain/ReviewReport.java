@@ -33,9 +33,10 @@ public class ReviewReport {
     @Column(name = "date_id", columnDefinition = "int")
     private Long dateId;
 
-    public static ReviewReport of(Long userId,RoomReview roomReview) {
+    public static ReviewReport of(Long userId,Long dateId,RoomReview roomReview) {
         return ReviewReport.builder()
                 .userId(userId)
+                .dateId(dateId)
                 .address(roomReview.getAddress())
                 .addressDetail(roomReview.getAddressDetail())
                 .build();

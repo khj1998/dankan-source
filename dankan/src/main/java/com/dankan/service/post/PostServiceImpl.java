@@ -1,13 +1,16 @@
 package com.dankan.service.post;
 
+import com.dankan.domain.DateLog;
 import com.dankan.domain.PostHeart;
 import com.dankan.domain.Post;
 import com.dankan.domain.Room;
 import com.dankan.dto.response.post.*;
 import com.dankan.dto.request.post.PostHeartRequestDto;
 import com.dankan.dto.request.post.PostRoomRequestDto;
+import com.dankan.exception.datelog.DateLogNotFoundException;
 import com.dankan.exception.post.PostNotFoundException;
 import com.dankan.exception.room.RoomNotFoundException;
+import com.dankan.repository.DateLogRepository;
 import com.dankan.repository.PostHeartRepository;
 import com.dankan.repository.PostRepository;
 import com.dankan.repository.RoomRepository;
@@ -19,6 +22,7 @@ import org.springframework.data.domain.Slice;
 import org.springframework.data.domain.Sort;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -27,14 +31,17 @@ public class PostServiceImpl implements PostService {
     private final PostRepository postRepository;
     private final RoomRepository roomRepository;
     private final PostHeartRepository postHeartRepository;
+    private final DateLogRepository dateLogRepository;
 
     public PostServiceImpl(
             PostRepository postRepository,
             RoomRepository roomRepository,
-            PostHeartRepository postHeartRepository) {
+            PostHeartRepository postHeartRepository,
+            DateLogRepository dateLogRepository) {
         this.postRepository = postRepository;
         this.roomRepository = roomRepository;
         this.postHeartRepository = postHeartRepository;
+        this.dateLogRepository = dateLogRepository;
     }
 
     @Override
@@ -132,10 +139,19 @@ public class PostServiceImpl implements PostService {
     @Transactional
     public PostCreateResponseDto addPost(PostRoomRequestDto postRoomRequestDto) {
         Long userId = JwtUtil.getMemberId();
-        Room room = Room.of(postRoomRequestDto,userId);
+
+        DateLog dateLog = DateLog.builder()
+                .createdAt(LocalDate.now())
+                .userId(userId)
+                .updatedAt(LocalDate.now())
+                .lastUserId(userId)
+                .build();
+        dateLogRepository.save(dateLog);
+
+        Room room = Room.of(postRoomRequestDto,userId,dateLog.getId());
         roomRepository.save(room);
 
-        Post post = Post.of(postRoomRequestDto,userId,room.getRoomId());
+        Post post = Post.of(postRoomRequestDto,userId,room.getRoomId(),dateLog.getId());
         postRepository.save(post);
 
         return PostCreateResponseDto.of(post,room);
@@ -150,6 +166,12 @@ public class PostServiceImpl implements PostService {
         post.setTitle(postRoomRequestDto.getTitle());
         post.setContent(postRoomRequestDto.getContent());
         postRepository.save(post);
+
+        DateLog dateLog = dateLogRepository.findById(post.getDateId())
+                .orElseThrow(() -> new DateLogNotFoundException(post.getDateId()));
+        dateLog.setLastUserId(userId);
+        dateLog.setUpdatedAt(LocalDate.now());
+        dateLogRepository.save(dateLog);
 
         return PostEditResponseDto.of(post);
     }
@@ -170,10 +192,20 @@ public class PostServiceImpl implements PostService {
         PostHeart postHeart = postHeartRepository.findByUserIdAndPostId(userId,postHeartRequestDto.getPostId());
 
         if (postHeart == null) {
+            DateLog dateLog = DateLog.builder()
+                    .createdAt(LocalDate.now())
+                    .userId(userId)
+                    .updatedAt(LocalDate.now())
+                    .lastUserId(userId)
+                    .build();
+            dateLogRepository.save(dateLog);
+
             postHeart = PostHeart.builder()
                     .postId(postHeartRequestDto.getPostId())
                     .userId(userId)
+                    .dateId(dateLog.getId())
                     .build();
+
             postHeartRepository.save(postHeart);
         } else {
             postHeartRepository.deleteById(postHeart.getPostHeartId());

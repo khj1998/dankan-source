@@ -6,6 +6,7 @@ import lombok.*;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import javax.persistence.*;
+import java.time.LocalDate;
 import java.util.Date;
 
 @ApiModel(value = "매매 게시물 엔티티")
@@ -33,7 +34,7 @@ public class Post {
     private Long userId;
 
     @UpdateTimestamp
-    private Date updatedAt;
+    private LocalDate updatedAt;
 
     @Column(name = "title",nullable = false,length = 64,columnDefinition = "varchar")
     private String title;
@@ -41,8 +42,9 @@ public class Post {
     @Column(name = "content",nullable = false,columnDefinition = "varchar")
     private String content;
 
-    public static Post of(PostRoomRequestDto postRoomRequestDto,Long userId,Long roomId) {
+    public static Post of(PostRoomRequestDto postRoomRequestDto,Long userId,Long roomId,Long dateId) {
         return Post.builder()
+                .dateId(dateId)
                 .userId(userId)
                 .roomId(roomId)
                 .title(postRoomRequestDto.getTitle())

@@ -29,6 +29,9 @@ public class Room {
     @Column(name = "user_id",nullable = false, columnDefinition = "bigint")
     private Long userId;
 
+    @Column(name = "date_id", columnDefinition = "int")
+    private Long dateId;
+
     @Column(name = "elevator_option",nullable = false,columnDefinition = "tinyint")
     private Long elevatorOption;
 
@@ -44,7 +47,7 @@ public class Room {
     @Embedded
     private RoomAddress roomAddress;
 
-    public static Room of(PostRoomRequestDto postRoomRequestDto, Long userId) {
+    public static Room of(PostRoomRequestDto postRoomRequestDto, Long userId,Long dateId) {
         String[] addressParts = postRoomRequestDto.getAddress().split(" ");
 
         RoomCost cost = RoomCost.builder()
@@ -79,6 +82,7 @@ public class Room {
 
         return Room.builder()
                 .userId(userId)
+                .dateId(dateId)
                 .roomCost(cost)
                 .roomStructure(structure)
                 .elevatorOption(postRoomRequestDto.getElevators())

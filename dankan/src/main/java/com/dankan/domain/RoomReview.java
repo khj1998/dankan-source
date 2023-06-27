@@ -7,6 +7,7 @@ import lombok.*;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import javax.persistence.*;
+import java.time.LocalDate;
 import java.util.Date;
 
 @ApiModel(value = "매물 후기 엔티티")
@@ -30,11 +31,14 @@ public class RoomReview {
     @Column(name = "room_id", columnDefinition = "int")
     private Long roomId;
 
+    @Column(name = "date_id", columnDefinition = "int")
+    private Long dateId;
+
     @Column(name = "content",nullable = false,columnDefinition = "varchar")
     private String content;
 
     @UpdateTimestamp
-    private Date updatedAt;
+    private LocalDate updatedAt;
 
     @Embedded
     private ResidencePeriod residencePeriod;
@@ -45,7 +49,7 @@ public class RoomReview {
     @Column(name = "address_detail",nullable = false,length = 50,columnDefinition = "varchar")
     private String addressDetail;
 
-    public static RoomReview of(ReviewRequestDto reviewRequestDto,User user,Long roomId) {
+    public static RoomReview of(ReviewRequestDto reviewRequestDto,User user,Long roomId,Long dateId) {
         ResidencePeriod period = ResidencePeriod.builder()
                 .startedAt(reviewRequestDto.getStartedAt())
                 .endAt(reviewRequestDto.getEndAt())
@@ -54,6 +58,7 @@ public class RoomReview {
         return RoomReview.builder()
                 .userId(user.getUserId())
                 .roomId(roomId)
+                .dateId(dateId)
                 .content(reviewRequestDto.getContent())
                 .residencePeriod(period)
                 .address(reviewRequestDto.getAddress())

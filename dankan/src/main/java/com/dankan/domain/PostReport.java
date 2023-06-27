@@ -34,9 +34,10 @@ public class PostReport {
     @Column(name = "date_id", columnDefinition = "int")
     private Long dateId;
 
-    public static PostReport of(Room room,Long userId) {
+    public static PostReport of(Room room,Long userId,Long dateId) {
         return PostReport.builder()
                 .userId(userId)
+                .dateId(dateId)
                 .address(room.getRoomAddress().getAddress())
                 .addressDetail(room.getRoomAddress().getAddressDetail())
                 .build();

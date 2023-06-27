@@ -85,7 +85,7 @@ public class SpringConfig {
 
     @Bean
     public PostService postService() {
-        return new PostServiceImpl(postRepository,roomRepository,postHeartRepository);
+        return new PostServiceImpl(postRepository,roomRepository,postHeartRepository,dateLogRepository);
     }
 
     @Bean
@@ -95,12 +95,12 @@ public class SpringConfig {
 
     @Bean
     public ReportService reportService() {
-        return new ReportServiceImpl(postReportRepository,reviewReportRepository,postRepository,roomRepository,reviewRepository);
+        return new ReportServiceImpl(postReportRepository,reviewReportRepository,postRepository,roomRepository,reviewRepository,dateLogRepository);
     }
 
     @Bean
     public ReviewService reviewService() {
-        return new ReviewServiceImpl(userRepository, reviewRepository, roomRepository);
+        return new ReviewServiceImpl(userRepository, reviewRepository, roomRepository,dateLogRepository);
 
     }
 

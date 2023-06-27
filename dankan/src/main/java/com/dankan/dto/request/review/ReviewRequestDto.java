@@ -14,8 +14,8 @@ public class ReviewRequestDto {
     private String accessRate;
     private String hostRate;
     private String facilityRate;
-    private Date startedAt;
-    private Date endAt;
+    private LocalDate startedAt;
+    private LocalDate endAt;
     private String address;
     private String addressDetail;
 }

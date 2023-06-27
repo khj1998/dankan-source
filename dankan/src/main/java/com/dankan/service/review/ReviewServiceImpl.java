@@ -1,5 +1,6 @@
 package com.dankan.service.review;
 
+import com.dankan.domain.DateLog;
 import com.dankan.domain.Room;
 import com.dankan.domain.RoomReview;
 import com.dankan.domain.User;
@@ -11,6 +12,7 @@ import com.dankan.dto.request.review.ReviewRequestDto;
 import com.dankan.exception.review.ReviewNotFoundException;
 import com.dankan.exception.room.RoomNotFoundException;
 import com.dankan.exception.user.UserIdNotFoundException;
+import com.dankan.repository.DateLogRepository;
 import com.dankan.repository.ReviewRepository;
 import com.dankan.repository.RoomRepository;
 import com.dankan.repository.UserRepository;
@@ -22,6 +24,7 @@ import org.springframework.data.domain.Slice;
 import org.springframework.data.domain.Sort;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -31,13 +34,16 @@ public class ReviewServiceImpl implements ReviewService {
     private final UserRepository userRepository;
     private final ReviewRepository reviewRepository;
     private final RoomRepository roomRepository;
+    private final DateLogRepository dateLogRepository;
 
     public ReviewServiceImpl(UserRepository userRepository
             ,ReviewRepository reviewRepository
-            ,RoomRepository roomRepository) {
+            ,RoomRepository roomRepository
+            ,DateLogRepository dateLogRepository) {
         this.userRepository = userRepository;
         this.reviewRepository = reviewRepository;
         this.roomRepository = roomRepository;
+        this.dateLogRepository = dateLogRepository;
     }
 
     @Override
@@ -50,7 +56,15 @@ public class ReviewServiceImpl implements ReviewService {
         Room room = roomRepository.findFirstByRoomAddress_Address(reviewRequestDto.getAddress())
                 .orElseThrow(() -> new RoomNotFoundException(reviewRequestDto.getAddress()));
 
-        RoomReview roomReview = RoomReview.of(reviewRequestDto,user,room.getRoomId());
+        DateLog dateLog = DateLog.builder()
+                .userId(userId)
+                .createdAt(LocalDate.now())
+                .lastUserId(userId)
+                .updatedAt(LocalDate.now())
+                .build();
+        dateLogRepository.save(dateLog);
+
+        RoomReview roomReview = RoomReview.of(reviewRequestDto,user,room.getRoomId(), dateLog.getId());
         reviewRepository.save(roomReview);
 
         return ReviewResponseDto.of(user,roomReview,room);

@@ -31,7 +31,7 @@ public class PostReport {
     @Column(name = "address_detail",nullable = false,length = 50,columnDefinition = "varchar")
     private String addressDetail;
 
-    @Column(name = "date_id", columnDefinition = "int")
+    @Column(name = "date_id",nullable = false, columnDefinition = "int")
     private Long dateId;
 
     public static PostReport of(Room room,Long userId,Long dateId) {

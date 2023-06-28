@@ -6,6 +6,8 @@ import com.dankan.domain.embedded.RoomDiscussion;
 import com.dankan.domain.embedded.RoomStructure;
 import com.dankan.dto.request.post.PostRoomRequestDto;
 import com.dankan.enum_converter.*;
+import com.dankan.enum_converter.PriceTypeEnum;
+import com.dankan.enum_converter.RoomTypeEnum;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.*;
@@ -31,7 +33,7 @@ public class Room {
     @Column(name = "user_id",nullable = false, columnDefinition = "bigint")
     private Long userId;
 
-    @Column(name = "date_id", columnDefinition = "int")
+    @Column(name = "date_id",nullable = false, columnDefinition = "int")
     private Long dateId;
 
     @Column(name = "elevator_option",nullable = false,columnDefinition = "tinyint")
@@ -79,6 +81,7 @@ public class Room {
                 .moveInStart(postRoomRequestDto.getMoveInStart())
                 .moveInEnd(postRoomRequestDto.getMoveInEnd())
                 .build();
+
 
         RoomAddress address = RoomAddress.builder()
                 .doo(addressParts[0])
@@ -153,10 +156,6 @@ public class Room {
                     .codeKey("EtcOption"+EtcOptionTypeEnum.getEtcOptionTypeValue(etcOption))
                     .value(EtcOptionTypeEnum.getEtcOptionTypeValue(etcOption))
                     .build());
-        }
-
-        for (Options option : optionsList) {
-            System.out.println(option.getCodeKey());
         }
 
         return optionsList;

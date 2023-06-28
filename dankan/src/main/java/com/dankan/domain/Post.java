@@ -24,10 +24,10 @@ public class Post {
     @Column(name = "post_id", columnDefinition = "int")
     private Long postId;
 
-    @Column(name = "date_id", columnDefinition = "int")
+    @Column(name = "date_id",nullable = false, columnDefinition = "int")
     private Long dateId;
 
-    @Column(name = "room_id", columnDefinition = "int")
+    @Column(name = "room_id",nullable = false, columnDefinition = "int")
     private Long roomId;
 
     @Column(name = "user_id",nullable = false,columnDefinition = "bigint")
@@ -42,7 +42,7 @@ public class Post {
     @Column(name = "content",nullable = false,columnDefinition = "varchar")
     private String content;
 
-    public static Post of(PostRoomRequestDto postRoomRequestDto,Long userId,Long roomId,Long dateId) {
+    public static Post of(PostRoomRequestDto postRoomRequestDto,Long userId, Long roomId,Long dateId) {
         return Post.builder()
                 .dateId(dateId)
                 .userId(userId)

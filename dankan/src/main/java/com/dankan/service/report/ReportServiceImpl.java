@@ -1,11 +1,12 @@
 package com.dankan.service.report;
 
 import com.dankan.domain.*;
-import com.dankan.dto.response.report.ReviewReportResponseDto;
-import com.dankan.dto.response.report.RoomReportResponseDto;
 import com.dankan.dto.request.report.ReviewReportRequestDto;
+import com.dankan.dto.response.report.ReportResponseDto;
 import com.dankan.dto.request.report.RoomReportRequestDto;
 import com.dankan.exception.post.PostNotFoundException;
+import com.dankan.exception.report.PostReportNotFoundException;
+import com.dankan.exception.report.ReviewReportNotFoundException;
 import com.dankan.exception.review.ReviewNotFoundException;
 import com.dankan.exception.room.RoomNotFoundException;
 import com.dankan.repository.*;
@@ -42,7 +43,7 @@ public class ReportServiceImpl implements ReportService {
 
     @Override
     @Transactional
-    public RoomReportResponseDto addPostReport(RoomReportRequestDto roomReportRequestDto) {
+    public Boolean addPostReport(RoomReportRequestDto roomReportRequestDto) {
         Long userId = JwtUtil.getMemberId();
         Post post = postRepository.findById(roomReportRequestDto.getPostId())
                 .orElseThrow(() -> new PostNotFoundException(roomReportRequestDto.getPostId()));
@@ -63,13 +64,14 @@ public class ReportServiceImpl implements ReportService {
         PostReport postReport = PostReport.of(room, userId,dateLog.getId());
         postReportRepository.save(postReport);
 
-        return RoomReportResponseDto.of(true);
+        return true;
     }
 
     @Override
     @Transactional
-    public ReviewReportResponseDto addReviewReport(ReviewReportRequestDto reviewReportRequestDto) {
+    public Boolean addReviewReport(ReviewReportRequestDto reviewReportRequestDto) {
         Long userId = JwtUtil.getMemberId();
+
         RoomReview roomReview = reviewRepository.findById(reviewReportRequestDto.getReviewId())
                 .orElseThrow(() -> new ReviewNotFoundException(reviewReportRequestDto.getReviewId()));
 
@@ -84,6 +86,36 @@ public class ReportServiceImpl implements ReportService {
         ReviewReport reviewReport = ReviewReport.of(userId,dateLog.getId(),roomReview);
         reviewReportRepository.save(reviewReport);
 
-        return ReviewReportResponseDto.of(true);
+        return true;
+    }
+
+    @Override
+    @Transactional
+    public ReportResponseDto findPostReport(Long reportId) {
+        PostReport postReport = postReportRepository.findById(reportId)
+                .orElseThrow(() -> new PostReportNotFoundException(reportId));
+
+        return ReportResponseDto.of(postReport);
+    }
+
+    @Override
+    @Transactional
+    public void removePostReport(Long reportId) {
+        postReportRepository.deleteById(reportId);
+    }
+
+    @Override
+    @Transactional
+    public ReportResponseDto findReviewReport(Long reportId) {
+        ReviewReport reviewReport = reviewReportRepository.findById(reportId)
+                .orElseThrow(() -> new ReviewReportNotFoundException(reportId));
+
+        return ReportResponseDto.of(reviewReport);
+    }
+
+    @Override
+    @Transactional
+    public void removeReviewReport(Long reportId) {
+        reviewReportRepository.deleteById(reportId);
     }
 }

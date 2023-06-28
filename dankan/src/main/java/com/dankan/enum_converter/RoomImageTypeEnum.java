@@ -1,7 +1,6 @@
 package com.dankan.enum_converter;
 
 import com.dankan.exception.type.InvalidRoomImageTypeException;
-import com.dankan.exception.type.InvalidRoomTypeException;
 import lombok.Getter;
 
 @Getter

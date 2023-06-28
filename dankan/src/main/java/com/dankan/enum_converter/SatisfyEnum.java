@@ -5,6 +5,7 @@ import lombok.Getter;
 
 @Getter
 public enum SatisfyEnum {
+
     만족(5L),
     보통(3L),
     불만족(1L);

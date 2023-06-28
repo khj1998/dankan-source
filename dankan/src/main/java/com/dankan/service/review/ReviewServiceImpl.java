@@ -2,14 +2,17 @@ package com.dankan.service.review;
 
 import com.dankan.domain.DateLog;
 import com.dankan.domain.Room;
+import com.dankan.domain.RoomImage;
 import com.dankan.domain.RoomReview;
 import com.dankan.domain.User;
+import com.dankan.dto.request.review.ReviewDetailRequestDto;
 import com.dankan.dto.response.review.ReviewDetailResponseDto;
+import com.dankan.dto.response.review.ReviewImageResponseDto;
 import com.dankan.dto.response.review.ReviewRateResponseDto;
 import com.dankan.dto.response.review.ReviewResponseDto;
-import com.dankan.dto.request.review.ReviewDetailRequestDto;
 import com.dankan.dto.request.review.ReviewRequestDto;
 import com.dankan.exception.review.ReviewNotFoundException;
+import com.dankan.exception.room.RoomImageNotFoundException;
 import com.dankan.exception.room.RoomNotFoundException;
 import com.dankan.exception.user.UserIdNotFoundException;
 import com.dankan.repository.DateLogRepository;
@@ -35,6 +38,7 @@ public class ReviewServiceImpl implements ReviewService {
     private final ReviewRepository reviewRepository;
     private final RoomRepository roomRepository;
     private final DateLogRepository dateLogRepository;
+
 
     public ReviewServiceImpl(UserRepository userRepository
             ,ReviewRepository reviewRepository
@@ -67,7 +71,20 @@ public class ReviewServiceImpl implements ReviewService {
         RoomReview roomReview = RoomReview.of(reviewRequestDto,user,room.getRoomId(), dateLog.getId());
         reviewRepository.save(roomReview);
 
-        return ReviewResponseDto.of(user,roomReview,room);
+        return ReviewResponseDto.of(user,roomReview,null);
+    }
+
+    @Override
+    @Transactional
+    public ReviewImageResponseDto addReviewImage(Long reviewId,String imgUrl) {
+        RoomReview roomReview = reviewRepository.findById(reviewId)
+                .orElseThrow(() -> new ReviewNotFoundException(reviewId));
+        roomReview.setImageUrl(imgUrl);
+        reviewRepository.save(roomReview);
+
+        return ReviewImageResponseDto.builder()
+                .imgUrl(imgUrl)
+                .build();
     }
 
     @Override
@@ -93,7 +110,7 @@ public class ReviewServiceImpl implements ReviewService {
                   .orElseThrow(() -> new RoomNotFoundException(roomReview.getRoomId().toString()));
             User user = userRepository.findById(room.getUserId())
                     .orElseThrow(() -> new UserIdNotFoundException(room.getUserId().toString()));
-            ReviewResponseDto responseDto = ReviewResponseDto.of(user,roomReview,room);
+            ReviewResponseDto responseDto = ReviewResponseDto.of(user,roomReview,roomReview.getImageUrl());
             responseDtoList.add(responseDto);
         }
 
@@ -111,7 +128,7 @@ public class ReviewServiceImpl implements ReviewService {
         for (RoomReview roomReview : roomReviewList) {
             Room room = roomRepository.findById(roomReview.getRoomId())
                     .orElseThrow(() -> new RoomNotFoundException(roomReview.getRoomId()));
-            ReviewResponseDto responseDto = ReviewResponseDto.of(room,roomReview);
+            ReviewResponseDto responseDto = ReviewResponseDto.of(room,roomReview,roomReview.getImageUrl());
             responseDtoList.add(responseDto);
         }
 
@@ -125,13 +142,17 @@ public class ReviewServiceImpl implements ReviewService {
         Room room = roomRepository.findFirstByRoomAddress_Address(address)
                 .orElseThrow(() -> new RoomNotFoundException(address));
 
+        // 하나의 도로명 주소에는 여러 방이 있을 수 있습니다. 어떤 이미지를 대표로 가져올지 고려해봐야 합니다.
+        /*RoomImage roomImage = roomImageRepository.findByRoomIdAndImageType(room.getRoomId(),0L)
+                .orElseThrow(() -> new RoomImageNotFoundException(room.getRoomId()));*/
+
         List<RoomReview> reviewList = reviewRepository.findByAddress(address);
         for (RoomReview roomReview : reviewList) {
         }
 
         reviewCount = (long) reviewList.size();
 
-        return ReviewRateResponseDto.of(room, reviewCount);
+        return ReviewRateResponseDto.of(room, reviewCount,"roomImage.getRoomImageUrl()");
     }
 
     @Override

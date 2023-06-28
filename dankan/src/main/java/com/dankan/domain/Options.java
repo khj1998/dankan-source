@@ -20,5 +20,7 @@ public class Options {
     @Id
     @Column(name = "code_key",length = 16,columnDefinition = "varchar")
     private String codeKey;
+
+    @Column(name = "value",nullable = false,columnDefinition = "int")
     private Long value;
 }

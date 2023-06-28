@@ -19,6 +19,6 @@ public class Images {
     @Column(name = "image_id", columnDefinition = "int")
     private Long imageId;
 
-    @Column(name = "uri", columnDefinition = "text")
+    @Column(name = "uri",nullable = false ,columnDefinition = "text")
     private String uri;
 }

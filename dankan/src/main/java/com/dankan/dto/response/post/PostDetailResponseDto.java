@@ -45,6 +45,7 @@ public class PostDetailResponseDto {
     private Long isDiscussion; //입주기간 협의 가능여부
     private LocalDate moveInStart; //입주 가능 시작일
     private LocalDate moveInEnd; //입주 가능 마지막 일
+    private String imgUrls;
 
     // room_address 응답
     //private UUID roomId;
@@ -55,7 +56,7 @@ public class PostDetailResponseDto {
     private Double latitude;
     private Double longitude;
 
-    public static PostDetailResponseDto of(Post post, Room room,PostHeart postHeart,Integer heartCount) {
+    public static PostDetailResponseDto of(Post post, Room room,PostHeart postHeart,Integer heartCount,String imgUrls) {
         Boolean isHearted = false;
         String dealType = "";
         String priceType = "";
@@ -82,15 +83,15 @@ public class PostDetailResponseDto {
             }
 
             if (option.getCodeKey().contains("ManagementType")) {
-                managementType += ManagementTypeEnum.getManagementTypeName(option.getValue());
+                managementType += ManagementTypeEnum.getManagementTypeName(option.getValue())+" ";
             }
 
             if (option.getCodeKey().contains("Option")) {
-                options += OptionTypeEnum.getOptionTypeName(option.getValue());
+                options += OptionTypeEnum.getOptionTypeName(option.getValue())+" ";
             }
 
             if (option.getCodeKey().contains("EtcOption")) {
-                etcOptions += EtcOptionTypeEnum.getEtcOptionTypeName(option.getValue());
+                etcOptions += EtcOptionTypeEnum.getEtcOptionTypeName(option.getValue())+" ";
             }
         }
 
@@ -121,6 +122,7 @@ public class PostDetailResponseDto {
                 .isDiscussion(room.getRoomDiscussion().getIsDiscussion())
                 .moveInStart(room.getRoomDiscussion().getMoveInStart())
                 .moveInEnd(room.getRoomDiscussion().getMoveInEnd())
+                .imgUrls(imgUrls)
 
                 .doo(room.getRoomAddress().getDoo())
                 .si(room.getRoomAddress().getSi())

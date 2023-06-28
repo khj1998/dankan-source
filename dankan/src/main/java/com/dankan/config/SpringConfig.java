@@ -41,6 +41,7 @@ public class SpringConfig {
     private final PostReportRepository postReportRepository;
     private final ReviewRepository reviewRepository;
     private final ReviewReportRepository reviewReportRepository;
+    private final RecentWatchRepository recentWatchRepository;
     private final UnivRepository univRepository;
     private final JavaMailSender javaMailSender;
     private final String mail;
@@ -52,7 +53,8 @@ public class SpringConfig {
                         , final PostHeartRepository postHeartRepository
                         , final PostReportRepository postReportRepository
                         , final ReviewRepository reviewRepository
-                        , final ReviewReportRepository reviewReportRepository, final UnivRepository univRepository, final JavaMailSender javaMailSender, @Value("${mail.id}") String mail, final DateLogRepository dateLogRepository) {
+                        , final ReviewReportRepository reviewReportRepository, final UnivRepository univRepository, final JavaMailSender javaMailSender, @Value("${mail.id}") String mail, final DateLogRepository dateLogRepository
+                        , final RecentWatchRepository recentWatchRepository) {
         this.userRepository = userRepository;
         this.amazonS3Client = amazonS3Client;
         this.tokenRepository = tokenRepository;
@@ -62,6 +64,7 @@ public class SpringConfig {
         this.postReportRepository = postReportRepository;
         this.reviewRepository = reviewRepository;
         this.reviewReportRepository = reviewReportRepository;
+        this.recentWatchRepository = recentWatchRepository;
         this.univRepository = univRepository;
         this.javaMailSender = javaMailSender;
         this.mail = mail;
@@ -85,7 +88,7 @@ public class SpringConfig {
 
     @Bean
     public PostService postService() {
-        return new PostServiceImpl(postRepository,roomRepository,postHeartRepository,dateLogRepository);
+        return new PostServiceImpl(postRepository,roomRepository,postHeartRepository,dateLogRepository,recentWatchRepository);
     }
 
     @Bean
@@ -101,7 +104,6 @@ public class SpringConfig {
     @Bean
     public ReviewService reviewService() {
         return new ReviewServiceImpl(userRepository, reviewRepository, roomRepository,dateLogRepository);
-
     }
 
     @Bean

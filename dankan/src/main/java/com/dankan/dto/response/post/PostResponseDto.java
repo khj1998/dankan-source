@@ -27,8 +27,9 @@ public class PostResponseDto {
     private Long floor;
     private Double roomSize;
     private Double roomRealSize;
+    private String imgUrl;
 
-    public static PostResponseDto of(Post post, Room room, PostHeart postHeart) {
+    public static PostResponseDto of(Post post, Room room, PostHeart postHeart,String imgUrl) {
         Boolean isHearted = postHeart!=null;
         String dealType = "";
         String priceType = "";
@@ -60,10 +61,11 @@ public class PostResponseDto {
                 .floor(room.getRoomStructure().getFloor())
                 .roomSize(room.getRoomStructure().getRoomSize())
                 .roomRealSize(room.getRoomStructure().getRealRoomSize())
+                .imgUrl(imgUrl)
                 .build();
     }
 
-    public static PostResponseDto of(Post post,Room room) {
+    public static PostResponseDto of(Post post,Room room,String imgUrl) {
         String dealType = "";
         String priceType = "";
         String structure = "";
@@ -93,6 +95,7 @@ public class PostResponseDto {
                 .floor(room.getRoomStructure().getFloor())
                 .roomSize(room.getRoomStructure().getRoomSize())
                 .roomRealSize(room.getRoomStructure().getRealRoomSize())
+                .imgUrl(imgUrl)
                 .build();
     }
 }

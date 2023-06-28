@@ -1,8 +1,7 @@
 package com.dankan.controller;
 
-import com.dankan.dto.response.report.ReviewReportResponseDto;
-import com.dankan.dto.response.report.RoomReportResponseDto;
 import com.dankan.dto.request.report.ReviewReportRequestDto;
+import com.dankan.dto.response.report.ReportResponseDto;
 import com.dankan.dto.request.report.RoomReportRequestDto;
 import com.dankan.service.report.ReportService;
 import io.swagger.annotations.Api;
@@ -31,9 +30,8 @@ public class ReportController {
             @ApiResponse(responseCode = "404",description = "매물 게시물 신고 등록에 실패함")
     })
     @PostMapping("/post")
-    public ResponseEntity<RoomReportResponseDto> addPostReport(@RequestBody RoomReportRequestDto roomReportRequestDto) {
-        RoomReportResponseDto responseDto = reportService.addPostReport(roomReportRequestDto);
-        return ResponseEntity.ok(responseDto);
+    public ResponseEntity<Boolean> addPostReport(@RequestBody RoomReportRequestDto roomReportRequestDto) {
+        return ResponseEntity.ok(reportService.addPostReport(roomReportRequestDto));
     }
 
     @ApiOperation("매물 리뷰 신고 API")
@@ -44,8 +42,7 @@ public class ReportController {
             @ApiResponse(responseCode = "404",description = "매물 리뷰 신고 등록에 실패함")
     })
     @PostMapping("/review")
-    public ResponseEntity<ReviewReportResponseDto> addReviewReport(@RequestBody ReviewReportRequestDto reviewReportRequestDto) {
-        ReviewReportResponseDto responseDto = reportService.addReviewReport(reviewReportRequestDto);
-        return ResponseEntity.ok(responseDto);
+    public ResponseEntity<Boolean> addReviewReport(@RequestBody ReviewReportRequestDto reviewReportRequestDto) {
+        return ResponseEntity.ok(reportService.addReviewReport(reviewReportRequestDto));
     }
 }

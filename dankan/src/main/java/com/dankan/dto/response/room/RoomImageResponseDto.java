@@ -1,14 +1,11 @@
 package com.dankan.dto.response.room;
 
-import lombok.Getter;
-import lombok.Setter;
-
-import java.util.List;
-import java.util.UUID;
+import lombok.*;
 
 @Getter
 @Setter
+@Builder
 public class RoomImageResponseDto {
     private Long roomId;
-    private List<String> image;
+    private String imgUrls;
 }

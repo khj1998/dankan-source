@@ -1,10 +1,12 @@
 package com.dankan.service.room;
 
+import com.dankan.dto.request.room.RoomImageRequestDto;
 import com.dankan.dto.response.room.RoomImageResponseDto;
-import org.springframework.web.multipart.MultipartFile;
 
-import java.util.List;
+import java.io.IOException;
+import java.util.UUID;
 
 public interface RoomService {
-    RoomImageResponseDto addRoomImage(List<MultipartFile> images, String type);
+    RoomImageResponseDto addImages(RoomImageRequestDto roomImageRequestDto, String type) throws IOException;
+    RoomImageResponseDto editImages(RoomImageRequestDto roomImageRequestDto,String type) throws IOException;
 }

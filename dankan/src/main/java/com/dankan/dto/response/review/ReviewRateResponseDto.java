@@ -23,27 +23,27 @@ public class ReviewRateResponseDto {
     private Double avgHostRate;
     private Double avgFacilityRate;
 
-    public static ReviewRateResponseDto of(Room room, Long reviewCount) {
-        Double avgTotalRate;
-        Double avgCleanRate;
-        Double avgNoiseRate;
-        Double avgAccessRate;
-        Double avgHostRate;
-        Double avgFacilityRate;
+    public static ReviewRateResponseDto of(Room room, Long reviewCount,String imageUrl) {
+        Double avgTotalRate = 0.0;
+        Double avgCleanRate = 0.0;
+        Double avgNoiseRate = 0.0;
+        Double avgAccessRate = 0.0;
+        Double avgHostRate = 0.0;
+        Double avgFacilityRate = 0.0;
 
         if (reviewCount > 0) {
-        } else {
-            avgTotalRate = 0.0;
-            avgCleanRate = 0.0;
-            avgNoiseRate = 0.0;
-            avgAccessRate = 0.0;
-            avgHostRate = 0.0;
-            avgFacilityRate = 0.0;
         }
 
         return ReviewRateResponseDto.builder()
                 .address(room.getRoomAddress().getAddress())
                 .reviewCount(reviewCount)
+                .imageUrl(imageUrl)
+                .avgTotalRate(avgTotalRate)
+                .avgCleanRate(avgCleanRate)
+                .avgNoiseRate(avgNoiseRate)
+                .avgAccessRate(avgAccessRate)
+                .avgHostRate(avgHostRate)
+                .avgFacilityRate(avgFacilityRate)
                 .build();
     }
 }

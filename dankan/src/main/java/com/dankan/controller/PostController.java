@@ -1,21 +1,26 @@
 package com.dankan.controller;
 
+import com.dankan.domain.RoomImage;
+import com.dankan.dto.request.post.*;
+import com.dankan.dto.request.room.RoomImageRequestDto;
 import com.dankan.dto.response.post.*;
 import com.dankan.dto.response.room.RoomImageResponseDto;
 import com.dankan.dto.request.post.PostHeartRequestDto;
-import com.dankan.dto.request.post.PostRoomRequestDto;
 import com.dankan.service.post.PostService;
 import com.dankan.service.room.RoomService;
+import com.dankan.service.s3.S3UploadService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.UUID;
 
@@ -28,6 +33,7 @@ import java.util.UUID;
 public class PostController {
     private final PostService postService;
     private final RoomService roomService;
+    private final S3UploadService s3UploadService;
 
     @ApiOperation("매물 번호로 조회 API")
     @ApiResponses({
@@ -52,6 +58,19 @@ public class PostController {
     @GetMapping("/heart")
     public ResponseEntity<List<PostResponseDto>> getHeartPost(@RequestParam("pages") Integer pages) {
         List<PostResponseDto> responseDtoList = postService.findHeartPost(pages);
+        return ResponseEntity.ok(responseDtoList);
+    }
+
+    @ApiOperation("최근 본 매물 N개 조회 API")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200",description = "최근 본 매물 조회 성공"),
+            @ApiResponse(responseCode = "401",description = "인증되지 않은 사용자"),
+            @ApiResponse(responseCode = "403",description = "유저가 Member | Admin 권한이 없음"),
+            @ApiResponse(responseCode = "404",description = "최근 본 매물 조회에 실패함")
+    })
+    @GetMapping("/recent/watch")
+    public ResponseEntity<List<PostResponseDto>> getRecentWatchPost(@RequestParam("pages") Integer pages) {
+        List<PostResponseDto> responseDtoList = postService.findRecentWatchPost(pages);
         return ResponseEntity.ok(responseDtoList);
     }
 
@@ -114,12 +133,16 @@ public class PostController {
             @ApiResponse(responseCode = "403",description = "유저가 Member | Admin 권한이 없음"),
             @ApiResponse(responseCode = "404",description = "매물 이미지 등록 실패")
     })
-    @PostMapping("/image")
-    public ResponseEntity<RoomImageResponseDto> addPostImage(
-            @RequestParam("type") String type,
-            @RequestParam(value = "image") List<MultipartFile> roomImages) {
-        RoomImageResponseDto responseDto = roomService.addRoomImage(roomImages,type);
-        return ResponseEntity.ok(null);
+    @PostMapping(value = "/image",consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<RoomImageResponseDto> addPostImage(@ModelAttribute RoomImageRequestDto roomImageRequestDto) throws IOException {
+        String imgUrl = null;
+
+        for (MultipartFile multipartFile : roomImageRequestDto.getMultipartFileList()) {
+            imgUrl = s3UploadService.upload(multipartFile, "room-image") + " ";
+        }
+
+        RoomImageResponseDto responseDto = roomService.addImages(roomImageRequestDto,imgUrl);
+        return ResponseEntity.ok(responseDto);
     }
     
     @ApiOperation("매매 게시물 수정 API")
@@ -130,8 +153,27 @@ public class PostController {
             @ApiResponse(responseCode = "404",description = "매매 게시물 수정에 실패함")
     })
     @PostMapping("/edit")
-    public ResponseEntity<PostEditResponseDto> editPost(@RequestBody PostRoomRequestDto postRoomRequestDto) {
-        PostEditResponseDto responseDto = postService.editPost(postRoomRequestDto);
+    public ResponseEntity<PostEditResponseDto> editPost(@RequestBody PostRoomEditRequestDto postRoomEditRequestDto) {
+        PostEditResponseDto responseDto = postService.editPost(postRoomEditRequestDto);
+        return ResponseEntity.ok(responseDto);
+    }
+
+    @ApiOperation("매물 이미지 수정 API")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200",description = "매물 이미지 수정 성공"),
+            @ApiResponse(responseCode = "401",description = "인증되지 않은 사용자"),
+            @ApiResponse(responseCode = "403",description = "유저가 Member | Admin 권한이 없음"),
+            @ApiResponse(responseCode = "404",description = "매물 이미지 수정 실패")
+    })
+    @PostMapping(value = "/image/edit",consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<RoomImageResponseDto> editRoomImage(@ModelAttribute RoomImageRequestDto roomImageRequestDto) throws IOException {
+        String imgUrl = null;
+
+        for (MultipartFile multipartFile : roomImageRequestDto.getMultipartFileList()) {
+            imgUrl = s3UploadService.upload(multipartFile, "room-image") + " ";
+        }
+
+        RoomImageResponseDto responseDto = roomService.editImages(roomImageRequestDto,imgUrl);
         return ResponseEntity.ok(responseDto);
     }
 

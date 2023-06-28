@@ -40,6 +40,9 @@ public class RoomReview {
     @UpdateTimestamp
     private LocalDate updatedAt;
 
+    @Column(name = "image_url",columnDefinition = "text")
+    private String imageUrl;
+
     @Embedded
     private ResidencePeriod residencePeriod;
 

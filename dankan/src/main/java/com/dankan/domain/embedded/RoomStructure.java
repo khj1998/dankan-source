@@ -20,7 +20,7 @@ public class RoomStructure {
     @Column(name = "floor",nullable = false,columnDefinition = "int")
     private Long floor;
 
-    @Column(name = "room_size",nullable = false,columnDefinition = "int")
+    @Column(name = "room_size",nullable = false,columnDefinition = "double")
     private Double roomSize;
 
     @Column(name = "real_room_size",nullable = false,columnDefinition = "double")

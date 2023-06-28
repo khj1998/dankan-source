@@ -34,8 +34,9 @@ public class ReviewResponseDto {
     private String address;
     private String addressDetail;
     private String roomType;
+    private String imgUrl;
 
-    public static ReviewResponseDto of(User user, RoomReview roomReview, Room room) {
+    public static ReviewResponseDto of(User user, RoomReview roomReview,String imageUrl) {
 
         return ReviewResponseDto.builder()
                 .reviewId(roomReview.getReviewId())
@@ -46,12 +47,16 @@ public class ReviewResponseDto {
                 .endAt(roomReview.getResidencePeriod().getEndAt())
                 .address(roomReview.getAddress())
                 .addressDetail(roomReview.getAddressDetail())
+                .imgUrl(imageUrl)
                 .build();
     }
 
-    public static ReviewResponseDto of(Room room,RoomReview roomReview) {
+    public static ReviewResponseDto of(Room room,RoomReview roomReview,String imgUrl) {
         return ReviewResponseDto.builder()
                 .address(room.getRoomAddress().getAddress())
+                //.roomType(RoomTypeEnum.getRoomTypeName(room.getRoomStructure().getRoomType()))
+                //.totalRate(roomReview.getRoomReviewRate().getTotalRate())
+                .imgUrl(imgUrl)
                 .build();
     }
 }

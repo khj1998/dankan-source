@@ -1,4 +1,4 @@
-package com.dankan.dto.request.room;
+package com.dankan.dto.request.review;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Getter;
@@ -10,10 +10,9 @@ import java.util.UUID;
 
 @Getter
 @Setter
-public class RoomImageRequestDto {
-    private Long roomId;
-    private String type;
+public class ReviewImageRequestDto {
+    private Long reviewId;
 
-    @Schema(title = "이미지 업로드 리스트",description = "방 이미지 업로드")
+    @Schema(title = "이미지 업로드 리스트",description = "리뷰 이미지 업로드")
     private List<MultipartFile> multipartFileList;
 }

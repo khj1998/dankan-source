@@ -6,9 +6,21 @@ import lombok.Getter;
 @Getter
 public enum SatisfyEnum {
 
-    만족(5L),
-    보통(3L),
-    불만족(1L);
+    AccessRate2(5L),
+    AccessRate1(3L),
+    AccessRate0(1L),
+    CleanRate2(5L),
+    CleanRate1(3L),
+    CleanRate0(1L),
+    FacilityRate2(5L),
+    FacilityRate1(3L),
+    FacilityRate0(1L),
+    HostRate2(5L),
+    HostRate1(3L),
+    HostRate0(1L),
+    NoiseRate2(5L),
+    NoiseRate1(3L),
+    NoiseRate0(1L);
 
     private final Long value;
 

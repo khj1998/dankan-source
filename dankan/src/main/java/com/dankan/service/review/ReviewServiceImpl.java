@@ -1,10 +1,6 @@
 package com.dankan.service.review;
 
-import com.dankan.domain.DateLog;
-import com.dankan.domain.Room;
-import com.dankan.domain.RoomImage;
-import com.dankan.domain.RoomReview;
-import com.dankan.domain.User;
+import com.dankan.domain.*;
 import com.dankan.dto.request.review.ReviewDetailRequestDto;
 import com.dankan.dto.response.review.ReviewDetailResponseDto;
 import com.dankan.dto.response.review.ReviewImageResponseDto;
@@ -71,7 +67,7 @@ public class ReviewServiceImpl implements ReviewService {
         RoomReview roomReview = RoomReview.of(reviewRequestDto,user,room.getRoomId(), dateLog.getId());
         reviewRepository.save(roomReview);
 
-        return ReviewResponseDto.of(user,roomReview,null);
+        return ReviewResponseDto.of(user,room,roomReview,null);
     }
 
     @Override
@@ -110,7 +106,7 @@ public class ReviewServiceImpl implements ReviewService {
                   .orElseThrow(() -> new RoomNotFoundException(roomReview.getRoomId().toString()));
             User user = userRepository.findById(room.getUserId())
                     .orElseThrow(() -> new UserIdNotFoundException(room.getUserId().toString()));
-            ReviewResponseDto responseDto = ReviewResponseDto.of(user,roomReview,roomReview.getImageUrl());
+            ReviewResponseDto responseDto = ReviewResponseDto.of(user,room,roomReview,roomReview.getImageUrl());
             responseDtoList.add(responseDto);
         }
 
@@ -121,7 +117,7 @@ public class ReviewServiceImpl implements ReviewService {
     @Transactional(readOnly = true)
     public List<ReviewResponseDto> findReviewByStar(Integer pages) {
         List<ReviewResponseDto> responseDtoList = new ArrayList<>();
-        Sort sort = Sort.by(Sort.Direction.DESC,"roomReviewRate.totalRate");
+        Sort sort = Sort.by(Sort.Direction.DESC,"totalRate");
         Pageable pageable = PageRequest.of(pages,5,sort);
         Slice<RoomReview> roomReviewList = reviewRepository.findAll(pageable);
 
@@ -147,12 +143,7 @@ public class ReviewServiceImpl implements ReviewService {
                 .orElseThrow(() -> new RoomImageNotFoundException(room.getRoomId()));*/
 
         List<RoomReview> reviewList = reviewRepository.findByAddress(address);
-        for (RoomReview roomReview : reviewList) {
-        }
-
-        reviewCount = (long) reviewList.size();
-
-        return ReviewRateResponseDto.of(room, reviewCount,"roomImage.getRoomImageUrl()");
+        return ReviewRateResponseDto.of(room, reviewList,"roomImage.getRoomImageUrl()");
     }
 
     @Override
@@ -162,6 +153,8 @@ public class ReviewServiceImpl implements ReviewService {
         Sort sort = Sort.by(Sort.Direction.DESC,"updatedAt");
         Pageable pageable = PageRequest.of(reviewDetailRequestDto.getPages(),5,sort);
         List<RoomReview> roomReviewList = reviewRepository.findByAddress(reviewDetailRequestDto.getAddress(),pageable);
+
+        //리뷰 이미지 url 응답 필요
 
         for (RoomReview roomReview : roomReviewList) {
             Long userId = roomReview.getUserId();

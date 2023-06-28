@@ -51,7 +51,7 @@ public class Room {
     @Embedded
     private RoomAddress roomAddress;
 
-    @ManyToMany(fetch = FetchType.EAGER)
+    @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(
             name = "room_options",
             joinColumns = {@JoinColumn(name = "room_id", referencedColumnName = "room_id")},

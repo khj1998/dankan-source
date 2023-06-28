@@ -24,6 +24,7 @@ public class ReviewDetailResponseDto {
     public static ReviewDetailResponseDto of(User user, RoomReview roomReview) {
         return ReviewDetailResponseDto.builder()
                 .nickname(user.getNickname())
+                .totalRate(roomReview.getTotalRate())
                 .startedAt(roomReview.getResidencePeriod().getStartedAt())
                 .endAt(roomReview.getResidencePeriod().getEndAt())
                 .content(roomReview.getContent())

@@ -1,6 +1,7 @@
 package com.dankan.service.user;
 
 import com.dankan.domain.Authority;
+import com.dankan.domain.DateLog;
 import com.dankan.domain.Token;
 import com.dankan.domain.User;
 import com.dankan.dto.response.login.LoginResponseDto;
@@ -11,12 +12,14 @@ import com.dankan.exception.token.TokenNotFoundException;
 import com.dankan.exception.user.UserNameExistException;
 import com.dankan.exception.user.UserIdNotFoundException;
 import com.dankan.exception.user.UserNameNotFoundException;
+import com.dankan.repository.DateLogRepository;
 import com.dankan.repository.TokenRepository;
 import com.dankan.repository.UserRepository;
 import com.dankan.util.JwtUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.*;
 
@@ -25,10 +28,12 @@ import java.util.*;
 public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
     private final TokenRepository tokenRepository;
+    private final DateLogRepository dateLogRepository;
 
-    public UserServiceImpl(UserRepository userRepository,TokenRepository tokenRepository) {
+    public UserServiceImpl(UserRepository userRepository, TokenRepository tokenRepository, final DateLogRepository dateLogRepository) {
         this.userRepository = userRepository;
         this.tokenRepository = tokenRepository;
+        this.dateLogRepository = dateLogRepository;
     }
 
     @Override
@@ -81,15 +86,28 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public LoginResponseDto signUp(OauthLoginResponseDto oauthLoginResponseDto) {
+        long id = System.currentTimeMillis();
+
+        //권한
         Authority authority = Authority.builder()
                 .authorityName("ROLE_USER")
                 .build();
 
+        //날짜 로그
+        DateLog dateLog = DateLog.builder()
+                .createdAt(LocalDate.now())
+                .userId(id)
+                .lastUserId(id)
+                .updatedAt(LocalDate.now())
+                .build();
+
         User user = User.builder()
+                .userId(id)
+                .dateId(dateLogRepository.save(dateLog).getId())
                 .authorities(Arrays.asList(authority))
                 .email(oauthLoginResponseDto.getEmail())
                 .nickname(oauthLoginResponseDto.getNickname())
-                .profileImg(oauthLoginResponseDto.getProfilImg())
+                .profileImg(oauthLoginResponseDto.getProfileImg())
                 .userType(0L) // 카카오 로그인, 그외 로그인 타입을 객체 지향적으로 분리해 of를 쓸 예정입니다. 더 고민해봐야해요.
                 .build();
         userRepository.save(user);

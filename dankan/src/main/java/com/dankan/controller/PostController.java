@@ -5,6 +5,7 @@ import com.dankan.dto.request.post.*;
 import com.dankan.dto.request.room.RoomImageRequestDto;
 import com.dankan.dto.response.post.*;
 import com.dankan.dto.response.room.RoomImageResponseDto;
+import com.dankan.dto.request.post.PostHeartRequestDto;
 import com.dankan.service.post.PostService;
 import com.dankan.service.room.RoomService;
 import com.dankan.service.s3.S3UploadService;
@@ -42,7 +43,7 @@ public class PostController {
             @ApiResponse(responseCode = "404",description = "매물 번호 조회에 실패함")
     })
     @GetMapping
-    public ResponseEntity<PostResponseDto> getPostByRoomId(@RequestParam("roomId") UUID roomId) {
+    public ResponseEntity<PostResponseDto> getPostByRoomId(@RequestParam("roomId") Long roomId) {
         PostResponseDto responseDto = postService.getPostByRoomId(roomId);
         return ResponseEntity.ok(responseDto);
     }
@@ -67,7 +68,7 @@ public class PostController {
             @ApiResponse(responseCode = "403",description = "유저가 Member | Admin 권한이 없음"),
             @ApiResponse(responseCode = "404",description = "최근 본 매물 조회에 실패함")
     })
-    @GetMapping("post/recent/watch")
+    @GetMapping("/recent/watch")
     public ResponseEntity<List<PostResponseDto>> getRecentWatchPost(@RequestParam("pages") Integer pages) {
         List<PostResponseDto> responseDtoList = postService.findRecentWatchPost(pages);
         return ResponseEntity.ok(responseDtoList);
@@ -107,7 +108,7 @@ public class PostController {
             @ApiResponse(responseCode = "404",description = "매매 게시물 상세 조회에 실패함")
     })
     @GetMapping("/detail")
-    public ResponseEntity<PostDetailResponseDto> getPostDetail(@RequestParam("postId") UUID postId) {
+    public ResponseEntity<PostDetailResponseDto> getPostDetail(@RequestParam("postId") Long postId) {
         PostDetailResponseDto responseDto = postService.findPostDetail(postId);
         return ResponseEntity.ok(responseDto);
     }
@@ -120,8 +121,8 @@ public class PostController {
             @ApiResponse(responseCode = "404",description = "매매 게시물 등록에 실패함")
     })
     @PostMapping
-    public ResponseEntity<PostCreateResponseDto> addPost(@RequestBody PostRoomCreateRequestDto postRoomCreateRequestDto) {
-        PostCreateResponseDto responseDto = postService.addPost(postRoomCreateRequestDto);
+    public ResponseEntity<PostCreateResponseDto> addPost(@RequestBody PostRoomRequestDto postRoomRequestDto) {
+        PostCreateResponseDto responseDto = postService.addPost(postRoomRequestDto);
         return ResponseEntity.ok(responseDto);
     }
 
@@ -197,7 +198,7 @@ public class PostController {
             @ApiResponse(responseCode = "404",description = "매매 게시물 삭제에 실패함")
     })
     @DeleteMapping("/delete")
-    public ResponseEntity deletePost(@RequestParam UUID postId) {
+    public ResponseEntity deletePost(@RequestParam Long postId) {
         postService.deletePost(postId);
         return ResponseEntity.ok().build();
     }

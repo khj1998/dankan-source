@@ -13,7 +13,7 @@ public class ReviewReportNotFoundException extends RuntimeException {
     private String message;
     private ErrorCode errorCode;
 
-    public ReviewReportNotFoundException(UUID reportId) {
+    public ReviewReportNotFoundException(Long reportId) {
         super(reportId.toString());
         this.message = reportId.toString();
     }

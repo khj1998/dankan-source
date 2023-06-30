@@ -13,7 +13,7 @@ public class RoomNotFoundException extends RuntimeException {
     private String message;
     private ErrorCode code;
 
-    public RoomNotFoundException(UUID roomId) {
+    public RoomNotFoundException(Long roomId) {
         super(roomId.toString());
         this.message = roomId.toString();
     }

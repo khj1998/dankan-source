@@ -1,10 +1,11 @@
 package com.dankan.service.post;
 
 import com.dankan.domain.*;
-import com.dankan.dto.request.post.PostHeartRequestDto;
-import com.dankan.dto.request.post.PostRoomCreateRequestDto;
 import com.dankan.dto.request.post.PostRoomEditRequestDto;
 import com.dankan.dto.response.post.*;
+import com.dankan.dto.request.post.PostHeartRequestDto;
+import com.dankan.dto.request.post.PostRoomRequestDto;
+import com.dankan.exception.datelog.DateLogNotFoundException;
 import com.dankan.exception.post.PostNotFoundException;
 import com.dankan.exception.room.RoomImageNotFoundException;
 import com.dankan.exception.room.RoomNotFoundException;
@@ -17,58 +18,56 @@ import org.springframework.data.domain.Slice;
 import org.springframework.data.domain.Sort;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
 
 @Slf4j
 public class PostServiceImpl implements PostService {
     private final PostRepository postRepository;
     private final RoomRepository roomRepository;
     private final PostHeartRepository postHeartRepository;
+    private final DateLogRepository dateLogRepository;
     private final RecentWatchRepository recentWatchRepository;
-    private final RoomImageRepository roomImageRepository;
 
-    private final Integer PAGING_COUNT = 5;
-    private final Integer MAX_RECENT_WATCH_COUNT = 30;
 
     public PostServiceImpl(
             PostRepository postRepository,
             RoomRepository roomRepository,
             PostHeartRepository postHeartRepository,
-            RecentWatchRepository recentWatchRepository,
-            RoomImageRepository roomImageRepository) {
+            DateLogRepository dateLogRepository,
+            RecentWatchRepository recentWatchRepository) {
         this.postRepository = postRepository;
         this.roomRepository = roomRepository;
         this.postHeartRepository = postHeartRepository;
         this.recentWatchRepository = recentWatchRepository;
-        this.roomImageRepository = roomImageRepository;
+        this.dateLogRepository = dateLogRepository;
     }
 
     @Override
     @Transactional(readOnly = true)
-    public PostResponseDto getPostByRoomId(UUID roomId) {
-        UUID userId = JwtUtil.getMemberId();
+    public PostResponseDto getPostByRoomId(Long roomId) {
+        Long userId = JwtUtil.getMemberId();
         Room room = roomRepository.findById(roomId)
                 .orElseThrow(() -> new RoomNotFoundException(roomId));
         Post post = postRepository.findByRoomId(roomId)
                 .orElseThrow(() -> new PostNotFoundException(roomId));
         PostHeart postHeart = postHeartRepository.findByUserIdAndPostId(userId,post.getPostId());
 
-        RoomImage roomImage = roomImageRepository.findByRoomIdAndImageType(room.getRoomId(),0L)
-                .orElseThrow(() -> new RoomImageNotFoundException(room.getRoomId()));
+        /*RoomImage roomImage = roomImageRepository.findByRoomIdAndImageType(room.getRoomId(),0L)
+                .orElseThrow(() -> new RoomImageNotFoundException(room.getRoomId()));*/
 
-        return PostResponseDto.of(post,room,postHeart,roomImage.getRoomImageUrl());
+        return PostResponseDto.of(post,room,postHeart,"roomImage.getRoomImageUrl()");
     }
 
     // 이미지 가져와야함
     @Override
     @Transactional(readOnly = true)
     public List<PostResponseDto> findRecentPost(Integer pages) {
-        UUID userId = JwtUtil.getMemberId();
+        Long userId = JwtUtil.getMemberId();
         List<PostResponseDto> responseDtoList = new ArrayList<>();
         Sort sort = Sort.by(Sort.Direction.DESC,"updatedAt");
-        Pageable pageable = PageRequest.of(pages,PAGING_COUNT,sort);
+        Pageable pageable = PageRequest.of(pages,5,sort);
         Slice<Post> postList = postRepository.findAll(pageable);
 
         for (Post post : postList) {
@@ -76,10 +75,10 @@ public class PostServiceImpl implements PostService {
                     .orElseThrow(() -> new RoomNotFoundException(post.getRoomId()));
             PostHeart postHeart = postHeartRepository.findByUserIdAndPostId(userId,post.getPostId());
 
-            RoomImage roomImage = roomImageRepository.findByRoomIdAndImageType(room.getRoomId(),0L)
-                    .orElseThrow(() -> new RoomImageNotFoundException(room.getRoomId()));
+            /*RoomImage roomImage = roomImageRepository.findByRoomIdAndImageType(room.getRoomId(),0L)
+                    .orElseThrow(() -> new RoomImageNotFoundException(room.getRoomId()));*/
 
-            PostResponseDto responseDto = PostResponseDto.of(post,room,postHeart,roomImage.getRoomImageUrl());
+            PostResponseDto responseDto = PostResponseDto.of(post,room,postHeart,"roomImage.getRoomImageUrl()");
             responseDtoList.add(responseDto);
         }
 
@@ -90,8 +89,9 @@ public class PostServiceImpl implements PostService {
     @Transactional(readOnly = true)
     public List<PostResponseDto> findHeartPost(Integer pages) {
         List<PostResponseDto> postResponseDtoList = new ArrayList<>();
-        UUID userId = JwtUtil.getMemberId();
-        Pageable pageable = PageRequest.of(pages,PAGING_COUNT);
+        Long userId = JwtUtil.getMemberId();
+        Pageable pageable = PageRequest.of(pages,5);
+
         List<PostHeart> postHeartList = postHeartRepository.findByUserId(userId,pageable);
 
         for (PostHeart postHeart : postHeartList) {
@@ -100,10 +100,10 @@ public class PostServiceImpl implements PostService {
             Room room = roomRepository.findById(post.getRoomId())
                     .orElseThrow(() -> new RoomNotFoundException(post.getRoomId()));
 
-            RoomImage roomImage = roomImageRepository.findByRoomIdAndImageType(room.getRoomId(),0L)
-                    .orElseThrow(() -> new RoomImageNotFoundException(room.getRoomId()));
+            /*RoomImage roomImage = roomImageRepository.findByRoomIdAndImageType(room.getRoomId(),0L)
+                    .orElseThrow(() -> new RoomImageNotFoundException(room.getRoomId()));*/
 
-            PostResponseDto postResponseDto = PostResponseDto.of(post,room,postHeart,roomImage.getRoomImageUrl());
+            PostResponseDto postResponseDto = PostResponseDto.of(post,room,postHeart,"roomImage.getRoomImageUrl()");
             postResponseDtoList.add(postResponseDto);
         }
 
@@ -114,18 +114,19 @@ public class PostServiceImpl implements PostService {
     @Transactional(readOnly = true)
     public List<PostResponseDto> findMyPost(Integer pages) {
         List<PostResponseDto> postResponseDtoList = new ArrayList<>();
-        UUID userId = JwtUtil.getMemberId();
-        Pageable pageable = PageRequest.of(pages,PAGING_COUNT);
+        Long userId = JwtUtil.getMemberId();
+        Pageable pageable = PageRequest.of(pages,5);
+
         List<Post> postList = postRepository.findByUserId(userId,pageable);
 
         for (Post post : postList) {
             Room room = roomRepository.findById(post.getRoomId())
                     .orElseThrow(() -> new RoomNotFoundException(post.getRoomId()));
 
-            RoomImage roomImage = roomImageRepository.findByRoomIdAndImageType(room.getRoomId(),0L)
-                    .orElseThrow(() -> new RoomImageNotFoundException(room.getRoomId()));
+            /*RoomImage roomImage = roomImageRepository.findByRoomIdAndImageType(room.getRoomId(),0L)
+                    .orElseThrow(() -> new RoomImageNotFoundException(room.getRoomId()));*/
 
-            PostResponseDto postResponseDto = PostResponseDto.of(post,room,roomImage.getRoomImageUrl());
+            PostResponseDto postResponseDto = PostResponseDto.of(post,room,"roomImage.getRoomImageUrl()");
             postResponseDtoList.add(postResponseDto);
         }
 
@@ -136,23 +137,23 @@ public class PostServiceImpl implements PostService {
     @Transactional(readOnly = true)
     public List<PostResponseDto> findRecentWatchPost(Integer pages) {
         List<PostResponseDto> postResponseDtoList = new ArrayList<>();
-        UUID userId = JwtUtil.getMemberId();
+        Long userId = JwtUtil.getMemberId();
         Sort sort = Sort.by(Sort.Direction.DESC,"createdAt");
-        Pageable pageable = PageRequest.of(pages,PAGING_COUNT,sort);
+        Pageable pageable = PageRequest.of(pages,5,sort);
         List<RecentWatchPost> recentWatchPostList = recentWatchRepository.findAllByUserId(userId,pageable);
 
         for (RecentWatchPost recentWatchPost : recentWatchPostList) {
-            UUID postId = recentWatchPost.getPostId();
+            Long postId = recentWatchPost.getPostId();
             Post post = postRepository.findById(postId)
                     .orElseThrow(() -> new PostNotFoundException(postId));
 
             Room room = roomRepository.findById(post.getRoomId())
                     .orElseThrow(() -> new RoomNotFoundException(post.getRoomId()));
 
-            RoomImage roomImage = roomImageRepository.findByRoomIdAndImageType(room.getRoomId(),0L)
-                    .orElseThrow(() -> new RoomImageNotFoundException(room.getRoomId()));
+            /*RoomImage roomImage = roomImageRepository.findByRoomIdAndImageType(room.getRoomId(),0L)
+                    .orElseThrow(() -> new RoomImageNotFoundException(room.getRoomId()));*/
 
-            PostResponseDto postResponseDto = PostResponseDto.of(post,room,roomImage.getRoomImageUrl());
+            PostResponseDto postResponseDto = PostResponseDto.of(post,room,"roomImage.getRoomImageUrl()");
             postResponseDtoList.add(postResponseDto);
         }
 
@@ -162,8 +163,8 @@ public class PostServiceImpl implements PostService {
     // 이미지 가져와야함
     @Override
     @Transactional
-    public PostDetailResponseDto findPostDetail(UUID postId) {
-        UUID userId = JwtUtil.getMemberId();
+    public PostDetailResponseDto findPostDetail(Long postId) {
+        Long userId = JwtUtil.getMemberId();
         Boolean isWatched = false;
         StringBuilder imgUrls = new StringBuilder();
         RoomImage roomImage;
@@ -174,8 +175,8 @@ public class PostServiceImpl implements PostService {
 
         List<RecentWatchPost> recentWatchPostList = recentWatchRepository.findAllByUserId(userId);
 
-        if (recentWatchPostList.size() >= MAX_RECENT_WATCH_COUNT) {
-            recentWatchRepository.delete(recentWatchPostList.get(MAX_RECENT_WATCH_COUNT-1));
+        if (recentWatchPostList.size() >= 30) {
+            recentWatchRepository.delete(recentWatchPostList.get(29));
         }
 
         RecentWatchPost recentWatchPost = RecentWatchPost.of(userId,postId);
@@ -198,9 +199,9 @@ public class PostServiceImpl implements PostService {
                 .orElseThrow(() -> new RoomNotFoundException(post.getRoomId()));
 
         for (imageType=0L;imageType<3L;imageType+=1) {
-            roomImage = roomImageRepository.findByRoomIdAndImageType(room.getRoomId(),imageType)
-                    .orElseThrow(() -> new RoomImageNotFoundException(room.getRoomId()));
-            imgUrls.append(roomImage.getRoomImageUrl()).append(" ");
+            /*roomImage = roomImageRepository.findByRoomIdAndImageType(room.getRoomId(),imageType)
+                    .orElseThrow(() -> new RoomImageNotFoundException(room.getRoomId()));*/
+            imgUrls.append("roomImage.getRoomImageUrl()").append(" ");
         }
 
         return PostDetailResponseDto.of(post,room,postHeart,postHeartCount, imgUrls.toString());
@@ -208,14 +209,21 @@ public class PostServiceImpl implements PostService {
 
     @Override
     @Transactional
-    public PostCreateResponseDto addPost(PostRoomCreateRequestDto postRoomCreateRequestDto) {
-        UUID userId = JwtUtil.getMemberId();
+    public PostCreateResponseDto addPost(PostRoomRequestDto postRoomRequestDto) {
+        Long userId = JwtUtil.getMemberId();
 
-        Room room = Room.of(postRoomCreateRequestDto,userId);
+        DateLog dateLog = DateLog.builder()
+                .createdAt(LocalDate.now())
+                .userId(userId)
+                .updatedAt(LocalDate.now())
+                .lastUserId(userId)
+                .build();
+        dateLogRepository.save(dateLog);
+
+        Room room = Room.of(postRoomRequestDto,userId,dateLog.getId());
         roomRepository.save(room);
 
-        Post post = Post.of(postRoomCreateRequestDto,userId,room.getRoomId());
-
+        Post post = Post.of(postRoomRequestDto,userId,room.getRoomId(),dateLog.getId());
         postRepository.save(post);
 
         return PostCreateResponseDto.of(post,room);
@@ -224,20 +232,26 @@ public class PostServiceImpl implements PostService {
     @Override
     @Transactional
     public PostEditResponseDto editPost(PostRoomEditRequestDto postRoomEditRequestDto) {
-        UUID userId = JwtUtil.getMemberId();
+        Long userId = JwtUtil.getMemberId();
         Post post = postRepository.findByPostIdAndUserId(postRoomEditRequestDto.getPostId(), userId)
                         .orElseThrow(() -> new PostNotFoundException(postRoomEditRequestDto.getPostId()));
         post.setTitle(postRoomEditRequestDto.getTitle());
         post.setContent(postRoomEditRequestDto.getContent());
         postRepository.save(post);
 
+        DateLog dateLog = dateLogRepository.findById(post.getDateId())
+                .orElseThrow(() -> new DateLogNotFoundException(post.getDateId()));
+        dateLog.setLastUserId(userId);
+        dateLog.setUpdatedAt(LocalDate.now());
+        dateLogRepository.save(dateLog);
+
         return PostEditResponseDto.of(post);
     }
 
     @Override
     @Transactional
-    public void deletePost(UUID postId) {
-        UUID userId = JwtUtil.getMemberId();
+    public void deletePost(Long postId) {
+        Long userId = JwtUtil.getMemberId();
         Post post = postRepository.findByPostIdAndUserId(postId,userId)
                         .orElseThrow(() -> new PostNotFoundException(postId));
         postRepository.delete(post);
@@ -246,14 +260,24 @@ public class PostServiceImpl implements PostService {
     @Override
     @Transactional
     public PostHeartResponseDto heartPost(PostHeartRequestDto postHeartRequestDto) {
-        UUID userId = JwtUtil.getMemberId();
+        Long userId = JwtUtil.getMemberId();
         PostHeart postHeart = postHeartRepository.findByUserIdAndPostId(userId,postHeartRequestDto.getPostId());
 
         if (postHeart == null) {
+            DateLog dateLog = DateLog.builder()
+                    .createdAt(LocalDate.now())
+                    .userId(userId)
+                    .updatedAt(LocalDate.now())
+                    .lastUserId(userId)
+                    .build();
+            dateLogRepository.save(dateLog);
+
             postHeart = PostHeart.builder()
                     .postId(postHeartRequestDto.getPostId())
                     .userId(userId)
+                    .dateId(dateLog.getId())
                     .build();
+
             postHeartRepository.save(postHeart);
         } else {
             postHeartRepository.deleteById(postHeart.getPostHeartId());

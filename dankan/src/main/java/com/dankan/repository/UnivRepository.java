@@ -10,7 +10,7 @@ import java.util.List;
 import java.util.UUID;
 
 @Repository
-public interface UnivRepository extends JpaRepository<Univ, UUID> {
+public interface UnivRepository extends JpaRepository<Univ, Long> {
     @Query(value = "select new com.dankan.dto.response.univ.UnivListResponseDto(univ.emailDomain, univ.univName)" +
             "from Univ univ")
     public List<UnivListResponseDto> findUnivList();

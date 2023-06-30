@@ -8,5 +8,5 @@ import java.util.UUID;
 public interface TokenService {
     public Boolean isExpired();
     public TokenResponseDto reissueAccessToken(TokenRequestDto tokenRequestDto);
-    public TokenResponseDto findByUserId(UUID id);
+    public TokenResponseDto findByUserId(Long id);
 }

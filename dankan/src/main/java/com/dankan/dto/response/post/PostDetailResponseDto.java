@@ -1,14 +1,13 @@
 package com.dankan.dto.response.post;
 
+import com.dankan.domain.Options;
 import com.dankan.domain.Post;
 import com.dankan.domain.PostHeart;
 import com.dankan.domain.Room;
-import com.dankan.enum_converter.PriceTypeEnum;
-import com.dankan.enum_converter.RoomTypeEnum;
+import com.dankan.enum_converter.*;
 import lombok.*;
 
-import java.util.Date;
-import java.util.UUID;
+import java.time.LocalDate;
 
 @Setter
 @Getter
@@ -17,15 +16,15 @@ import java.util.UUID;
 @Builder
 public class PostDetailResponseDto {
     // post 응답
-    private UUID postId;
-    private Date updatedAt;
+    private Long postId;
+    private LocalDate updatedAt;
     private String title;
     private String content;
     private Boolean isHearted;
     private Integer heartCount;
 
     // room 응답
-    private UUID itemNumber;
+    private Long itemNumber;
     private String address;
     private String addressDetails;
     private String dealType;
@@ -44,8 +43,8 @@ public class PostDetailResponseDto {
     private String options;
     private String etcOptions;
     private Long isDiscussion; //입주기간 협의 가능여부
-    private Date moveInStart; //입주 가능 시작일
-    private Date moveInEnd; //입주 가능 마지막 일
+    private LocalDate moveInStart; //입주 가능 시작일
+    private LocalDate moveInEnd; //입주 가능 마지막 일
     private String imgUrls;
 
     // room_address 응답
@@ -59,16 +58,41 @@ public class PostDetailResponseDto {
 
     public static PostDetailResponseDto of(Post post, Room room,PostHeart postHeart,Integer heartCount,String imgUrls) {
         Boolean isHearted = false;
-        String dealType;
+        String dealType = "";
+        String priceType = "";
+        String structure = "";
+        String managementType = "";
+        String options = "";
+        String etcOptions = "";
 
         if (postHeart!=null) {
             isHearted = true;
         }
 
-        if (room.getRoomCost().getDealType()) {
-            dealType = "양도";
-        } else {
-            dealType = "단기임대";
+        for (Options option : room.getOptionsList()) {
+            if (option.getCodeKey().contains("DealType")) {
+                dealType = option.getValue().equals(0L) ? "단기임대" : "양도";
+            }
+
+            if (option.getCodeKey().contains("PriceType")) {
+                priceType = PriceTypeEnum.getPriceTypeName(option.getValue());
+            }
+
+            if (option.getCodeKey().contains("Structure")) {
+                structure = StructureTypeEnum.getStructureTypeName(option.getValue());
+            }
+
+            if (option.getCodeKey().contains("ManagementType")) {
+                managementType += ManagementTypeEnum.getManagementTypeName(option.getValue())+" ";
+            }
+
+            if (option.getCodeKey().contains("Option")) {
+                options += OptionTypeEnum.getOptionTypeName(option.getValue())+" ";
+            }
+
+            if (option.getCodeKey().contains("EtcOption")) {
+                etcOptions += EtcOptionTypeEnum.getEtcOptionTypeName(option.getValue())+" ";
+            }
         }
 
         return PostDetailResponseDto.builder()
@@ -79,24 +103,22 @@ public class PostDetailResponseDto {
                 .isHearted(isHearted)
                 .heartCount(heartCount)
 
+                .dealType(dealType)
+                .priceType(priceType)
+                .structure(structure)
+                .managementType(managementType)
+                .options(options)
+                .etcOptions(etcOptions)
                 .itemNumber(room.getRoomId())
                 .address(room.getRoomAddress().getAddress())
                 .addressDetails(room.getRoomAddress().getAddressDetail())
-                .dealType(dealType)
-                .roomType(RoomTypeEnum.getRoomTypeName(room.getRoomStructure().getRoomType()))
-                .elevators(room.getRoomOption().getElevatorOption())
-                .priceType(PriceTypeEnum.getPriceTypeName(room.getRoomCost().getPriceType()))
                 .deposit(room.getRoomCost().getDeposit())
                 .price(room.getRoomCost().getPrice())
                 .managementCost(room.getRoomCost().getManagementCost())
-                .managementType(room.getRoomCost().getManagementType())
                 .totalFloor(room.getRoomStructure().getTotalFloor())
                 .floor(room.getRoomStructure().getFloor())
-                .structure(room.getRoomStructure().getStructure())
                 .roomSize(room.getRoomStructure().getRoomSize())
                 .realRoomSize(room.getRoomStructure().getRealRoomSize())
-                .options(room.getRoomOption().getRoomOptions())
-                .etcOptions(room.getRoomOption().getRoomEtcOptions())
                 .isDiscussion(room.getRoomDiscussion().getIsDiscussion())
                 .moveInStart(room.getRoomDiscussion().getMoveInStart())
                 .moveInEnd(room.getRoomDiscussion().getMoveInEnd())

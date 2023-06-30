@@ -30,9 +30,8 @@ public class ReportController {
             @ApiResponse(responseCode = "404",description = "매물 게시물 신고 등록에 실패함")
     })
     @PostMapping("/post")
-    public ResponseEntity<ReportResponseDto> addPostReport(@RequestBody RoomReportRequestDto roomReportRequestDto) {
-        ReportResponseDto responseDto = reportService.addPostReport(roomReportRequestDto);
-        return ResponseEntity.ok(responseDto);
+    public ResponseEntity<Boolean> addPostReport(@RequestBody RoomReportRequestDto roomReportRequestDto) {
+        return ResponseEntity.ok(reportService.addPostReport(roomReportRequestDto));
     }
 
     @ApiOperation("매물 리뷰 신고 API")
@@ -43,8 +42,7 @@ public class ReportController {
             @ApiResponse(responseCode = "404",description = "매물 리뷰 신고 등록에 실패함")
     })
     @PostMapping("/review")
-    public ResponseEntity<ReportResponseDto> addReviewReport(@RequestBody ReviewReportRequestDto reviewReportRequestDto) {
-        ReportResponseDto responseDto = reportService.addReviewReport(reviewReportRequestDto);
-        return ResponseEntity.ok(responseDto);
+    public ResponseEntity<Boolean> addReviewReport(@RequestBody ReviewReportRequestDto reviewReportRequestDto) {
+        return ResponseEntity.ok(reportService.addReviewReport(reviewReportRequestDto));
     }
 }

@@ -12,7 +12,7 @@ import java.util.UUID;
 public class TokenResponseDto {
     private String accessToken;
     private String refreshToken;
-    private UUID id;
+    private Long id;
     private LocalDateTime accessTokenExpiredAt;
     private LocalDateTime refreshTokenExpiredAt;
 

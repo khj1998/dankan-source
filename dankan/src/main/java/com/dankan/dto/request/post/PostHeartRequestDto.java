@@ -8,5 +8,5 @@ import java.util.UUID;
 @Setter
 @Getter
 public class PostHeartRequestDto {
-    private UUID postId;
+    private Long postId;
 }

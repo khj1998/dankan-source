@@ -37,7 +37,6 @@ public class SpringConfig {
     private final PostRepository postRepository;
     private final AmazonS3 amazonS3Client;
     private final RoomRepository roomRepository;
-    private final RoomImageRepository roomImageRepository;
     private final PostHeartRepository postHeartRepository;
     private final PostReportRepository postReportRepository;
     private final ReviewRepository reviewRepository;
@@ -46,23 +45,21 @@ public class SpringConfig {
     private final UnivRepository univRepository;
     private final JavaMailSender javaMailSender;
     private final String mail;
+    private final DateLogRepository dateLogRepository;
 
     public SpringConfig(final UserRepository userRepository, final AmazonS3 amazonS3Client, final TokenRepository tokenRepository
                         , final PostRepository postRepository
                         , final RoomRepository roomRepository
-                        , final RoomImageRepository roomImageRepository
                         , final PostHeartRepository postHeartRepository
                         , final PostReportRepository postReportRepository
                         , final ReviewRepository reviewRepository
-                        , final ReviewReportRepository reviewReportRepository, final UnivRepository univRepository, final JavaMailSender javaMailSender, @Value("${mail.id}") String mail
-
+                        , final ReviewReportRepository reviewReportRepository, final UnivRepository univRepository, final JavaMailSender javaMailSender, @Value("${mail.id}") String mail, final DateLogRepository dateLogRepository
                         , final RecentWatchRepository recentWatchRepository) {
         this.userRepository = userRepository;
         this.amazonS3Client = amazonS3Client;
         this.tokenRepository = tokenRepository;
         this.postRepository = postRepository;
         this.roomRepository = roomRepository;
-        this.roomImageRepository = roomImageRepository;
         this.postHeartRepository = postHeartRepository;
         this.postReportRepository = postReportRepository;
         this.reviewRepository = reviewRepository;
@@ -71,11 +68,12 @@ public class SpringConfig {
         this.univRepository = univRepository;
         this.javaMailSender = javaMailSender;
         this.mail = mail;
+        this.dateLogRepository = dateLogRepository;
     }
 
     @Bean
     public UserService userService() {
-        return new UserServiceImpl(userRepository,tokenRepository);
+        return new UserServiceImpl(userRepository,tokenRepository, dateLogRepository);
     }
 
     @Bean
@@ -90,22 +88,22 @@ public class SpringConfig {
 
     @Bean
     public PostService postService() {
-        return new PostServiceImpl(postRepository,roomRepository,postHeartRepository,recentWatchRepository,roomImageRepository);
+        return new PostServiceImpl(postRepository,roomRepository,postHeartRepository,dateLogRepository,recentWatchRepository);
     }
 
     @Bean
     public RoomService roomService() {
-        return new RoomServiceImpl(roomImageRepository);
+        return new RoomServiceImpl(roomRepository);
     }
 
     @Bean
     public ReportService reportService() {
-        return new ReportServiceImpl(postReportRepository,reviewReportRepository,postRepository,roomRepository,reviewRepository);
+        return new ReportServiceImpl(postReportRepository,reviewReportRepository,postRepository,roomRepository,reviewRepository,dateLogRepository);
     }
 
     @Bean
     public ReviewService reviewService() {
-        return new ReviewServiceImpl(userRepository, reviewRepository, roomRepository,roomImageRepository);
+        return new ReviewServiceImpl(userRepository, reviewRepository, roomRepository,dateLogRepository);
     }
 
     @Bean

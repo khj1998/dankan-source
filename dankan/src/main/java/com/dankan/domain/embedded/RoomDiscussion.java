@@ -17,8 +17,9 @@ public class RoomDiscussion {
     @Column(name = "is_discussion",nullable = false,columnDefinition = "tinyint")
     private Long isDiscussion;
 
-    private Date moveInStart;
+    @Column(name = "move_in_start",nullable = false,columnDefinition = "date")
+    private LocalDate moveInStart;
 
     @Column(name = "move_in_end",nullable = false,columnDefinition = "date")
-    private Date moveInEnd;
+    private LocalDate moveInEnd;
 }

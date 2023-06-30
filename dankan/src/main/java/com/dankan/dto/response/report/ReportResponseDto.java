@@ -15,21 +15,15 @@ import java.util.UUID;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class ReportResponseDto {
     private Boolean isSuccess;
-    private UUID userId;
+    private Long userId;
     private String reportType;
     private String address;
     private String addressDetail;
 
-    public static ReportResponseDto of(Boolean isSuccess) {
-        return ReportResponseDto.builder()
-                .isSuccess(isSuccess)
-                .build();
-    }
-
     public static ReportResponseDto of(PostReport postReport) {
         return ReportResponseDto.builder()
                 .userId(postReport.getUserId())
-                .reportType(postReport.getReportType())
+                //.reportType(postReport.getReportType())
                 .address(postReport.getAddress())
                 .addressDetail(postReport.getAddressDetail())
                 .build();
@@ -38,7 +32,7 @@ public class ReportResponseDto {
     public static ReportResponseDto of(ReviewReport reviewReport) {
         return ReportResponseDto.builder()
                 .userId(reviewReport.getUserId())
-                .reportType(reviewReport.getReportType())
+                //.reportType(reviewReport.getReportType())
                 .address(reviewReport.getAddress())
                 .addressDetail(reviewReport.getAddressDetail())
                 .build();

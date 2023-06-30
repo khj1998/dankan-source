@@ -11,7 +11,7 @@ import java.util.UUID;
 @Getter
 @Setter
 public class ReviewImageRequestDto {
-    private UUID reviewId;
+    private Long reviewId;
 
     @Schema(title = "이미지 업로드 리스트",description = "리뷰 이미지 업로드")
     private List<MultipartFile> multipartFileList;

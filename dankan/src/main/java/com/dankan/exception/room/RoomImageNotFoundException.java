@@ -13,7 +13,7 @@ public class RoomImageNotFoundException extends RuntimeException {
     private String message;
     private ErrorCode errorCode;
 
-    public RoomImageNotFoundException(UUID roomId) {
+    public RoomImageNotFoundException(Long roomId) {
         super(roomId.toString());
         this.message = roomId.toString();
     }

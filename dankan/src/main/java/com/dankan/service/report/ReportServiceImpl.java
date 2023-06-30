@@ -14,6 +14,7 @@ import com.dankan.util.JwtUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
 import java.util.UUID;
 
 @Slf4j
@@ -24,53 +25,73 @@ public class ReportServiceImpl implements ReportService {
     private final PostRepository postRepository;
     private final RoomRepository roomRepository;
     private final ReviewRepository reviewRepository;
+    private final DateLogRepository dateLogRepository;
 
     public ReportServiceImpl(PostReportRepository postReportRepository
                       ,ReviewReportRepository reviewReportRepository
                       ,PostRepository postRepository
                       ,RoomRepository roomRepository
-                      ,ReviewRepository reviewRepository) {
+                      ,ReviewRepository reviewRepository
+                      ,DateLogRepository dateLogRepository) {
         this.postReportRepository = postReportRepository;
         this.reviewReportRepository = reviewReportRepository;
         this.postRepository = postRepository;
         this.roomRepository = roomRepository;
         this.reviewRepository = reviewRepository;
+        this.dateLogRepository = dateLogRepository;
     }
 
     @Override
     @Transactional
-    public ReportResponseDto addPostReport(RoomReportRequestDto roomReportRequestDto) {
-        UUID userId = JwtUtil.getMemberId();
+    public Boolean addPostReport(RoomReportRequestDto roomReportRequestDto) {
+        Long userId = JwtUtil.getMemberId();
         Post post = postRepository.findById(roomReportRequestDto.getPostId())
                 .orElseThrow(() -> new PostNotFoundException(roomReportRequestDto.getPostId()));
 
-        UUID roomId = post.getRoomId();
+        Long roomId = post.getRoomId();
 
         Room room = roomRepository.findById(roomId)
                 .orElseThrow(() -> new RoomNotFoundException(roomId));
 
-        PostReport postReport = PostReport.of(room, roomReportRequestDto.getReportType(),userId);
+        DateLog dateLog = DateLog.builder()
+                .userId(userId)
+                .createdAt(LocalDate.now())
+                .lastUserId(userId)
+                .updatedAt(LocalDate.now())
+                .build();
+        dateLogRepository.save(dateLog);
+
+        PostReport postReport = PostReport.of(room, userId,dateLog.getId());
         postReportRepository.save(postReport);
 
-        return ReportResponseDto.of(true);
+        return true;
     }
 
     @Override
     @Transactional
-    public ReportResponseDto addReviewReport(ReviewReportRequestDto reviewReportRequestDto) {
-        UUID userId = JwtUtil.getMemberId();
+    public Boolean addReviewReport(ReviewReportRequestDto reviewReportRequestDto) {
+        Long userId = JwtUtil.getMemberId();
+
         RoomReview roomReview = reviewRepository.findById(reviewReportRequestDto.getReviewId())
                 .orElseThrow(() -> new ReviewNotFoundException(reviewReportRequestDto.getReviewId()));
 
-        ReviewReport reviewReport = ReviewReport.of(userId, reviewReportRequestDto.getReportType(), roomReview);
+        DateLog dateLog = DateLog.builder()
+                .userId(userId)
+                .createdAt(LocalDate.now())
+                .lastUserId(userId)
+                .updatedAt(LocalDate.now())
+                .build();
+        dateLogRepository.save(dateLog);
+
+        ReviewReport reviewReport = ReviewReport.of(userId,dateLog.getId(),roomReview);
         reviewReportRepository.save(reviewReport);
 
-        return ReportResponseDto.of(true);
+        return true;
     }
 
     @Override
     @Transactional
-    public ReportResponseDto findPostReport(UUID reportId) {
+    public ReportResponseDto findPostReport(Long reportId) {
         PostReport postReport = postReportRepository.findById(reportId)
                 .orElseThrow(() -> new PostReportNotFoundException(reportId));
 
@@ -79,13 +100,13 @@ public class ReportServiceImpl implements ReportService {
 
     @Override
     @Transactional
-    public void removePostReport(UUID reportId) {
+    public void removePostReport(Long reportId) {
         postReportRepository.deleteById(reportId);
     }
 
     @Override
     @Transactional
-    public ReportResponseDto findReviewReport(UUID reportId) {
+    public ReportResponseDto findReviewReport(Long reportId) {
         ReviewReport reviewReport = reviewReportRepository.findById(reportId)
                 .orElseThrow(() -> new ReviewReportNotFoundException(reportId));
 
@@ -94,7 +115,7 @@ public class ReportServiceImpl implements ReportService {
 
     @Override
     @Transactional
-    public void removeReviewReport(UUID reportId) {
+    public void removeReviewReport(Long reportId) {
         reviewReportRepository.deleteById(reportId);
     }
 }

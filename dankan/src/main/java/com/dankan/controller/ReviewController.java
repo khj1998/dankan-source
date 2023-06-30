@@ -8,7 +8,6 @@ import com.dankan.dto.response.review.ReviewRateResponseDto;
 import com.dankan.dto.response.review.ReviewResponseDto;
 import com.dankan.dto.request.review.ReviewDetailRequestDto;
 import com.dankan.dto.request.review.ReviewRequestDto;
-import com.dankan.dto.response.room.RoomImageResponseDto;
 import com.dankan.service.review.ReviewService;
 import com.dankan.service.s3.S3UploadService;
 import io.swagger.annotations.Api;
@@ -137,7 +136,7 @@ public class ReviewController {
             @ApiResponse(responseCode = "404",description = "매물 후기 삭제에 실패함")
     })
     @DeleteMapping("/remove")
-    public ResponseEntity removeReview(@RequestParam("reviewId") UUID reviewId) {
+    public ResponseEntity removeReview(@RequestParam("reviewId") Long reviewId) {
         reviewService.deleteReview(reviewId);
         return ResponseEntity.ok().build();
     }

@@ -8,7 +8,7 @@ import java.util.UUID;
 @Setter
 @Getter
 public class PostRoomEditRequestDto {
-    private UUID postId;
+    private Long postId;
     private String title;
     private String content;
 }

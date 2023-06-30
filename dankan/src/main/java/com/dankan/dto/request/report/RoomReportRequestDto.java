@@ -6,6 +6,6 @@ import java.util.UUID;
 
 @Getter
 public class RoomReportRequestDto {
-    private UUID postId;
+    private Long postId;
     private String reportType;
 }

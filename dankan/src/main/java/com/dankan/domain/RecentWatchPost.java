@@ -7,6 +7,7 @@ import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.Type;
 
 import javax.persistence.*;
+import java.time.LocalDate;
 import java.util.Date;
 import java.util.UUID;
 
@@ -21,24 +22,20 @@ import java.util.UUID;
 public class RecentWatchPost {
 
     @Id
-    @GeneratedValue(generator = "uuid2")
-    @GenericGenerator(name = "uuid2", strategy = "uuid2")
-    @Column(name = "recent_watch_id",nullable = false,length = 36,columnDefinition = "varchar")
-    @Type(type = "uuid-char")
-    private UUID recentWatchId;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "recent_watch_id",columnDefinition = "int")
+    private Long recentWatchId;
 
-    @Column(name = "user_id",nullable = false,length = 36,columnDefinition = "varchar")
-    @Type(type = "uuid-char")
-    private UUID userId;
+    @Column(name = "user_id",nullable = false,columnDefinition = "int")
+    private Long userId;
 
-    @Column(name = "post_id",nullable = false,length = 36,columnDefinition = "varchar")
-    @Type(type = "uuid-char")
-    private UUID postId;
+    @Column(name = "post_id",nullable = false,columnDefinition = "int")
+    private Long postId;
 
     @CreationTimestamp
-    private Date createdAt;
+    private LocalDate updatedAt;
 
-    public static RecentWatchPost of(UUID userId, UUID postId) {
+    public static RecentWatchPost of(Long userId, Long postId) {
         return RecentWatchPost.builder()
                 .userId(userId)
                 .postId(postId)

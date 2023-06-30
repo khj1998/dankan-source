@@ -6,6 +6,6 @@ import java.util.UUID;
 
 @Getter
 public class ReviewReportRequestDto {
-    private UUID reviewId;
+    private Long reviewId;
     private String reportType;
 }

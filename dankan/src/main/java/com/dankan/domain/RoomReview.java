@@ -1,18 +1,17 @@
 package com.dankan.domain;
 
 import com.dankan.domain.embedded.ResidencePeriod;
-import com.dankan.domain.embedded.RoomReviewRate;
 import com.dankan.dto.request.review.ReviewRequestDto;
 import com.dankan.enum_converter.SatisfyEnum;
 import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
 import lombok.*;
-import org.hibernate.annotations.GenericGenerator;
-import org.hibernate.annotations.Type;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import javax.persistence.*;
-import java.util.Date;
-import java.util.UUID;
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 
 @ApiModel(value = "매물 후기 엔티티")
 @Getter
@@ -25,25 +24,27 @@ import java.util.UUID;
 public class RoomReview {
 
     @Id
-    @GeneratedValue(generator = "uuid2")
-    @GenericGenerator(name = "uuid2", strategy = "uuid2")
-    @Column(name = "review_id",nullable = false,length = 36,columnDefinition = "varchar")
-    @Type(type = "uuid-char")
-    private UUID reviewId;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "review_id", columnDefinition = "int")
+    private Long reviewId;
 
-    @Column(name = "user_id",nullable = false,length = 36,columnDefinition = "varchar")
-    @Type(type = "uuid-char")
-    private UUID userId;
+    @Column(name = "user_id",nullable = false, columnDefinition = "bigint")
+    private Long userId;
 
-    @Column(name = "room_id",nullable = false,length = 36,columnDefinition = "varchar")
-    @Type(type = "uuid-char")
-    private UUID roomId;
+    @Column(name = "room_id",nullable = false, columnDefinition = "int")
+    private Long roomId;
+
+    @Column(name = "date_id",nullable = false, columnDefinition = "int")
+    private Long dateId;
+
+    @Column(name = "total_rate",nullable = false,columnDefinition = "int")
+    private Long totalRate;
 
     @Column(name = "content",nullable = false,columnDefinition = "varchar")
     private String content;
 
     @UpdateTimestamp
-    private Date updatedAt;
+    private LocalDate updatedAt;
 
     @Column(name = "image_url",columnDefinition = "text")
     private String imageUrl;
@@ -51,38 +52,73 @@ public class RoomReview {
     @Embedded
     private ResidencePeriod residencePeriod;
 
-    @Embedded
-    private RoomReviewRate roomReviewRate;
-
     @Column(name = "address",nullable = false,length = 100,columnDefinition = "varchar")
     private String address;
 
     @Column(name = "address_detail",nullable = false,length = 50,columnDefinition = "varchar")
     private String addressDetail;
 
-    public static RoomReview of(ReviewRequestDto reviewRequestDto,User user,UUID roomId) {
+    @ManyToMany(fetch = FetchType.LAZY)
+    @JoinTable(
+            name = "review_rate",
+            joinColumns = {@JoinColumn(name = "review_id", referencedColumnName = "review_id")},
+            inverseJoinColumns = {@JoinColumn(name = "code_key", referencedColumnName = "code_key")})
+    @ApiModelProperty(example = "사용자 권한 정보들")
+    private List<Options> optionsList;
+
+    public static RoomReview of(ReviewRequestDto reviewRequestDto,User user,Long roomId,Long dateId) {
         ResidencePeriod period = ResidencePeriod.builder()
                 .startedAt(reviewRequestDto.getStartedAt())
                 .endAt(reviewRequestDto.getEndAt())
                 .build();
-
-        RoomReviewRate reviewRate = RoomReviewRate.builder()
-                .totalRate(reviewRequestDto.getTotalRate())
-                .accessRate(SatisfyEnum.getSatisfyValue(reviewRequestDto.getAccessRate()))
-                .cleanRate(SatisfyEnum.getSatisfyValue(reviewRequestDto.getCleanRate()))
-                .hostRate(SatisfyEnum.getSatisfyValue(reviewRequestDto.getHostRate()))
-                .facilityRate(SatisfyEnum.getSatisfyValue(reviewRequestDto.getFacilityRate()))
-                .noiseRate(SatisfyEnum.getSatisfyValue(reviewRequestDto.getNoiseRate()))
-                .build();
+        List<Options> optionsList = getOptionsList(reviewRequestDto);
 
         return RoomReview.builder()
                 .userId(user.getUserId())
                 .roomId(roomId)
+                .dateId(dateId)
+                .totalRate(reviewRequestDto.getTotalRate())
                 .content(reviewRequestDto.getContent())
                 .residencePeriod(period)
-                .roomReviewRate(reviewRate)
                 .address(reviewRequestDto.getAddress())
                 .addressDetail(reviewRequestDto.getAddressDetail())
+                .optionsList(optionsList)
                 .build();
+    }
+
+    private static List<Options> getOptionsList(ReviewRequestDto reviewRequestDto) {
+        List<Options> optionsList = new ArrayList<>();
+        Long cleanRateValue = SatisfyEnum.getSatisfyValue(reviewRequestDto.getCleanRate());
+        Long noiseRateValue = SatisfyEnum.getSatisfyValue(reviewRequestDto.getNoiseRate());
+        Long accessRateValue = SatisfyEnum.getSatisfyValue(reviewRequestDto.getAccessRate());
+        Long hostRateValue = SatisfyEnum.getSatisfyValue(reviewRequestDto.getHostRate());
+        Long facilityRateValue = SatisfyEnum.getSatisfyValue(reviewRequestDto.getFacilityRate());
+
+        optionsList.add(Options.builder()
+                .codeKey(reviewRequestDto.getCleanRate())
+                .value(cleanRateValue)
+                .build());
+
+        optionsList.add(Options.builder()
+                .codeKey(reviewRequestDto.getNoiseRate())
+                .value(noiseRateValue)
+                .build());
+
+        optionsList.add(Options.builder()
+                .codeKey(reviewRequestDto.getAccessRate())
+                .value(accessRateValue)
+                .build());
+
+        optionsList.add(Options.builder()
+                .codeKey(reviewRequestDto.getHostRate())
+                .value(hostRateValue)
+                .build());
+
+        optionsList.add(Options.builder()
+                .codeKey(reviewRequestDto.getFacilityRate())
+                .value(facilityRateValue)
+                .build());
+
+        return optionsList;
     }
 }

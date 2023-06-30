@@ -11,7 +11,7 @@ import java.util.UUID;
 @Getter
 @Setter
 public class RoomImageRequestDto {
-    private UUID roomId;
+    private Long roomId;
     private String type;
 
     @Schema(title = "이미지 업로드 리스트",description = "방 이미지 업로드")

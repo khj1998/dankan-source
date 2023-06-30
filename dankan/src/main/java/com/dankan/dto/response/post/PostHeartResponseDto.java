@@ -10,10 +10,10 @@ import java.util.UUID;
 @AllArgsConstructor
 @Builder
 public class PostHeartResponseDto {
-    private UUID postId;
-    private UUID userId;
+    private Long postId;
+    private Long userId;
 
-    public static PostHeartResponseDto of(UUID postId, UUID userId) {
+    public static PostHeartResponseDto of(Long postId, Long userId) {
         return PostHeartResponseDto.builder()
                 .postId(postId)
                 .userId(userId)

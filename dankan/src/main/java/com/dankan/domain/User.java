@@ -3,8 +3,6 @@ package com.dankan.domain;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
-import org.hibernate.annotations.GenericGenerator;
-import org.hibernate.annotations.Type;
 
 import javax.persistence.*;
 import java.time.LocalDate;
@@ -20,15 +18,11 @@ import java.util.*;
 public class User {
 
     @Id
-    @GeneratedValue(generator = "uuid2")
-    @GenericGenerator(name = "uuid2", strategy = "uuid2")
-    @Column(name = "user_id",nullable = false,length = 36,columnDefinition = "varchar")
-    @Type(type = "uuid-char")
-    private UUID userId;
+    @Column(name = "user_id",nullable = false, columnDefinition = "bigint")
+    private Long userId;
 
-    @CreationTimestamp
-    @Column(nullable = false,columnDefinition = "date")
-    private LocalDate regDate;
+    @Column(name = "date_id", nullable = false, columnDefinition = "int")
+    private Long dateId;
 
     @Column(nullable = false, unique = true,length = 16,columnDefinition = "varchar")
     private String nickname;

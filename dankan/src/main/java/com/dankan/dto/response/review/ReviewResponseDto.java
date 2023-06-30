@@ -1,5 +1,6 @@
 package com.dankan.dto.response.review;
 
+import com.dankan.domain.Options;
 import com.dankan.domain.Room;
 import com.dankan.domain.RoomReview;
 import com.dankan.domain.User;
@@ -7,7 +8,9 @@ import com.dankan.enum_converter.RoomTypeEnum;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.*;
 
+import java.time.LocalDate;
 import java.util.Date;
+import java.util.List;
 import java.util.UUID;
 
 @Getter
@@ -17,8 +20,8 @@ import java.util.UUID;
 @Builder
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class ReviewResponseDto {
-    private UUID reviewId;
-    private Date updatedAt;
+    private Long reviewId;
+    private LocalDate updatedAt;
     private String nickName;
     private String univ;
     private String content;
@@ -28,42 +31,60 @@ public class ReviewResponseDto {
     private Long accessRate;
     private Long hostRate;
     private Long facilityRate;
-    private Date startedAt;
-    private Date endAt;
+    private LocalDate startedAt;
+    private LocalDate endAt;
     private String address;
     private String addressDetail;
     private String roomType;
     private String imgUrl;
 
-    public static ReviewResponseDto of(User user, RoomReview roomReview, Room room,String imageUrl) {
-        Date currentDate = new Date();
+    public static ReviewResponseDto of(User user,Room room, RoomReview roomReview,String imageUrl) {
+        List<Options> optionsList = room.getOptionsList();
+        String roomType = "";
+
+        for (Options options : optionsList) {
+            if (options.getCodeKey().contains("RoomType")) {
+                roomType = RoomTypeEnum.getRoomTypeName(options.getValue());
+                break;
+            }
+        }
 
         return ReviewResponseDto.builder()
                 .reviewId(roomReview.getReviewId())
-                .updatedAt(currentDate)
+                .updatedAt(LocalDate.now())
+                .roomType(roomType)
+                .totalRate(roomReview.getTotalRate())
                 .nickName(user.getNickname())
                 .content(roomReview.getContent())
-                .totalRate(roomReview.getRoomReviewRate().getTotalRate())
-                .cleanRate(roomReview.getRoomReviewRate().getCleanRate())
-                .noiseRate(roomReview.getRoomReviewRate().getNoiseRate())
-                .accessRate(roomReview.getRoomReviewRate().getAccessRate())
-                .hostRate(roomReview.getRoomReviewRate().getHostRate())
-                .facilityRate(roomReview.getRoomReviewRate().getFacilityRate())
                 .startedAt(roomReview.getResidencePeriod().getStartedAt())
                 .endAt(roomReview.getResidencePeriod().getEndAt())
                 .address(roomReview.getAddress())
                 .addressDetail(roomReview.getAddressDetail())
-                .roomType(RoomTypeEnum.getRoomTypeName(room.getRoomStructure().getRoomType()))
                 .imgUrl(imageUrl)
                 .build();
     }
 
-    public static ReviewResponseDto of(Room room,RoomReview roomReview,String imgUrl) {
+    public static ReviewResponseDto of(Room room, RoomReview roomReview,String imageUrl) {
+        List<Options> optionsList = room.getOptionsList();
+        String roomType = "";
+
+        for (Options options : optionsList) {
+            if (options.getCodeKey().contains("RoomType")) {
+                roomType = RoomTypeEnum.getRoomTypeName(options.getValue());
+                break;
+            }
+        }
+
         return ReviewResponseDto.builder()
-                .address(room.getRoomAddress().getAddress())
-                .roomType(RoomTypeEnum.getRoomTypeName(room.getRoomStructure().getRoomType()))
-                .totalRate(roomReview.getRoomReviewRate().getTotalRate())
-                .imgUrl(imgUrl)
+                .reviewId(roomReview.getReviewId())
+                .updatedAt(LocalDate.now())
+                .roomType(roomType)
+                .content(roomReview.getContent())
+                .startedAt(roomReview.getResidencePeriod().getStartedAt())
+                .endAt(roomReview.getResidencePeriod().getEndAt())
+                .address(roomReview.getAddress())
+                .addressDetail(roomReview.getAddressDetail())
+                .imgUrl(imageUrl)
                 .build();
     }
 }

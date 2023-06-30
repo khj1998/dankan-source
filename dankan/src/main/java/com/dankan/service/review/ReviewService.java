@@ -13,11 +13,11 @@ import java.util.UUID;
 
 public interface ReviewService {
     ReviewResponseDto addReview(ReviewRequestDto reviewRequestDto);
-    ReviewImageResponseDto addReviewImage(UUID reviewId,String imgUrl);
+    ReviewImageResponseDto addReviewImage(Long reviewId,String imgUrl);
     List<ReviewDetailResponseDto> findReviewDetail(ReviewDetailRequestDto reviewDetailRequestDto);
     ReviewRateResponseDto findReviewRate(String address);
     List<ReviewResponseDto> findRecentReview(Integer pages);
     List<ReviewResponseDto> findReviewByStar(Integer pages);
 
-    void deleteReview(UUID reviewId);
+    void deleteReview(Long reviewId);
 }

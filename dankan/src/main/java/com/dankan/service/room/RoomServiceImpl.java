@@ -3,9 +3,7 @@ package com.dankan.service.room;
 import com.dankan.domain.RoomImage;
 import com.dankan.dto.request.room.RoomImageRequestDto;
 import com.dankan.dto.response.room.RoomImageResponseDto;
-import com.dankan.exception.room.RoomImageNotFoundException;
-import com.dankan.repository.RoomImageRepository;
-import com.dankan.service.s3.S3UploadService;
+import com.dankan.repository.RoomRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -15,11 +13,10 @@ import java.util.UUID;
 
 @Slf4j
 public class RoomServiceImpl implements RoomService {
+    private final RoomRepository roomRepository;
 
-    private final RoomImageRepository roomImageRepository;
-
-    public RoomServiceImpl(RoomImageRepository roomImageRepository) {
-        this.roomImageRepository = roomImageRepository;
+    public RoomServiceImpl(final RoomRepository roomRepository) {
+        this.roomRepository = roomRepository;
     }
 
     @Override
@@ -28,7 +25,7 @@ public class RoomServiceImpl implements RoomService {
         RoomImage roomImage;
 
         roomImage = RoomImage.of(roomImageRequestDto.getType(), imgUrl,roomImageRequestDto.getRoomId());
-        roomImageRepository.save(roomImage);
+        //roomImageRepository.save(roomImage);
 
         return RoomImageResponseDto.builder()
                 .imgUrls(imgUrl)
@@ -48,10 +45,10 @@ public class RoomServiceImpl implements RoomService {
             imgType = 2L;
         }
 
-        RoomImage roomImage = roomImageRepository.findByRoomIdAndImageType(roomImageRequestDto.getRoomId(),imgType)
-                .orElseThrow(() -> new RoomImageNotFoundException(roomImageRequestDto.getRoomId()));
+        /*RoomImage roomImage = roomImageRepository.findByRoomIdAndImageType(roomImageRequestDto.getRoomId(),imgType)
+                .orElseThrow(() -> new RoomImageNotFoundException(roomImageRequestDto.getRoomId()));*/
 
-        roomImage.setRoomImageUrl(imgUrl);
+        //roomImage.setRoomImageUrl(imgUrl);
 
         return RoomImageResponseDto.builder()
                 .imgUrls(imgUrl)

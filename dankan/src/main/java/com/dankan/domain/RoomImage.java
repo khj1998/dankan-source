@@ -18,17 +18,13 @@ import java.util.UUID;
 @Entity
 @Table(name = "room_image")
 public class RoomImage {
-
     @Id
-    @GeneratedValue(generator = "uuid2")
-    @GenericGenerator(name = "uuid2", strategy = "uuid2")
-    @Column(name = "room_image_id",nullable = false,length = 36,columnDefinition = "varchar")
-    @Type(type = "uuid-char")
-    private UUID roomImageId;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "room_image_id",columnDefinition = "int")
+    private Long roomImageId;
 
-    @Column(name = "room_id",nullable = false,length = 36,columnDefinition = "varchar")
-    @Type(type = "uuid-char")
-    private UUID roomId;
+    @Column(name = "room_id",nullable = false,columnDefinition = "int")
+    private Long roomId;
 
     @Column(name = "image_type",nullable = false,columnDefinition = "int")
     private Long imageType;
@@ -36,7 +32,7 @@ public class RoomImage {
     @Column(name = "room_image_url",nullable = false,columnDefinition = "text")
     private String roomImageUrl;
 
-    public static RoomImage of(String imageType,String imageUrl,UUID roomId) {
+    public static RoomImage of(String imageType,String imageUrl,Long roomId) {
         Long imageTypeNum;
 
         if (imageType.equals("대표")) {

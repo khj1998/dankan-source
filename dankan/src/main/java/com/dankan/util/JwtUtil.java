@@ -95,7 +95,7 @@ public class JwtUtil {
         return isExpired;
     }
 
-    public static UUID getMemberId() {
+    public static Long getMemberId() {
         String token = JwtUtil.getAccessToken();
 
         Claims body = Jwts.parserBuilder()
@@ -104,7 +104,7 @@ public class JwtUtil {
                 .parseClaimsJws(token)
                 .getBody();
 
-        return UUID.fromString(body.get("id", String.class));
+        return body.get("id", Long.class);
     }
 
     /**

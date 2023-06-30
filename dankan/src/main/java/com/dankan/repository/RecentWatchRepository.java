@@ -11,7 +11,7 @@ import java.util.UUID;
 
 @Repository
 public interface RecentWatchRepository extends JpaRepository<RecentWatchPost, UUID> {
-    List<RecentWatchPost> findAllByUserId(UUID userId);
-    List<RecentWatchPost> findAllByUserId(UUID userId, Pageable pageable);
-    List<RecentWatchPost> findAllByOrderByCreatedAtDesc();
+    List<RecentWatchPost> findAllByUserId(Long userId);
+    List<RecentWatchPost> findAllByUserId(Long userId, Pageable pageable);
+    List<RecentWatchPost> findAllByOrderByUpdatedAtDesc();
 }

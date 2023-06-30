@@ -13,7 +13,7 @@ public class PostReportNotFoundException extends RuntimeException {
     private String message;
     private ErrorCode code;
 
-    public PostReportNotFoundException(UUID id) {
+    public PostReportNotFoundException(Long id) {
         super(id.toString());
         this.message = id.toString();
     }

@@ -6,5 +6,6 @@ import lombok.*;
 @Setter
 @Builder
 public class RoomImageResponseDto {
+    private Long roomId;
     private String imgUrls;
 }

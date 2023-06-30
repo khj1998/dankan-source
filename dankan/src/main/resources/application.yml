@@ -44,6 +44,9 @@ logging:
       amazonaws:
         util:
           EC2MetadataUtils: ERROR
+  slack:
+    webhook-url: ${SLACK_WEBHOOK_URL}
+  config: classpath:logback.xml
 jwt:
   secret: ${JWT_TOKEN_SECRET_KEY}
 sns:
@@ -58,3 +61,8 @@ mail:
   id: ${NAVER_ID}
   password: ${NAVER_PASSWORD}
 
+sentry:
+  dsn: ${SENTRY_DSN}
+  log:
+    level : ERROR
+  traces-sample-rate: 1.0

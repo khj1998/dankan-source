@@ -3,18 +3,18 @@ package com.dankan.domain;
 import com.dankan.domain.embedded.RoomAddress;
 import com.dankan.domain.embedded.RoomCost;
 import com.dankan.domain.embedded.RoomDiscussion;
-import com.dankan.domain.embedded.RoomOption;
 import com.dankan.domain.embedded.RoomStructure;
-import com.dankan.dto.resquest.post.PostRoomRequestDto;
+import com.dankan.dto.request.post.PostRoomRequestDto;
+import com.dankan.enum_converter.*;
 import com.dankan.enum_converter.PriceTypeEnum;
 import com.dankan.enum_converter.RoomTypeEnum;
 import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
 import lombok.*;
-import org.hibernate.annotations.GenericGenerator;
-import org.hibernate.annotations.Type;
 
 import javax.persistence.*;
-import java.util.UUID;
+import java.util.ArrayList;
+import java.util.List;
 
 @ApiModel(value = "매물 엔티티")
 @Getter
@@ -26,15 +26,18 @@ import java.util.UUID;
 public class Room {
 
     @Id
-    @GeneratedValue(generator = "uuid2")
-    @GenericGenerator(name = "uuid2", strategy = "uuid2")
-    @Column(name = "room_id",nullable = false,length = 36,columnDefinition = "varchar")
-    @Type(type = "uuid-char")
-    private UUID roomId;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "room_id", columnDefinition = "int")
+    private Long roomId;
 
-    @Column(name = "user_id",nullable = false,length = 36,columnDefinition = "varchar")
-    @Type(type = "uuid-char")
-    private UUID userId;
+    @Column(name = "user_id",nullable = false, columnDefinition = "bigint")
+    private Long userId;
+
+    @Column(name = "date_id",nullable = false, columnDefinition = "int")
+    private Long dateId;
+
+    @Column(name = "elevator_option",nullable = false,columnDefinition = "tinyint")
+    private Long elevatorOption;
 
     @Embedded
     private RoomCost roomCost;
@@ -43,39 +46,25 @@ public class Room {
     private RoomStructure roomStructure;
 
     @Embedded
-    private RoomOption roomOption;
-
-    @Embedded
     private RoomDiscussion roomDiscussion;
 
     @Embedded
     private RoomAddress roomAddress;
 
-    public static Room of(PostRoomRequestDto postRoomRequestDto, UUID userId) {
+    public static Room of(PostRoomRequestDto postRoomRequestDto, Long userId,Long dateId) {
         String[] addressParts = postRoomRequestDto.getAddress().split(" ");
 
         RoomCost cost = RoomCost.builder()
-                .dealType(postRoomRequestDto.getDealType())
-                .priceType(PriceTypeEnum.getPriceTypeValue(postRoomRequestDto.getPriceType()))
                 .deposit(postRoomRequestDto.getDeposit())
                 .price(postRoomRequestDto.getPrice())
                 .managementCost(postRoomRequestDto.getManagementCost())
-                .managementType(postRoomRequestDto.getManagementType())
                 .build();
 
         RoomStructure structure = RoomStructure.builder()
-                .roomType(RoomTypeEnum.getRoomTypeValue(postRoomRequestDto.getRoomType()))
                 .totalFloor(postRoomRequestDto.getTotalFloor())
                 .floor(postRoomRequestDto.getFloor())
-                .structure(postRoomRequestDto.getStructure())
                 .roomSize(postRoomRequestDto.getRoomSize())
                 .realRoomSize(postRoomRequestDto.getRealRoomSize())
-                .build();
-
-        RoomOption option = RoomOption.builder()
-                .elevatorOption(postRoomRequestDto.getElevators())
-                .roomOptions(postRoomRequestDto.getOptions())
-                .roomEtcOptions(postRoomRequestDto.getEtcOptions())
                 .build();
 
         RoomDiscussion discussion = RoomDiscussion.builder()
@@ -83,6 +72,7 @@ public class Room {
                 .moveInStart(postRoomRequestDto.getMoveInStart())
                 .moveInEnd(postRoomRequestDto.getMoveInEnd())
                 .build();
+
 
         RoomAddress address = RoomAddress.builder()
                 .doo(addressParts[0])
@@ -97,9 +87,10 @@ public class Room {
 
         return Room.builder()
                 .userId(userId)
+                .dateId(dateId)
                 .roomCost(cost)
                 .roomStructure(structure)
-                .roomOption(option)
+                .elevatorOption(postRoomRequestDto.getElevators())
                 .roomDiscussion(discussion)
                 .roomAddress(address)
                 .build();

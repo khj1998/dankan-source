@@ -1,24 +1,29 @@
 package com.dankan.controller;
 
+import com.dankan.dto.request.image.ImageRequestDto;
+import com.dankan.dto.response.image.ImageResponseDto;
 import com.dankan.dto.response.review.ReviewDetailResponseDto;
 import com.dankan.dto.response.review.ReviewRateResponseDto;
 import com.dankan.dto.response.review.ReviewResponseDto;
-import com.dankan.dto.resquest.review.ReviewDetailRequestDto;
-import com.dankan.dto.resquest.review.ReviewRequestDto;
+import com.dankan.dto.request.review.ReviewDetailRequestDto;
+import com.dankan.dto.request.review.ReviewRequestDto;
+import com.dankan.repository.ImageRepository;
+import com.dankan.service.image.ImageService;
 import com.dankan.service.review.ReviewService;
+import com.dankan.service.s3.S3UploadService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
-import io.swagger.models.auth.In;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
-import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.List;
-import java.util.UUID;
 
 @Slf4j
 @CrossOrigin
@@ -27,6 +32,7 @@ import java.util.UUID;
 @Api(tags = {"후기 관련 api"})
 @RequiredArgsConstructor
 public class ReviewController {
+    private final ImageRepository imageRepository;
     /**
      * TODO: 후기 생성 API
      * TODO: 후기 삭제 API
@@ -36,6 +42,8 @@ public class ReviewController {
      * */
 
     private final ReviewService reviewService;
+    private final S3UploadService s3UploadService;
+    private final ImageService imageService;
 
     @ApiOperation("매물 후기 조회 API")
     @ApiResponses({
@@ -84,8 +92,7 @@ public class ReviewController {
             @ApiResponse(responseCode = "404",description = "매물 상세 리뷰 조회에 실패함")
     })
     @PostMapping("/detail")
-    public ResponseEntity<List<ReviewDetailResponseDto>> getReviewDetail(
-            @RequestBody ReviewDetailRequestDto reviewDetailRequestDto) {
+    public ResponseEntity<List<ReviewDetailResponseDto>> getReviewDetail(@RequestBody ReviewDetailRequestDto reviewDetailRequestDto) {
         List<ReviewDetailResponseDto> responseDtoList = reviewService.findReviewDetail(reviewDetailRequestDto);
         return ResponseEntity.ok(responseDtoList);
     }
@@ -103,6 +110,26 @@ public class ReviewController {
         return ResponseEntity.ok(responseDto);
     }
 
+    @ApiOperation("리뷰 이미지 등록 API")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200",description = "리뷰 이미지 등록 성공"),
+            @ApiResponse(responseCode = "401",description = "인증되지 않은 사용자"),
+            @ApiResponse(responseCode = "403",description = "유저가 Member | Admin 권한이 없음"),
+            @ApiResponse(responseCode = "404",description = "리뷰 이미지 등록 실패")
+    })
+    @PostMapping(value = "/image",consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<ImageResponseDto> addReviewImage(@ModelAttribute ImageRequestDto imageRequestDto) throws IOException {
+        String imgUrl = "";
+
+        for (MultipartFile multipartFile : imageRequestDto.getMultipartFileList()) {
+            imgUrl += s3UploadService.upload(multipartFile, "room-image") + " ";
+        }
+
+        ImageResponseDto responseDto = imageService.addReviewImages(imageRequestDto,imgUrl);
+
+        return ResponseEntity.ok(responseDto);
+    }
+
     @ApiOperation("매물 후기 삭제 API")
     @ApiResponses({
             @ApiResponse(responseCode = "200",description = "매물 후기 삭제 성공 "),
@@ -111,7 +138,7 @@ public class ReviewController {
             @ApiResponse(responseCode = "404",description = "매물 후기 삭제에 실패함")
     })
     @DeleteMapping("/remove")
-    public ResponseEntity removeReview(@RequestParam("reviewId") UUID reviewId) {
+    public ResponseEntity removeReview(@RequestParam("reviewId") Long reviewId) {
         reviewService.deleteReview(reviewId);
         return ResponseEntity.ok().build();
     }

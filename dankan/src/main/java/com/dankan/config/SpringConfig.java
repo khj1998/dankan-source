@@ -8,8 +8,8 @@ import com.dankan.service.report.ReportService;
 import com.dankan.service.report.ReportServiceImpl;
 import com.dankan.service.review.ReviewService;
 import com.dankan.service.review.ReviewServiceImpl;
-import com.dankan.service.room.RoomService;
-import com.dankan.service.room.RoomServiceImpl;
+import com.dankan.service.image.ImageService;
+import com.dankan.service.image.ImageServiceImpl;
 import com.dankan.repository.TokenRepository;
 import com.dankan.repository.UnivRepository;
 import com.dankan.repository.UserRepository;
@@ -37,41 +37,49 @@ public class SpringConfig {
     private final PostRepository postRepository;
     private final AmazonS3 amazonS3Client;
     private final RoomRepository roomRepository;
-    private final RoomImageRepository roomImageRepository;
     private final PostHeartRepository postHeartRepository;
     private final PostReportRepository postReportRepository;
     private final ReviewRepository reviewRepository;
     private final ReviewReportRepository reviewReportRepository;
+    private final RecentWatchRepository recentWatchRepository;
     private final UnivRepository univRepository;
     private final JavaMailSender javaMailSender;
     private final String mail;
+    private final DateLogRepository dateLogRepository;
+    private final OptionsRepository optionsRepository;
+    private final ImageRepository imageRepository;
 
     public SpringConfig(final UserRepository userRepository, final AmazonS3 amazonS3Client, final TokenRepository tokenRepository
                         , final PostRepository postRepository
                         , final RoomRepository roomRepository
-                        , final RoomImageRepository roomImageRepository
                         , final PostHeartRepository postHeartRepository
                         , final PostReportRepository postReportRepository
                         , final ReviewRepository reviewRepository
-                        , final ReviewReportRepository reviewReportRepository, final UnivRepository univRepository, final JavaMailSender javaMailSender, @Value("${mail.id}") String mail) {
+                        , final ReviewReportRepository reviewReportRepository, final UnivRepository univRepository, final JavaMailSender javaMailSender, @Value("${mail.id}") String mail, final DateLogRepository dateLogRepository
+                        , final RecentWatchRepository recentWatchRepository
+                        , final OptionsRepository optionsRepository
+                        , final ImageRepository imageRepository) {
         this.userRepository = userRepository;
         this.amazonS3Client = amazonS3Client;
         this.tokenRepository = tokenRepository;
         this.postRepository = postRepository;
         this.roomRepository = roomRepository;
-        this.roomImageRepository = roomImageRepository;
         this.postHeartRepository = postHeartRepository;
         this.postReportRepository = postReportRepository;
         this.reviewRepository = reviewRepository;
         this.reviewReportRepository = reviewReportRepository;
+        this.recentWatchRepository = recentWatchRepository;
         this.univRepository = univRepository;
         this.javaMailSender = javaMailSender;
         this.mail = mail;
+        this.dateLogRepository = dateLogRepository;
+        this.optionsRepository = optionsRepository;
+        this.imageRepository = imageRepository;
     }
 
     @Bean
     public UserService userService() {
-        return new UserServiceImpl(userRepository,tokenRepository);
+        return new UserServiceImpl(userRepository,tokenRepository, dateLogRepository);
     }
 
     @Bean
@@ -86,23 +94,22 @@ public class SpringConfig {
 
     @Bean
     public PostService postService() {
-        return new PostServiceImpl(postRepository,roomRepository,postHeartRepository);
+        return new PostServiceImpl(postRepository,roomRepository,postHeartRepository,dateLogRepository,recentWatchRepository,optionsRepository,imageRepository);
     }
 
     @Bean
-    public RoomService roomService() {
-        return new RoomServiceImpl(roomRepository,roomImageRepository);
+    public ImageService roomService() {
+        return new ImageServiceImpl(postRepository,imageRepository);
     }
 
     @Bean
     public ReportService reportService() {
-        return new ReportServiceImpl(postReportRepository,reviewReportRepository,postRepository,roomRepository,reviewRepository);
+        return new ReportServiceImpl(postReportRepository,reviewReportRepository,postRepository,roomRepository,reviewRepository,dateLogRepository);
     }
 
     @Bean
     public ReviewService reviewService() {
-        return new ReviewServiceImpl(userRepository, reviewRepository, roomRepository);
-
+        return new ReviewServiceImpl(userRepository, reviewRepository, roomRepository,dateLogRepository,optionsRepository,imageRepository);
     }
 
     @Bean

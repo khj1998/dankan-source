@@ -9,8 +9,8 @@ import java.util.List;
 import java.util.UUID;
 
 @Repository
-public interface PostHeartRepository extends JpaRepository<PostHeart, UUID> {
-    PostHeart findByUserIdAndPostId(UUID userId, UUID postId);
-    List<PostHeart> findByPostId(UUID postId);
-    List<PostHeart> findByUserId(UUID userId, Pageable pageable);
+public interface PostHeartRepository extends JpaRepository<PostHeart, Long> {
+    PostHeart findByUserIdAndPostId(Long userId, Long postId);
+    List<PostHeart> findByPostId(Long postId);
+    List<PostHeart> findByUserId(Long userId, Pageable pageable);
 }

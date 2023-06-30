@@ -15,8 +15,8 @@ import java.util.Date;
 @Embeddable
 public class ResidencePeriod {
     @Column(name = "started_at",nullable = false,columnDefinition = "date")
-    private Date startedAt;
+    private LocalDate startedAt;
 
     @Column(name = "end_at",nullable = false,columnDefinition = "date")
-    private Date endAt;
+    private LocalDate endAt;
 }

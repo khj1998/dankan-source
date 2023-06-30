@@ -8,8 +8,8 @@ import java.util.Optional;
 import java.util.UUID;
 
 @Repository
-public interface TokenRepository extends JpaRepository<Token, UUID> {
-    public Optional<Token> findByUserId(UUID userId);
+public interface TokenRepository extends JpaRepository<Token, Long> {
+    public Optional<Token> findByUserId(Long userId);
 
     public Optional<Token> findTokenByAccessTokenAndRefreshToken(String accessToken, String refreshToken);
 }

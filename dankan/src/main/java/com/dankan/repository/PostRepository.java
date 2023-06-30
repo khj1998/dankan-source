@@ -10,8 +10,8 @@ import java.util.Optional;
 import java.util.UUID;
 
 @Repository
-public interface PostRepository extends JpaRepository<Post, UUID> {
-    Optional<Post> findByPostIdAndUserId(UUID postId, UUID userId);
-    Optional<Post> findByRoomId(UUID roomId);
-    List<Post> findByUserId(UUID userId, Pageable pageable);
+public interface PostRepository extends JpaRepository<Post, Long> {
+    Optional<Post> findByPostIdAndUserId(Long postId, Long userId);
+    Optional<Post> findByRoomId(Long roomId);
+    List<Post> findByUserId(Long userId, Pageable pageable);
 }

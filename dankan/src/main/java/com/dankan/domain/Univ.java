@@ -16,10 +16,8 @@ import java.util.UUID;
 @Table(name = "univ")
 public class Univ {
     @Id
-    @GeneratedValue(generator = "uuid2")
-    @GenericGenerator(name = "uuid2", strategy = "uuid2")
-    @Column(name = "univ_id",nullable = false, length = 36, columnDefinition = "varchar")
-    @Type(type = "uuid-char")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "univ_id", columnDefinition = "int")
     private UUID univId;
 
     @Column(nullable = false, length = 30, columnDefinition = "varchar")

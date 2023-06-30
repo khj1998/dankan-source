@@ -5,17 +5,18 @@ import lombok.Getter;
 
 @Getter
 public enum SatisfyEnum {
-    만족(5L),
-    보통(3L),
-    불만족(1L);
 
-    private final Long value;
+    만족("5"),
+    보통("3"),
+    불만족("1");
 
-    SatisfyEnum(Long value) {
+    private final String value;
+
+    SatisfyEnum(String value) {
         this.value = value;
     }
 
-    public static Long getSatisfyValue(String inputType) {
+    public static String getSatisfyValue(String inputType) {
         for (SatisfyEnum type : SatisfyEnum.values()) {
             if (type.name().equals(inputType)) {
                 return type.getValue();

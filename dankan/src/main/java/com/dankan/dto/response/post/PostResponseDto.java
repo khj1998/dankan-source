@@ -1,14 +1,15 @@
 package com.dankan.dto.response.post;
 
+import com.dankan.domain.Options;
 import com.dankan.domain.Post;
 import com.dankan.domain.PostHeart;
 import com.dankan.domain.Room;
 import com.dankan.enum_converter.PriceTypeEnum;
+import com.dankan.enum_converter.StructureTypeEnum;
 import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import lombok.*;
 
-import java.util.UUID;
+import java.util.List;
 
 @Getter
 @Setter
@@ -17,7 +18,7 @@ import java.util.UUID;
 @Builder
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class PostResponseDto {
-    private UUID postId;
+    private Long postId;
     private String dealType;
     private Boolean isHearted;
     private String priceType;
@@ -28,52 +29,75 @@ public class PostResponseDto {
     private Long floor;
     private Double roomSize;
     private Double roomRealSize;
+    private String imgUrl;
 
-    public static PostResponseDto of(Post post, Room room, PostHeart postHeart) {
+    public static PostResponseDto of(Post post, Room room, PostHeart postHeart, String imgUrl, List<Options> optionsList) {
         Boolean isHearted = postHeart!=null;
-        String dealType;
+        String dealType = "";
+        String priceType = "";
+        String structure = "";
 
-        if (room.getRoomCost().getDealType()) {
-            dealType = "양도";
-        } else {
-            dealType = "단기임대";
+        for (Options options : optionsList) {
+            if (options.getCodeKey().contains("DealType")) {
+                dealType = options.getValue().equals("0") ? "단기임대" : "양도";
+            }
+
+            if (options.getCodeKey().contains("PriceType")) {
+                priceType = PriceTypeEnum.getPriceTypeName(options.getValue());
+            }
+
+            if (options.getCodeKey().contains("Structure")) {
+                structure = StructureTypeEnum.getStructureTypeName(options.getValue());
+            }
         }
 
         return PostResponseDto.builder()
                 .postId(post.getPostId())
                 .dealType(dealType)
+                .priceType(priceType)
+                .structure(structure)
                 .isHearted(isHearted)
-                .priceType(PriceTypeEnum.getPriceTypeName(room.getRoomCost().getPriceType()))
                 .price(room.getRoomCost().getPrice())
                 .deposit(room.getRoomCost().getDeposit())
                 .address(room.getRoomAddress().getAddress())
-                .structure(room.getRoomStructure().getStructure())
                 .floor(room.getRoomStructure().getFloor())
                 .roomSize(room.getRoomStructure().getRoomSize())
                 .roomRealSize(room.getRoomStructure().getRealRoomSize())
+                .imgUrl(imgUrl)
                 .build();
     }
 
-    public static PostResponseDto of(Post post,Room room) {
-        String dealType;
+    public static PostResponseDto of(Post post,Room room,String imgUrl, List<Options> optionsList) {
+        String dealType = "";
+        String priceType = "";
+        String structure = "";
 
-        if (room.getRoomCost().getDealType()) {
-            dealType = "양도";
-        } else {
-            dealType = "단기임대";
+        for (Options options : optionsList) {
+            if (options.getCodeKey().equals("DealType")) {
+                dealType = options.getValue().equals("0") ? "단기임대" : "양도";
+            }
+
+            if (options.getCodeKey().equals("PriceType")) {
+                priceType = PriceTypeEnum.getPriceTypeName(options.getValue());
+            }
+
+            if (options.getCodeKey().equals("Structure")) {
+                structure = StructureTypeEnum.getStructureTypeName(options.getValue());
+            }
         }
 
         return PostResponseDto.builder()
                 .postId(post.getPostId())
                 .dealType(dealType)
-                .priceType(PriceTypeEnum.getPriceTypeName(room.getRoomCost().getPriceType()))
+                .priceType(priceType)
+                .structure(structure)
                 .price(room.getRoomCost().getPrice())
                 .deposit(room.getRoomCost().getDeposit())
                 .address(room.getRoomAddress().getAddress())
-                .structure(room.getRoomStructure().getStructure())
                 .floor(room.getRoomStructure().getFloor())
                 .roomSize(room.getRoomStructure().getRoomSize())
                 .roomRealSize(room.getRoomStructure().getRealRoomSize())
+                .imgUrl(imgUrl)
                 .build();
     }
 }

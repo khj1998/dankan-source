@@ -8,5 +8,5 @@ import java.util.UUID;
 @Getter
 @Setter
 public class TokenRequestDto {
-    private UUID userId;
+    private Long userId;
 }

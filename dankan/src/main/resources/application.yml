@@ -69,6 +69,7 @@ sentry:
   log:
     level : ERROR
   traces-sample-rate: 1.0
+  
 amazon:
   dynamodb:
     endpoint: ${DYNAMODB_ENDPOINT}

@@ -30,9 +30,9 @@ public class TokenServiceImpl implements TokenService {
     public TokenResponseDto reissueAccessToken(final TokenRequestDto tokenRequestDto) {
         String accessToken = JwtUtil.getAccessToken();
 
-        Token token = tokenRepository.findTokenByAccessTokenAndRefreshToken(accessToken, JwtUtil.getRefreshToken())
-
-                .orElseThrow(() -> new TokenNotFoundException(tokenRequestDto.getUserId().toString()));
+        Token token = tokenRepository.findTokenByAccessTokenAndRefreshToken(accessToken, JwtUtil.getRefreshToken()).orElseThrow(
+                () -> new TokenNotFoundException(tokenRequestDto.getUserId().toString())
+        );
         log.info("token1 called");
 
         token.setAccessToken(

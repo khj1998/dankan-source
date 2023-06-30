@@ -119,6 +119,7 @@ public class ApiExceptionHandler {
     @ExceptionHandler(ChattingRoomDataNotExistException.class)
     public ResponseEntity<ApiErrorResponse> handleException(ChattingRoomDataNotExistException ex) {
         ApiErrorResponse response = new ApiErrorResponse("ERROR-0017", "room :  " + ex.getMessage() + " data is not exist");
+        return new ResponseEntity<>(response,HttpStatus.BAD_REQUEST);
     }
   
     @ExceptionHandler(InvalidOptionTypeException.class)

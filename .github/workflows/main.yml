@@ -1,0 +1,32 @@
+on:
+  push:
+    branches:
+      - 'master'
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: clone repository
+        run: git clone https://username:${{ secrets.PAT }}@github.com/Nestsoft-Team/Dankan-Backend.git
+        
+      - name: Set up Java 
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y openjdk-11-jdk
+          export JAVA_HOME="/usr/lib/jvm/java-11-openjdk-amd64"
+          export PATH="$JAVA_HOME/bin:$PATH"
+          sudo apt-get install openssh-server
+      
+      - name: CI
+        run: |
+          cd Dankan-Backend/dankan/ 
+          ./gradlew bootjar
+
+      - name: CD
+        run: |
+          echo "${{ secrets.KEY }}" > ssh_key
+          chmod 400 ssh_key
+          scp -o "StrictHostKeyChecking no" -i ssh_key ./Dankan-Backend/dankan/build/libs/*.jar ${{ secrets.SERVER_USERNAME }}@${{ secrets.SERVER_HOST }}:/home/ubuntu/api-server
+          ssh -i ssh_key -o "StrictHostKeyChecking no" ${{ secrets.SERVER_USERNAME }}@${{ secrets.SERVER_HOST }} "docker compose down && docker compose build && docker compose up -d"
+        shell: bash

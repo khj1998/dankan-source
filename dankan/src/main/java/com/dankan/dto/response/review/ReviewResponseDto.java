@@ -38,16 +38,8 @@ public class ReviewResponseDto {
     private String roomType;
     private String imgUrl;
 
-    public static ReviewResponseDto of(User user,Room room, RoomReview roomReview,String imageUrl) {
-        List<Options> optionsList = room.getOptionsList();
-        String roomType = "";
-
-        for (Options options : optionsList) {
-            if (options.getCodeKey().contains("RoomType")) {
-                roomType = RoomTypeEnum.getRoomTypeName(options.getValue());
-                break;
-            }
-        }
+    public static ReviewResponseDto of(User user, RoomReview roomReview,String imageUrl, Options option) {
+        String roomType = RoomTypeEnum.getRoomTypeName(option.getValue());
 
         return ReviewResponseDto.builder()
                 .reviewId(roomReview.getReviewId())
@@ -64,16 +56,8 @@ public class ReviewResponseDto {
                 .build();
     }
 
-    public static ReviewResponseDto of(Room room, RoomReview roomReview,String imageUrl) {
-        List<Options> optionsList = room.getOptionsList();
-        String roomType = "";
-
-        for (Options options : optionsList) {
-            if (options.getCodeKey().contains("RoomType")) {
-                roomType = RoomTypeEnum.getRoomTypeName(options.getValue());
-                break;
-            }
-        }
+    public static ReviewResponseDto of(RoomReview roomReview, String imageUrl,Options option) {
+        String roomType = RoomTypeEnum.getRoomTypeName(option.getValue());
 
         return ReviewResponseDto.builder()
                 .reviewId(roomReview.getReviewId())

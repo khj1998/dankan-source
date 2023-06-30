@@ -6,18 +6,18 @@ import lombok.Getter;
 
 @Getter
 public enum EtcOptionTypeEnum {
-    주차공간(0L),
-    반려동물(1L),
-    여성전용(2L),
-    전세대출(3L);
+    주차공간("0"),
+    반려동물("1"),
+    여성전용("2"),
+    전세대출("3");
 
-    private final Long value;
+    private final String value;
 
-    EtcOptionTypeEnum(Long value) {
+    EtcOptionTypeEnum(String value) {
         this.value = value;
     }
 
-    public static Long getEtcOptionTypeValue(String inputType) {
+    public static String getEtcOptionTypeValue(String inputType) {
         for (EtcOptionTypeEnum type : EtcOptionTypeEnum.values()) {
             if (type.name().equals(inputType)) {
                 return type.getValue();
@@ -26,12 +26,12 @@ public enum EtcOptionTypeEnum {
         throw new InvalidEtcOptionTypeException(inputType);
     }
 
-    public static String getEtcOptionTypeName(Long inputValue) {
+    public static String getEtcOptionTypeName(String inputValue) {
         for (EtcOptionTypeEnum type : EtcOptionTypeEnum.values()) {
             if (type.getValue().equals(inputValue)) {
                 return type.name();
             }
         }
-        throw new InvalidEtcOptionTypeException(inputValue.toString());
+        throw new InvalidEtcOptionTypeException(inputValue);
     }
 }

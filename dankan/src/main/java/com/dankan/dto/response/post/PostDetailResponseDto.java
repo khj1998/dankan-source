@@ -7,7 +7,9 @@ import com.dankan.domain.Room;
 import com.dankan.enum_converter.*;
 import lombok.*;
 
+import javax.swing.text.html.Option;
 import java.time.LocalDate;
+import java.util.List;
 
 @Setter
 @Getter
@@ -56,9 +58,10 @@ public class PostDetailResponseDto {
     private Double latitude;
     private Double longitude;
 
-    public static PostDetailResponseDto of(Post post, Room room,PostHeart postHeart,Integer heartCount,String imgUrls) {
+    public static PostDetailResponseDto of(Post post, Room room, PostHeart postHeart, Integer heartCount, String imgUrls, List<Options> optionsList) {
         Boolean isHearted = false;
         String dealType = "";
+        String roomType = "";
         String priceType = "";
         String structure = "";
         String managementType = "";
@@ -69,29 +72,39 @@ public class PostDetailResponseDto {
             isHearted = true;
         }
 
-        for (Options option : room.getOptionsList()) {
-            if (option.getCodeKey().contains("DealType")) {
-                dealType = option.getValue().equals(0L) ? "단기임대" : "양도";
+        for (Options option : optionsList) {
+            if (option.getCodeKey().equals("RoomType")) {
+                roomType = RoomTypeEnum.getRoomTypeName(option.getValue());
             }
 
-            if (option.getCodeKey().contains("PriceType")) {
+            if (option.getCodeKey().equals("DealType")) {
+                dealType = option.getValue().equals("0") ? "단기임대" : "양도";
+            }
+
+            if (option.getCodeKey().equals("PriceType")) {
                 priceType = PriceTypeEnum.getPriceTypeName(option.getValue());
             }
 
-            if (option.getCodeKey().contains("Structure")) {
+            if (option.getCodeKey().equals("Structure")) {
                 structure = StructureTypeEnum.getStructureTypeName(option.getValue());
             }
 
-            if (option.getCodeKey().contains("ManagementType")) {
-                managementType += ManagementTypeEnum.getManagementTypeName(option.getValue())+" ";
+            if (option.getCodeKey().equals("ManagementType")) {
+                for (int i = 0;i<option.getValue().length();i++) {
+                    managementType += ManagementTypeEnum.getManagementTypeName(String.valueOf(option.getValue().charAt(i)))+" ";
+                }
             }
 
-            if (option.getCodeKey().contains("Option")) {
-                options += OptionTypeEnum.getOptionTypeName(option.getValue())+" ";
+            if (option.getCodeKey().equals("Option")) {
+                for (int i = 0;i<option.getValue().length();i++) {
+                    options += OptionTypeEnum.getOptionTypeName(String.valueOf(option.getValue().charAt(i)))+" ";
+                }
             }
 
-            if (option.getCodeKey().contains("EtcOption")) {
-                etcOptions += EtcOptionTypeEnum.getEtcOptionTypeName(option.getValue())+" ";
+            if (option.getCodeKey().equals("EtcOption")) {
+                for (int i = 0;i<option.getValue().length();i++) {
+                    etcOptions += EtcOptionTypeEnum.getEtcOptionTypeName(String.valueOf(option.getValue().charAt(i)))+" ";
+                }
             }
         }
 
@@ -103,6 +116,9 @@ public class PostDetailResponseDto {
                 .isHearted(isHearted)
                 .heartCount(heartCount)
 
+                .isDiscussion(room.getRoomDiscussion().getIsDiscussion())
+                .elevators(room.getElevatorOption())
+                .roomType(roomType)
                 .dealType(dealType)
                 .priceType(priceType)
                 .structure(structure)

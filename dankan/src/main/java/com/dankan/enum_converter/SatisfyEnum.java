@@ -6,29 +6,17 @@ import lombok.Getter;
 @Getter
 public enum SatisfyEnum {
 
-    AccessRate2(5L),
-    AccessRate1(3L),
-    AccessRate0(1L),
-    CleanRate2(5L),
-    CleanRate1(3L),
-    CleanRate0(1L),
-    FacilityRate2(5L),
-    FacilityRate1(3L),
-    FacilityRate0(1L),
-    HostRate2(5L),
-    HostRate1(3L),
-    HostRate0(1L),
-    NoiseRate2(5L),
-    NoiseRate1(3L),
-    NoiseRate0(1L);
+    만족("5"),
+    보통("3"),
+    불만족("1");
 
-    private final Long value;
+    private final String value;
 
-    SatisfyEnum(Long value) {
+    SatisfyEnum(String value) {
         this.value = value;
     }
 
-    public static Long getSatisfyValue(String inputType) {
+    public static String getSatisfyValue(String inputType) {
         for (SatisfyEnum type : SatisfyEnum.values()) {
             if (type.name().equals(inputType)) {
                 return type.getValue();

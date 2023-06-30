@@ -5,17 +5,17 @@ import lombok.Getter;
 
 @Getter
 public enum RoomTypeEnum {
-    원룸(0L),
-    투룸(1L),
-    쓰리룸이상(2L);
+    원룸("0"),
+    투룸("1"),
+    쓰리룸이상("2");
 
-    private final Long value;
+    private final String value;
 
-    RoomTypeEnum(Long value) {
+    RoomTypeEnum(String value) {
         this.value = value;
     }
 
-    public static Long getRoomTypeValue(String inputType) {
+    public static String getRoomTypeValue(String inputType) {
         for (RoomTypeEnum type : RoomTypeEnum.values()) {
             if (type.name().equals(inputType)) {
                 return type.getValue();
@@ -24,12 +24,12 @@ public enum RoomTypeEnum {
         throw new InvalidRoomTypeException(inputType);
     }
 
-    public static String getRoomTypeName(Long inputValue) {
+    public static String getRoomTypeName(String inputValue) {
         for (RoomTypeEnum type : RoomTypeEnum.values()) {
             if (type.getValue().equals(inputValue)) {
                 return type.name();
             }
         }
-        throw new InvalidRoomTypeException(inputValue.toString());
+        throw new InvalidRoomTypeException(inputValue);
     }
 }

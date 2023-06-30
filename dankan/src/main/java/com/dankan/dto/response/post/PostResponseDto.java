@@ -9,6 +9,8 @@ import com.dankan.enum_converter.StructureTypeEnum;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.*;
 
+import java.util.List;
+
 @Getter
 @Setter
 @NoArgsConstructor
@@ -29,15 +31,15 @@ public class PostResponseDto {
     private Double roomRealSize;
     private String imgUrl;
 
-    public static PostResponseDto of(Post post, Room room, PostHeart postHeart,String imgUrl) {
+    public static PostResponseDto of(Post post, Room room, PostHeart postHeart, String imgUrl, List<Options> optionsList) {
         Boolean isHearted = postHeart!=null;
         String dealType = "";
         String priceType = "";
         String structure = "";
 
-        for (Options options : room.getOptionsList()) {
+        for (Options options : optionsList) {
             if (options.getCodeKey().contains("DealType")) {
-                dealType = options.getValue().equals(0L) ? "단기임대" : "양도";
+                dealType = options.getValue().equals("0") ? "단기임대" : "양도";
             }
 
             if (options.getCodeKey().contains("PriceType")) {
@@ -65,21 +67,21 @@ public class PostResponseDto {
                 .build();
     }
 
-    public static PostResponseDto of(Post post,Room room,String imgUrl) {
+    public static PostResponseDto of(Post post,Room room,String imgUrl, List<Options> optionsList) {
         String dealType = "";
         String priceType = "";
         String structure = "";
 
-        for (Options options : room.getOptionsList()) {
-            if (options.getCodeKey().contains("DealType")) {
-                dealType = options.getValue().equals(0L) ? "단기임대" : "양도";
+        for (Options options : optionsList) {
+            if (options.getCodeKey().equals("DealType")) {
+                dealType = options.getValue().equals("0") ? "단기임대" : "양도";
             }
 
-            if (options.getCodeKey().contains("PriceType")) {
+            if (options.getCodeKey().equals("PriceType")) {
                 priceType = PriceTypeEnum.getPriceTypeName(options.getValue());
             }
 
-            if (options.getCodeKey().contains("Structure")) {
+            if (options.getCodeKey().equals("Structure")) {
                 structure = StructureTypeEnum.getStructureTypeName(options.getValue());
             }
         }

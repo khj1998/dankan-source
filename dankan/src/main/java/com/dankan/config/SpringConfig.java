@@ -8,8 +8,8 @@ import com.dankan.service.report.ReportService;
 import com.dankan.service.report.ReportServiceImpl;
 import com.dankan.service.review.ReviewService;
 import com.dankan.service.review.ReviewServiceImpl;
-import com.dankan.service.room.RoomService;
-import com.dankan.service.room.RoomServiceImpl;
+import com.dankan.service.image.ImageService;
+import com.dankan.service.image.ImageServiceImpl;
 import com.dankan.repository.TokenRepository;
 import com.dankan.repository.UnivRepository;
 import com.dankan.repository.UserRepository;
@@ -46,6 +46,8 @@ public class SpringConfig {
     private final JavaMailSender javaMailSender;
     private final String mail;
     private final DateLogRepository dateLogRepository;
+    private final OptionsRepository optionsRepository;
+    private final ImageRepository imageRepository;
 
     public SpringConfig(final UserRepository userRepository, final AmazonS3 amazonS3Client, final TokenRepository tokenRepository
                         , final PostRepository postRepository
@@ -54,7 +56,9 @@ public class SpringConfig {
                         , final PostReportRepository postReportRepository
                         , final ReviewRepository reviewRepository
                         , final ReviewReportRepository reviewReportRepository, final UnivRepository univRepository, final JavaMailSender javaMailSender, @Value("${mail.id}") String mail, final DateLogRepository dateLogRepository
-                        , final RecentWatchRepository recentWatchRepository) {
+                        , final RecentWatchRepository recentWatchRepository
+                        , final OptionsRepository optionsRepository
+                        , final ImageRepository imageRepository) {
         this.userRepository = userRepository;
         this.amazonS3Client = amazonS3Client;
         this.tokenRepository = tokenRepository;
@@ -69,6 +73,8 @@ public class SpringConfig {
         this.javaMailSender = javaMailSender;
         this.mail = mail;
         this.dateLogRepository = dateLogRepository;
+        this.optionsRepository = optionsRepository;
+        this.imageRepository = imageRepository;
     }
 
     @Bean
@@ -88,12 +94,12 @@ public class SpringConfig {
 
     @Bean
     public PostService postService() {
-        return new PostServiceImpl(postRepository,roomRepository,postHeartRepository,dateLogRepository,recentWatchRepository);
+        return new PostServiceImpl(postRepository,roomRepository,postHeartRepository,dateLogRepository,recentWatchRepository,optionsRepository,imageRepository);
     }
 
     @Bean
-    public RoomService roomService() {
-        return new RoomServiceImpl(roomRepository);
+    public ImageService roomService() {
+        return new ImageServiceImpl(postRepository,imageRepository);
     }
 
     @Bean
@@ -103,7 +109,7 @@ public class SpringConfig {
 
     @Bean
     public ReviewService reviewService() {
-        return new ReviewServiceImpl(userRepository, reviewRepository, roomRepository,dateLogRepository);
+        return new ReviewServiceImpl(userRepository, reviewRepository, roomRepository,dateLogRepository,optionsRepository,imageRepository);
     }
 
     @Bean

@@ -19,6 +19,9 @@ spring:
     show-sql: true
     generate-ddl: true
   mvc.pathmatch.matching-strategy: ANT_PATH_MATCHER # Swagger-ui
+  redis:
+    host: ${REDIS_HOST}
+    port: ${REDIS_PORT}
 
   ### DB initialize auto insert ###
   sql:
@@ -66,3 +69,11 @@ sentry:
   log:
     level : ERROR
   traces-sample-rate: 1.0
+  
+amazon:
+  dynamodb:
+    endpoint: ${DYNAMODB_ENDPOINT}
+    region: ${DYNAMODB_REGION}
+  aws:
+    accessKey: ${DYNAMODB_ACCESS_KEY}
+    secretKey: ${DYNAMODB_SECRET_KEY}

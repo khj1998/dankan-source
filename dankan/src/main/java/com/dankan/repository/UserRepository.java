@@ -2,6 +2,7 @@ package com.dankan.repository;
 
 import com.dankan.domain.User;
 import com.dankan.dto.response.user.UserResponseDto;
+import com.dankan.vo.UserInfo;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -34,4 +35,7 @@ public interface UserRepository extends JpaRepository<User, Long> {
     @Query(value = "select new com.dankan.dto.response.user.UserResponseDto(user.userId, user.email, user .nickname, user.gender, user.phoneNum, " +
             "user.profileImg, user.univEmail) from User user")
     public List<UserResponseDto> findUserList();
+
+    @Query(value = "select new com.dankan.vo.UserInfo(user.nickname, user.profileImg) from User user where  user.userId = :id")
+    public UserInfo findName(Long id);
 }

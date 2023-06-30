@@ -1,7 +1,13 @@
 package com.dankan.config;
 
+import com.amazonaws.services.dynamodbv2.AmazonDynamoDB;
+import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBMapper;
 import com.amazonaws.services.s3.AmazonS3;
 import com.dankan.repository.*;
+import com.dankan.service.chatting.ChattingService;
+import com.dankan.service.chatting.ChattingServiceImpl;
+import com.dankan.service.chatting.DynamoDBService;
+import com.dankan.service.chatting.DynamoDBServiceImpl;
 import com.dankan.service.post.PostService;
 import com.dankan.service.post.PostServiceImpl;
 import com.dankan.service.report.ReportService;
@@ -45,6 +51,8 @@ public class SpringConfig {
     private final UnivRepository univRepository;
     private final JavaMailSender javaMailSender;
     private final String mail;
+    private final DynamoDBMapper dynamoDBMapper;
+    private final AmazonDynamoDB amazonDynamoDB;
     private final DateLogRepository dateLogRepository;
     private final OptionsRepository optionsRepository;
     private final ImageRepository imageRepository;
@@ -58,7 +66,9 @@ public class SpringConfig {
                         , final ReviewReportRepository reviewReportRepository, final UnivRepository univRepository, final JavaMailSender javaMailSender, @Value("${mail.id}") String mail, final DateLogRepository dateLogRepository
                         , final RecentWatchRepository recentWatchRepository
                         , final OptionsRepository optionsRepository
-                        , final ImageRepository imageRepository) {
+                        , final ImageRepository 
+  
+  ) {
         this.userRepository = userRepository;
         this.amazonS3Client = amazonS3Client;
         this.tokenRepository = tokenRepository;
@@ -72,6 +82,8 @@ public class SpringConfig {
         this.univRepository = univRepository;
         this.javaMailSender = javaMailSender;
         this.mail = mail;
+        this.dynamoDBMapper = dynamoDBMapper;
+        this.amazonDynamoDB = amazonDynamoDB;
         this.dateLogRepository = dateLogRepository;
         this.optionsRepository = optionsRepository;
         this.imageRepository = imageRepository;
@@ -125,5 +137,15 @@ public class SpringConfig {
     @Bean
     public EmailService emailService() {
         return new EmailServiceImpl(javaMailSender, mail, userRepository);
+    }
+
+    @Bean
+    public DynamoDBService dynamoDBService() {
+        return new DynamoDBServiceImpl(dynamoDBMapper, amazonDynamoDB);
+    }
+
+    @Bean
+    public ChattingService chattingService() {
+        return new ChattingServiceImpl(userRepository, dynamoDBService());
     }
 }

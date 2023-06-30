@@ -1,5 +1,6 @@
 package com.dankan.exception;
 
+import com.dankan.exception.chatting.ChattingRoomDataNotExistException;
 import com.dankan.exception.options.OptionNotFoundException;
 import com.dankan.exception.post.PostNotFoundException;
 import com.dankan.exception.report.PostReportNotFoundException;
@@ -115,33 +116,38 @@ public class ApiExceptionHandler {
         return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
     }
 
+    @ExceptionHandler(ChattingRoomDataNotExistException.class)
+    public ResponseEntity<ApiErrorResponse> handleException(ChattingRoomDataNotExistException ex) {
+        ApiErrorResponse response = new ApiErrorResponse("ERROR-0017", "room :  " + ex.getMessage() + " data is not exist");
+    }
+  
     @ExceptionHandler(InvalidOptionTypeException.class)
     public ResponseEntity<ApiErrorResponse> handleException(InvalidOptionTypeException ex) {
-        ApiErrorResponse response = new ApiErrorResponse("ERROR-0017", "Invalid option type : " + ex.getMessage());
+        ApiErrorResponse response = new ApiErrorResponse("ERROR-0018", "Invalid option type : " + ex.getMessage());
         return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
     }
 
     @ExceptionHandler(InvalidEtcOptionTypeException.class)
     public ResponseEntity<ApiErrorResponse> handleException(InvalidEtcOptionTypeException ex) {
-        ApiErrorResponse response = new ApiErrorResponse("ERROR-0018", "Invalid option type : " + ex.getMessage());
+        ApiErrorResponse response = new ApiErrorResponse("ERROR-0019", "Invalid option type : " + ex.getMessage());
         return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
     }
 
     @ExceptionHandler(InvalidManagementTypeException.class)
     public ResponseEntity<ApiErrorResponse> handleException(InvalidManagementTypeException ex) {
-        ApiErrorResponse response = new ApiErrorResponse("ERROR-0019", "Invalid management type : " + ex.getMessage());
+        ApiErrorResponse response = new ApiErrorResponse("ERROR-0020", "Invalid management type : " + ex.getMessage());
         return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
     }
 
     @ExceptionHandler(InvalidDealTypeException.class)
     public ResponseEntity<ApiErrorResponse> handleException(InvalidDealTypeException ex) {
-        ApiErrorResponse response = new ApiErrorResponse("ERROR-0020", "Invalid deal type : " + ex.getMessage());
+        ApiErrorResponse response = new ApiErrorResponse("ERROR-0021", "Invalid deal type : " + ex.getMessage());
         return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
     }
 
     @ExceptionHandler(OptionNotFoundException.class)
     public ResponseEntity<ApiErrorResponse> handleException(OptionNotFoundException ex) {
-        ApiErrorResponse response = new ApiErrorResponse("ERROR-0021", "Option is not found : option codeKey is " + ex.getMessage());
+        ApiErrorResponse response = new ApiErrorResponse("ERROR-0022", "Option is not found : option codeKey is " + ex.getMessage());
         return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
     }
 }

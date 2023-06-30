@@ -3,16 +3,20 @@ package com.dankan.controller;
 import com.dankan.dto.request.email.EmailCodeRequestDto;
 import com.dankan.dto.request.email.EmailRequestDto;
 import com.dankan.dto.request.sns.CertificationRequestDto;
+import com.dankan.dto.response.chatting.ChattingLogResponseDto;
 import com.dankan.dto.response.login.TokenResponseDto;
 import com.dankan.dto.response.report.ReportResponseDto;
 import com.dankan.dto.response.user.UserResponseDto;
 import com.dankan.dto.request.certification.SendMessageRequestDto;
+import com.dankan.service.chatting.ChattingService;
 import com.dankan.service.report.ReportService;
 import com.dankan.service.email.EmailService;
 import com.dankan.service.sms.SmsService;
 import com.dankan.service.token.TokenService;
 import com.dankan.service.user.UserService;
+import com.dankan.vo.ChattingMessageResponse;
 import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
@@ -41,6 +45,7 @@ public class AdminController {
     private final SmsService smsService;
     private final ReportService reportService;
     private final EmailService emailService;
+    private final ChattingService chattingService;
 
     @Operation(summary = "특정 사용자 정보 api", description = "특정 사용자 정보 조회")
     @ApiResponses(
@@ -217,5 +222,17 @@ public class AdminController {
     @PostMapping("univ/verify-code")
     public ResponseEntity<Boolean> verifyEmailCode(@RequestBody EmailCodeRequestDto emailCodeRequestDto) {
         return ResponseEntity.ok(emailService.verifyCode(emailCodeRequestDto));
+    }
+
+    @ApiOperation("채팅 기록 조회 API")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200",description = "기록 조회 성공 "),
+            @ApiResponse(responseCode = "401",description = "인증되지 않은 사용자"),
+            @ApiResponse(responseCode = "403",description = "Admin 권한이 없음"),
+            @ApiResponse(responseCode = "404",description = "해당 멤버 없음")
+    })
+    @GetMapping("/chatting/log")
+    public ResponseEntity<List<ChattingLogResponseDto>> getChattingLog(@RequestParam("roomId") Long id) {
+        return ResponseEntity.ok(chattingService.getHistory(id));
     }
 }

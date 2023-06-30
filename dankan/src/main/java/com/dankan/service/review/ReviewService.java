@@ -1,6 +1,8 @@
 package com.dankan.service.review;
 
 
+import com.dankan.dto.request.image.ImageRequestDto;
+import com.dankan.dto.response.image.ImageResponseDto;
 import com.dankan.dto.response.review.ReviewDetailResponseDto;
 import com.dankan.dto.response.review.ReviewImageResponseDto;
 import com.dankan.dto.response.review.ReviewRateResponseDto;
@@ -13,11 +15,9 @@ import java.util.UUID;
 
 public interface ReviewService {
     ReviewResponseDto addReview(ReviewRequestDto reviewRequestDto);
-    ReviewImageResponseDto addReviewImage(Long reviewId,String imgUrl);
     List<ReviewDetailResponseDto> findReviewDetail(ReviewDetailRequestDto reviewDetailRequestDto);
     ReviewRateResponseDto findReviewRate(String address);
     List<ReviewResponseDto> findRecentReview(Integer pages);
     List<ReviewResponseDto> findReviewByStar(Integer pages);
-
     void deleteReview(Long reviewId);
 }

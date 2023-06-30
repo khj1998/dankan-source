@@ -6,8 +6,8 @@ import com.dankan.dto.response.post.*;
 import com.dankan.dto.request.post.PostHeartRequestDto;
 import com.dankan.dto.request.post.PostRoomRequestDto;
 import com.dankan.exception.datelog.DateLogNotFoundException;
+import com.dankan.exception.image.ImageNotFoundException;
 import com.dankan.exception.post.PostNotFoundException;
-import com.dankan.exception.room.RoomImageNotFoundException;
 import com.dankan.exception.room.RoomNotFoundException;
 import com.dankan.repository.*;
 import com.dankan.util.JwtUtil;
@@ -29,6 +29,8 @@ public class PostServiceImpl implements PostService {
     private final PostHeartRepository postHeartRepository;
     private final DateLogRepository dateLogRepository;
     private final RecentWatchRepository recentWatchRepository;
+    private final OptionsRepository optionsRepository;
+    private final ImageRepository imageRepository;
 
 
     public PostServiceImpl(
@@ -36,12 +38,16 @@ public class PostServiceImpl implements PostService {
             RoomRepository roomRepository,
             PostHeartRepository postHeartRepository,
             DateLogRepository dateLogRepository,
-            RecentWatchRepository recentWatchRepository) {
+            RecentWatchRepository recentWatchRepository,
+            OptionsRepository optionsRepository,
+            ImageRepository imageRepository) {
         this.postRepository = postRepository;
         this.roomRepository = roomRepository;
         this.postHeartRepository = postHeartRepository;
         this.recentWatchRepository = recentWatchRepository;
         this.dateLogRepository = dateLogRepository;
+        this.optionsRepository = optionsRepository;
+        this.imageRepository = imageRepository;
     }
 
     @Override
@@ -50,17 +56,19 @@ public class PostServiceImpl implements PostService {
         Long userId = JwtUtil.getMemberId();
         Room room = roomRepository.findById(roomId)
                 .orElseThrow(() -> new RoomNotFoundException(roomId));
+
         Post post = postRepository.findByRoomId(roomId)
                 .orElseThrow(() -> new PostNotFoundException(roomId));
+
         PostHeart postHeart = postHeartRepository.findByUserIdAndPostId(userId,post.getPostId());
+        List<Options> optionsList = optionsRepository.findByRoomId(room.getRoomId());
 
-        /*RoomImage roomImage = roomImageRepository.findByRoomIdAndImageType(room.getRoomId(),0L)
-                .orElseThrow(() -> new RoomImageNotFoundException(room.getRoomId()));*/
+        Image roomImage = imageRepository.findMainImage(room.getRoomId(),0L)
+                .orElseThrow(() -> new ImageNotFoundException(room.getRoomId()));
 
-        return PostResponseDto.of(post,room,postHeart,"roomImage.getRoomImageUrl()");
+        return PostResponseDto.of(post,room,postHeart,roomImage.getImageUrl(),optionsList);
     }
 
-    // 이미지 가져와야함
     @Override
     @Transactional(readOnly = true)
     public List<PostResponseDto> findRecentPost(Integer pages) {
@@ -74,11 +82,12 @@ public class PostServiceImpl implements PostService {
             Room room = roomRepository.findById(post.getRoomId())
                     .orElseThrow(() -> new RoomNotFoundException(post.getRoomId()));
             PostHeart postHeart = postHeartRepository.findByUserIdAndPostId(userId,post.getPostId());
+            List<Options> optionsList = optionsRepository.findByRoomId(room.getRoomId());
 
-            /*RoomImage roomImage = roomImageRepository.findByRoomIdAndImageType(room.getRoomId(),0L)
-                    .orElseThrow(() -> new RoomImageNotFoundException(room.getRoomId()));*/
+            Image roomImage = imageRepository.findMainImage(room.getRoomId(),0L)
+                    .orElseThrow(() -> new ImageNotFoundException(room.getRoomId()));
 
-            PostResponseDto responseDto = PostResponseDto.of(post,room,postHeart,"roomImage.getRoomImageUrl()");
+            PostResponseDto responseDto = PostResponseDto.of(post,room,postHeart,roomImage.getImageUrl(),optionsList);
             responseDtoList.add(responseDto);
         }
 
@@ -99,11 +108,12 @@ public class PostServiceImpl implements PostService {
                     .orElseThrow(() -> new PostNotFoundException(postHeart.getPostId()));
             Room room = roomRepository.findById(post.getRoomId())
                     .orElseThrow(() -> new RoomNotFoundException(post.getRoomId()));
+            List<Options> optionsList = optionsRepository.findByRoomId(room.getRoomId());
 
-            /*RoomImage roomImage = roomImageRepository.findByRoomIdAndImageType(room.getRoomId(),0L)
-                    .orElseThrow(() -> new RoomImageNotFoundException(room.getRoomId()));*/
+            Image roomImage = imageRepository.findMainImage(room.getRoomId(),0L)
+                    .orElseThrow(() -> new ImageNotFoundException(room.getRoomId()));
 
-            PostResponseDto postResponseDto = PostResponseDto.of(post,room,postHeart,"roomImage.getRoomImageUrl()");
+            PostResponseDto postResponseDto = PostResponseDto.of(post,room,postHeart,roomImage.getImageUrl(),optionsList);
             postResponseDtoList.add(postResponseDto);
         }
 
@@ -122,11 +132,12 @@ public class PostServiceImpl implements PostService {
         for (Post post : postList) {
             Room room = roomRepository.findById(post.getRoomId())
                     .orElseThrow(() -> new RoomNotFoundException(post.getRoomId()));
+            List<Options> optionsList = optionsRepository.findByRoomId(room.getRoomId());
 
-            /*RoomImage roomImage = roomImageRepository.findByRoomIdAndImageType(room.getRoomId(),0L)
-                    .orElseThrow(() -> new RoomImageNotFoundException(room.getRoomId()));*/
+            Image roomImage = imageRepository.findMainImage(room.getRoomId(),0L)
+                    .orElseThrow(() -> new ImageNotFoundException(room.getRoomId()));
 
-            PostResponseDto postResponseDto = PostResponseDto.of(post,room,"roomImage.getRoomImageUrl()");
+            PostResponseDto postResponseDto = PostResponseDto.of(post,room,roomImage.getImageUrl(),optionsList);
             postResponseDtoList.add(postResponseDto);
         }
 
@@ -138,7 +149,7 @@ public class PostServiceImpl implements PostService {
     public List<PostResponseDto> findRecentWatchPost(Integer pages) {
         List<PostResponseDto> postResponseDtoList = new ArrayList<>();
         Long userId = JwtUtil.getMemberId();
-        Sort sort = Sort.by(Sort.Direction.DESC,"createdAt");
+        Sort sort = Sort.by(Sort.Direction.DESC,"updatedAt");
         Pageable pageable = PageRequest.of(pages,5,sort);
         List<RecentWatchPost> recentWatchPostList = recentWatchRepository.findAllByUserId(userId,pageable);
 
@@ -149,25 +160,25 @@ public class PostServiceImpl implements PostService {
 
             Room room = roomRepository.findById(post.getRoomId())
                     .orElseThrow(() -> new RoomNotFoundException(post.getRoomId()));
+            List<Options> optionsList = optionsRepository.findByRoomId(room.getRoomId());
 
-            /*RoomImage roomImage = roomImageRepository.findByRoomIdAndImageType(room.getRoomId(),0L)
-                    .orElseThrow(() -> new RoomImageNotFoundException(room.getRoomId()));*/
+            Image roomImage = imageRepository.findMainImage(room.getRoomId(),0L)
+                    .orElseThrow(() -> new ImageNotFoundException(room.getRoomId()));
 
-            PostResponseDto postResponseDto = PostResponseDto.of(post,room,"roomImage.getRoomImageUrl()");
+            PostResponseDto postResponseDto = PostResponseDto.of(post,room,roomImage.getImageUrl(),optionsList);
             postResponseDtoList.add(postResponseDto);
         }
 
         return postResponseDtoList;
     }
 
-    // 이미지 가져와야함
     @Override
     @Transactional
     public PostDetailResponseDto findPostDetail(Long postId) {
         Long userId = JwtUtil.getMemberId();
         Boolean isWatched = false;
-        StringBuilder imgUrls = new StringBuilder();
-        RoomImage roomImage;
+        StringBuilder imgUrls = new StringBuilder("");
+        Image image;
         Long imageType;
 
         Post post = postRepository.findById(postId)
@@ -197,14 +208,17 @@ public class PostServiceImpl implements PostService {
 
         Room room = roomRepository.findById(post.getRoomId())
                 .orElseThrow(() -> new RoomNotFoundException(post.getRoomId()));
+        List<Options> optionsList = optionsRepository.findByRoomId(room.getRoomId());
 
         for (imageType=0L;imageType<3L;imageType+=1) {
-            /*roomImage = roomImageRepository.findByRoomIdAndImageType(room.getRoomId(),imageType)
-                    .orElseThrow(() -> new RoomImageNotFoundException(room.getRoomId()));*/
-            imgUrls.append("roomImage.getRoomImageUrl()").append(" ");
+            List<Image> imgList = imageRepository.findByIdAndImageType(room.getRoomId(),imageType);
+
+            for (Image img : imgList) {
+                imgUrls.append(img.getImageUrl()).append(" ");
+            }
         }
 
-        return PostDetailResponseDto.of(post,room,postHeart,postHeartCount, imgUrls.toString());
+        return PostDetailResponseDto.of(post,room,postHeart,postHeartCount, imgUrls.toString(),optionsList);
     }
 
     @Override
@@ -223,10 +237,13 @@ public class PostServiceImpl implements PostService {
         Room room = Room.of(postRoomRequestDto,userId,dateLog.getId());
         roomRepository.save(room);
 
+        List<Options> optionsList = Options.of(room.getRoomId(),postRoomRequestDto);
+        optionsRepository.saveAll(optionsList);
+
         Post post = Post.of(postRoomRequestDto,userId,room.getRoomId(),dateLog.getId());
         postRepository.save(post);
 
-        return PostCreateResponseDto.of(post,room);
+        return PostCreateResponseDto.of(post,room,optionsList);
     }
 
     @Override

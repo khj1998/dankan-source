@@ -5,18 +5,18 @@ import lombok.Getter;
 
 @Getter
 public enum PriceTypeEnum {
-    주(0L),
-    월세(1L),
-    전세(2L),
-    반전세(3L);
+    주("0"),
+    월세("1"),
+    전세("2"),
+    반전세("3");
 
-    private final Long value;
+    private final String value;
 
-    PriceTypeEnum(Long value) {
+    PriceTypeEnum(String value) {
         this.value = value;
     }
 
-    public static Long getPriceTypeValue(String inputType) {
+    public static String getPriceTypeValue(String inputType) {
         for (PriceTypeEnum type : PriceTypeEnum.values()) {
             if (type.name().equals(inputType)) {
                 return type.getValue();
@@ -25,12 +25,12 @@ public enum PriceTypeEnum {
         throw new InvalidPriceTypeException(inputType);
     }
 
-    public static String getPriceTypeName(Long inputValue) {
+    public static String getPriceTypeName(String inputValue) {
         for (PriceTypeEnum type : PriceTypeEnum.values()) {
             if (type.getValue().equals(inputValue)) {
                 return type.name();
             }
         }
-        throw new InvalidPriceTypeException(inputValue.toString());
+        throw new InvalidPriceTypeException(inputValue);
     }
 }

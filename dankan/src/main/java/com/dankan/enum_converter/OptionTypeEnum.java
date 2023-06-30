@@ -6,26 +6,26 @@ import lombok.Getter;
 
 @Getter
 public enum OptionTypeEnum {
-    에어컨(0L),
-    냉장고(1L),
-    세탁기(2L),
-    가스레인지(3L),
-    인덕션(4L),
-    전자레인지(5L),
-    책상(6L),
-    책장(7L),
-    침대(8L),
-    옷장(9L),
-    싱크대(10L),
-    신발장(11L);
+    에어컨("0"),
+    냉장고("1"),
+    세탁기("2"),
+    가스레인지("3"),
+    인덕션("4"),
+    전자레인지("5"),
+    책상("6"),
+    책장("7"),
+    침대("8"),
+    옷장("9"),
+    싱크대("10"),
+    신발장("11");
 
-    private final Long value;
+    private final String value;
 
-    OptionTypeEnum(Long value) {
+    OptionTypeEnum(String value) {
         this.value = value;
     }
 
-    public static Long getOptionTypeValue(String inputType) {
+    public static String getOptionTypeValue(String inputType) {
         for (OptionTypeEnum type : OptionTypeEnum.values()) {
             if (type.name().equals(inputType)) {
                 return type.getValue();
@@ -34,12 +34,12 @@ public enum OptionTypeEnum {
         throw new InvalidOptionTypeException(inputType);
     }
 
-    public static String getOptionTypeName(Long inputValue) {
+    public static String getOptionTypeName(String inputValue) {
         for (OptionTypeEnum type : OptionTypeEnum.values()) {
             if (type.getValue().equals(inputValue)) {
                 return type.name();
             }
         }
-        throw new InvalidOptionTypeException(inputValue.toString());
+        throw new InvalidOptionTypeException(String.valueOf(inputValue));
     }
 }

@@ -1,33 +1,34 @@
 package com.dankan.enum_converter;
 
+import com.dankan.exception.type.InvalidDealTypeException;
 import lombok.Getter;
 
 @Getter
 public enum DealTypeEnum {
-    단기임대(0L),
-    양도(1L);
+    단기임대("0"),
+    양도("1");
 
-    private final Long value;
+    private final String value;
 
-    DealTypeEnum(Long value) {
+    DealTypeEnum(String value) {
         this.value = value;
     }
 
-    public static Long getDealTypeValue(String inputType) {
+    public static String getDealTypeValue(String inputType) {
         for (DealTypeEnum type : DealTypeEnum.values()) {
             if (type.name().equals(inputType)) {
                 return type.getValue();
             }
         }
-        return null;
+        throw new InvalidDealTypeException(inputType);
     }
 
-    public static String getDealTypeName(Long inputValue) {
+    public static String getDealTypeName(String inputValue) {
         for (DealTypeEnum type : DealTypeEnum.values()) {
             if (type.getValue().equals(inputValue)) {
                 return type.name();
             }
         }
-        return null;
+        throw new InvalidDealTypeException(inputValue);
     }
 }

@@ -1,13 +1,14 @@
 package com.dankan.controller;
 
-import com.dankan.dto.request.review.ReviewImageRequestDto;
-import com.dankan.dto.request.room.RoomImageRequestDto;
+import com.dankan.dto.request.image.ImageRequestDto;
+import com.dankan.dto.response.image.ImageResponseDto;
 import com.dankan.dto.response.review.ReviewDetailResponseDto;
-import com.dankan.dto.response.review.ReviewImageResponseDto;
 import com.dankan.dto.response.review.ReviewRateResponseDto;
 import com.dankan.dto.response.review.ReviewResponseDto;
 import com.dankan.dto.request.review.ReviewDetailRequestDto;
 import com.dankan.dto.request.review.ReviewRequestDto;
+import com.dankan.repository.ImageRepository;
+import com.dankan.service.image.ImageService;
 import com.dankan.service.review.ReviewService;
 import com.dankan.service.s3.S3UploadService;
 import io.swagger.annotations.Api;
@@ -23,7 +24,6 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.util.List;
-import java.util.UUID;
 
 @Slf4j
 @CrossOrigin
@@ -32,6 +32,7 @@ import java.util.UUID;
 @Api(tags = {"후기 관련 api"})
 @RequiredArgsConstructor
 public class ReviewController {
+    private final ImageRepository imageRepository;
     /**
      * TODO: 후기 생성 API
      * TODO: 후기 삭제 API
@@ -42,6 +43,7 @@ public class ReviewController {
 
     private final ReviewService reviewService;
     private final S3UploadService s3UploadService;
+    private final ImageService imageService;
 
     @ApiOperation("매물 후기 조회 API")
     @ApiResponses({
@@ -116,14 +118,14 @@ public class ReviewController {
             @ApiResponse(responseCode = "404",description = "리뷰 이미지 등록 실패")
     })
     @PostMapping(value = "/image",consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ResponseEntity<ReviewImageResponseDto> addReviewImage(@ModelAttribute ReviewImageRequestDto reviewImageRequestDto) throws IOException {
-        String imgUrl = null;
+    public ResponseEntity<ImageResponseDto> addReviewImage(@ModelAttribute ImageRequestDto imageRequestDto) throws IOException {
+        String imgUrl = "";
 
-        for (MultipartFile multipartFile : reviewImageRequestDto.getMultipartFileList()) {
-            imgUrl = s3UploadService.upload(multipartFile, "room-image") + " ";
+        for (MultipartFile multipartFile : imageRequestDto.getMultipartFileList()) {
+            imgUrl += s3UploadService.upload(multipartFile, "room-image") + " ";
         }
 
-        ReviewImageResponseDto responseDto = reviewService.addReviewImage(reviewImageRequestDto.getReviewId(),imgUrl);
+        ImageResponseDto responseDto = imageService.addReviewImages(imageRequestDto,imgUrl);
 
         return ResponseEntity.ok(responseDto);
     }

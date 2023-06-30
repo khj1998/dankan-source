@@ -7,6 +7,7 @@ import com.dankan.enum_converter.*;
 import lombok.*;
 
 import java.time.LocalDate;
+import java.util.List;
 
 @Setter
 @Getter
@@ -53,7 +54,7 @@ public class PostCreateResponseDto {
     private Double latitude;
     private Double longitude;
 
-    public static PostCreateResponseDto of(Post post, Room room) {
+    public static PostCreateResponseDto of(Post post, Room room, List<Options> optionsList) {
         LocalDate currentDate = LocalDate.now();
         String dealType = "";
         String roomType = "";
@@ -63,9 +64,9 @@ public class PostCreateResponseDto {
         String options = "";
         String etcOptions = "";
 
-        for (Options option : room.getOptionsList()) {
+        for (Options option : optionsList) {
             if (option.getCodeKey().equals("DealType")) {
-                dealType = option.getValue().equals(0L) ? "단기임대" : "양도";
+                dealType = option.getValue().equals("0") ? "단기임대" : "양도";
             }
 
             if (option.getCodeKey().equals("RoomType")) {
@@ -77,7 +78,9 @@ public class PostCreateResponseDto {
             }
 
             if (option.getCodeKey().equals("ManagementType")) {
-                managementType += ManagementTypeEnum.getManagementTypeName(option.getValue());
+                for (int i = 0;i<option.getValue().length();i++) {
+                    managementType += ManagementTypeEnum.getManagementTypeName(String.valueOf(option.getValue().charAt(i)))+" ";
+                }
             }
 
             if (option.getCodeKey().equals("Structure")) {
@@ -85,11 +88,15 @@ public class PostCreateResponseDto {
             }
 
             if (option.getCodeKey().equals("Option")) {
-                options += OptionTypeEnum.getOptionTypeName(option.getValue());
+                for (int i = 0;i<option.getValue().length();i++) {
+                    options += OptionTypeEnum.getOptionTypeName(String.valueOf(option.getValue().charAt(i)))+" ";
+                }
             }
 
             if (option.getCodeKey().equals("EtcOption")) {
-                etcOptions += EtcOptionTypeEnum.getEtcOptionTypeName(option.getValue());
+                for (int i = 0;i<option.getValue().length();i++) {
+                    etcOptions += EtcOptionTypeEnum.getEtcOptionTypeName(String.valueOf(option.getValue().charAt(i)))+" ";
+                }
             }
         }
 

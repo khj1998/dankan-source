@@ -1,10 +1,11 @@
 package com.dankan.exception;
 
+import com.dankan.exception.options.OptionNotFoundException;
 import com.dankan.exception.post.PostNotFoundException;
 import com.dankan.exception.report.PostReportNotFoundException;
 import com.dankan.exception.report.ReviewReportNotFoundException;
 import com.dankan.exception.review.ReviewNotFoundException;
-import com.dankan.exception.room.RoomImageNotFoundException;
+import com.dankan.exception.image.ImageNotFoundException;
 import com.dankan.exception.room.RoomNotFoundException;
 import com.dankan.exception.token.TokenNotFoundException;
 import com.dankan.exception.type.*;
@@ -108,8 +109,8 @@ public class ApiExceptionHandler {
         return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
     }
 
-    @ExceptionHandler(RoomImageNotFoundException.class)
-    public ResponseEntity<ApiErrorResponse> handleException(RoomImageNotFoundException ex) {
+    @ExceptionHandler(ImageNotFoundException.class)
+    public ResponseEntity<ApiErrorResponse> handleException(ImageNotFoundException ex) {
         ApiErrorResponse response = new ApiErrorResponse("ERROR-0016", "failed to find room image from room id :  " + ex.getMessage());
         return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
     }
@@ -130,5 +131,17 @@ public class ApiExceptionHandler {
     public ResponseEntity<ApiErrorResponse> handleException(InvalidManagementTypeException ex) {
         ApiErrorResponse response = new ApiErrorResponse("ERROR-0019", "Invalid management type : " + ex.getMessage());
         return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(InvalidDealTypeException.class)
+    public ResponseEntity<ApiErrorResponse> handleException(InvalidDealTypeException ex) {
+        ApiErrorResponse response = new ApiErrorResponse("ERROR-0020", "Invalid deal type : " + ex.getMessage());
+        return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(OptionNotFoundException.class)
+    public ResponseEntity<ApiErrorResponse> handleException(OptionNotFoundException ex) {
+        ApiErrorResponse response = new ApiErrorResponse("ERROR-0021", "Option is not found : option codeKey is " + ex.getMessage());
+        return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
     }
 }

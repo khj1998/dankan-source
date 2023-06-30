@@ -28,9 +28,10 @@ public class ReviewRateResponseDto {
     private Double avgHostRate;
     private Double avgFacilityRate;
 
-    public static ReviewRateResponseDto of(Room room,List<RoomReview> reviewList, String imageUrl) {
+    public static ReviewRateResponseDto of(Room room,List<RoomReview> reviewList, String imageUrl,Options option,List<Options> optionsList) {
         Long reviewCount = (long) reviewList.size();
-        String roomType = "";
+        String roomType = RoomTypeEnum.getRoomTypeName(option.getValue());
+
         Double avgTotalRate = 0.0;
         Double avgCleanRate = 0.0;
         Double avgNoiseRate = 0.0;
@@ -38,32 +39,25 @@ public class ReviewRateResponseDto {
         Double avgHostRate = 0.0;
         Double avgFacilityRate = 0.0;
 
-        for (Options options : room.getOptionsList()) {
-            if (options.getCodeKey().contains("RoomType")) {
-                roomType = RoomTypeEnum.getRoomTypeName(options.getValue());
-                break;
-            }
-        }
-
         for (RoomReview roomReview : reviewList) {
             avgTotalRate += roomReview.getTotalRate();
+        }
 
-            for (Options options : roomReview.getOptionsList()) {
-                if (options.getCodeKey().contains("CleanRate")) {
-                    avgCleanRate += options.getValue();
-                }
-                if (options.getCodeKey().contains("NoiseRate")) {
-                    avgNoiseRate += options.getValue();
-                }
-                if (options.getCodeKey().contains("AccessRate")) {
-                    avgAccessRate += options.getValue();
-                }
-                if (options.getCodeKey().contains("HostRate")) {
-                    avgHostRate += options.getValue();
-                }
-                if (options.getCodeKey().contains("FacilityRate")){
-                    avgFacilityRate += options.getValue();
-                }
+        for (Options options : optionsList) {
+            if (options.getCodeKey().contains("CleanRate")) {
+                avgCleanRate += Long.parseLong(options.getValue());
+            }
+            if (options.getCodeKey().contains("NoiseRate")) {
+                avgNoiseRate += Long.parseLong(options.getValue());
+            }
+            if (options.getCodeKey().contains("AccessRate")) {
+                avgAccessRate += Long.parseLong(options.getValue());
+            }
+            if (options.getCodeKey().contains("HostRate")) {
+                avgHostRate += Long.parseLong(options.getValue());
+            }
+            if (options.getCodeKey().contains("FacilityRate")){
+                avgFacilityRate += Long.parseLong(options.getValue());
             }
         }
 

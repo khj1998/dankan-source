@@ -66,7 +66,9 @@ public class SpringConfig {
                         , final ReviewReportRepository reviewReportRepository, final UnivRepository univRepository, final JavaMailSender javaMailSender, @Value("${mail.id}") String mail, final DateLogRepository dateLogRepository
                         , final RecentWatchRepository recentWatchRepository
                         , final OptionsRepository optionsRepository
-                        , final ImageRepository ){
+                        , final ImageRepository imageRepository
+                        , final AmazonDynamoDB amazonDynamoDB
+                        , final DynamoDBMapper dynamoDBMapper){
         this.userRepository = userRepository;
         this.amazonS3Client = amazonS3Client;
         this.tokenRepository = tokenRepository;

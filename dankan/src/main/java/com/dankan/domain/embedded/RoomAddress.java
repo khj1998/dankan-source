@@ -35,4 +35,7 @@ public class RoomAddress {
 
     @Column(name = "address_detail",nullable = false,length = 50,columnDefinition = "varchar")
     private String addressDetail;
+
+    @Column(name = "building_name",nullable = false, length = 128, columnDefinition = "varchar")
+    private String buildingName;
 }

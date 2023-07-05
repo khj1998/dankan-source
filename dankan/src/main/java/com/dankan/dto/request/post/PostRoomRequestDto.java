@@ -22,7 +22,7 @@ public class PostRoomRequestDto {
     private String addressDetails;
     private Double latitude;
     private Double longitude;
-    private Boolean dealType;
+    private String dealType;
     private String roomType; 
     private Long elevators; // 엘레베이터 유뮤 없으면 0 있으면 1
     private String priceType; // 주 월세 전세 반전세

@@ -5,8 +5,9 @@ import lombok.Getter;
 
 @Getter
 public enum DealTypeEnum {
-    단기임대("0"),
-    양도("1");
+    전체("0"),
+    단기임대("1"),
+    양도("2");
 
     private final String value;
 

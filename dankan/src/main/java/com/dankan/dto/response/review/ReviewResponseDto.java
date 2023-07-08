@@ -38,6 +38,23 @@ public class ReviewResponseDto {
     private String roomType;
     private String imgUrl;
 
+    public static ReviewResponseDto of(User user,RoomReview roomReview,Options option) {
+        String roomType = RoomTypeEnum.getRoomTypeName(option.getValue());
+
+        return ReviewResponseDto.builder()
+                .reviewId(roomReview.getReviewId())
+                .updatedAt(LocalDate.now())
+                .roomType(roomType)
+                .totalRate(roomReview.getTotalRate())
+                .nickName(user.getNickname())
+                .content(roomReview.getContent())
+                .startedAt(roomReview.getResidencePeriod().getStartedAt())
+                .endAt(roomReview.getResidencePeriod().getEndAt())
+                .address(roomReview.getAddress())
+                .addressDetail(roomReview.getAddressDetail())
+                .build();
+    }
+
     public static ReviewResponseDto of(User user, RoomReview roomReview,String imageUrl, Options option) {
         String roomType = RoomTypeEnum.getRoomTypeName(option.getValue());
 

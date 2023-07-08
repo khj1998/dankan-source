@@ -38,7 +38,7 @@ public class Options {
         String[] options = postRoomRequestDto.getOptions().split(" ");
         String[] etcOptions = postRoomRequestDto.getEtcOptions().split(" ");
 
-        String dealType = postRoomRequestDto.getDealType() ? "0" : "1";
+        String dealType = DealTypeEnum.getDealTypeValue(postRoomRequestDto.getDealType());
         String roomType = RoomTypeEnum.getRoomTypeValue(postRoomRequestDto.getRoomType());
         String priceType = PriceTypeEnum.getPriceTypeValue(postRoomRequestDto.getPriceType());
         String structureType = StructureTypeEnum.getStructureTypeValue(postRoomRequestDto.getStructure());;

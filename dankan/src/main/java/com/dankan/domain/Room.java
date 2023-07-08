@@ -79,6 +79,7 @@ public class Room {
                 .si(addressParts[1])
                 .gu(addressParts[2])
                 .dong(addressParts[3])
+                .buildingName(addressParts[4])
                 .latitude(postRoomRequestDto.getLatitude())
                 .longitude(postRoomRequestDto.getLongitude())
                 .address(postRoomRequestDto.getAddress())

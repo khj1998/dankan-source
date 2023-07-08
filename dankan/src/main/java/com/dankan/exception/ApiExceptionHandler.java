@@ -5,6 +5,7 @@ import com.dankan.exception.options.OptionNotFoundException;
 import com.dankan.exception.post.PostNotFoundException;
 import com.dankan.exception.report.PostReportNotFoundException;
 import com.dankan.exception.report.ReviewReportNotFoundException;
+import com.dankan.exception.review.ReviewDuplicatedException;
 import com.dankan.exception.review.ReviewNotFoundException;
 import com.dankan.exception.image.ImageNotFoundException;
 import com.dankan.exception.room.RoomNotFoundException;
@@ -150,5 +151,11 @@ public class ApiExceptionHandler {
     public ResponseEntity<ApiErrorResponse> handleException(OptionNotFoundException ex) {
         ApiErrorResponse response = new ApiErrorResponse("ERROR-0022", "Option is not found : option codeKey is " + ex.getMessage());
         return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
+    }
+
+    @ExceptionHandler(ReviewDuplicatedException.class)
+    public ResponseEntity<ApiErrorResponse> handleReviewDuplicated(ReviewDuplicatedException ex) {
+        ApiErrorResponse response = new ApiErrorResponse("ERROR-0023", "review already exists - address : + " +ex.getMessage());
+        return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
     }
 }

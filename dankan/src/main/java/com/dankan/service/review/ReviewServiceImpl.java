@@ -11,6 +11,7 @@ import com.dankan.dto.response.review.ReviewResponseDto;
 import com.dankan.dto.request.review.ReviewRequestDto;
 import com.dankan.exception.image.ImageNotFoundException;
 import com.dankan.exception.options.OptionNotFoundException;
+import com.dankan.exception.review.ReviewDuplicatedException;
 import com.dankan.exception.review.ReviewNotFoundException;
 import com.dankan.exception.room.RoomNotFoundException;
 import com.dankan.exception.user.UserIdNotFoundException;
@@ -55,6 +56,13 @@ public class ReviewServiceImpl implements ReviewService {
     @Transactional
     public ReviewResponseDto addReview(ReviewRequestDto reviewRequestDto) {
         Long userId = JwtUtil.getMemberId();
+
+        Boolean isReviewExisted = reviewRepository.findReview(userId,reviewRequestDto.getAddress()).isPresent();
+
+        if (isReviewExisted) {
+            throw new ReviewDuplicatedException(reviewRequestDto.getAddress());
+        }
+
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new UserIdNotFoundException(userId.toString()));
 
@@ -78,7 +86,7 @@ public class ReviewServiceImpl implements ReviewService {
         RoomReview roomReview = RoomReview.of(reviewRequestDto,user,room.getRoomId(), dateLog.getId());
         reviewRepository.save(roomReview);
 
-        return ReviewResponseDto.of(user,roomReview,null,option);
+        return ReviewResponseDto.of(user,roomReview,option);
     }
 
     @Override
@@ -149,9 +157,11 @@ public class ReviewServiceImpl implements ReviewService {
     public ReviewRateResponseDto findReviewRate(String address) {
         Room room = roomRepository.findFirstByRoomAddress_Address(address)
                 .orElseThrow(() -> new RoomNotFoundException(address));
+
         List<String> codeKeys = new ArrayList<>(List.of("AccessRate,CleanRate,HostRate,FacilityRate,NoiseRate"));
         Options option = optionsRepository.findByRoomIdAndCodeKey(room.getRoomId(),"RoomType")
                 .orElseThrow(() -> new OptionNotFoundException("RoomType"));
+
         List<Options> optionsList = optionsRepository.findRateOptions(room.getRoomId(),codeKeys);
 
         // 하나의 도로명 주소에는 여러 방이 있을 수 있습니다. 어떤 이미지를 대표로 가져올지 고려해봐야 합니다.

@@ -23,12 +23,12 @@ public class PostDetailResponseDto {
     private String title;
     private String content;
     private Boolean isHearted;
-    private Integer heartCount;
 
     // room 응답
     private Long itemNumber;
     private String address;
     private String addressDetails;
+    private String buildingName;
     private String dealType;
     private String roomType;
     private Long elevators;
@@ -58,7 +58,7 @@ public class PostDetailResponseDto {
     private Double latitude;
     private Double longitude;
 
-    public static PostDetailResponseDto of(Post post, Room room, PostHeart postHeart, Integer heartCount, String imgUrls, List<Options> optionsList) {
+    public static PostDetailResponseDto of(Post post, Room room, PostHeart postHeart, String imgUrls, List<Options> optionsList) {
         Boolean isHearted = false;
         String dealType = "";
         String roomType = "";
@@ -78,7 +78,7 @@ public class PostDetailResponseDto {
             }
 
             if (option.getCodeKey().equals("DealType")) {
-                dealType = option.getValue().equals("0") ? "단기임대" : "양도";
+                dealType = DealTypeEnum.getDealTypeName(option.getValue());
             }
 
             if (option.getCodeKey().equals("PriceType")) {
@@ -114,7 +114,6 @@ public class PostDetailResponseDto {
                 .title(post.getTitle())
                 .content(post.getContent())
                 .isHearted(isHearted)
-                .heartCount(heartCount)
 
                 .isDiscussion(room.getRoomDiscussion().getIsDiscussion())
                 .elevators(room.getElevatorOption())
@@ -128,6 +127,7 @@ public class PostDetailResponseDto {
                 .itemNumber(room.getRoomId())
                 .address(room.getRoomAddress().getAddress())
                 .addressDetails(room.getRoomAddress().getAddressDetail())
+                .buildingName(room.getRoomAddress().getBuildingName())
                 .deposit(room.getRoomCost().getDeposit())
                 .price(room.getRoomCost().getPrice())
                 .managementCost(room.getRoomCost().getManagementCost())

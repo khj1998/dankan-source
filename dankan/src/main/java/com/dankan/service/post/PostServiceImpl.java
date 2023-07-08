@@ -178,7 +178,6 @@ public class PostServiceImpl implements PostService {
         Long userId = JwtUtil.getMemberId();
         Boolean isWatched = false;
         StringBuilder imgUrls = new StringBuilder("");
-        Image image;
         Long imageType;
 
         Post post = postRepository.findById(postId)
@@ -204,7 +203,6 @@ public class PostServiceImpl implements PostService {
         }
 
         PostHeart postHeart = postHeartRepository.findByUserIdAndPostId(userId,post.getPostId());
-        Integer postHeartCount = postHeartRepository.findByPostId(post.getPostId()).size();
 
         Room room = roomRepository.findById(post.getRoomId())
                 .orElseThrow(() -> new RoomNotFoundException(post.getRoomId()));
@@ -218,7 +216,7 @@ public class PostServiceImpl implements PostService {
             }
         }
 
-        return PostDetailResponseDto.of(post,room,postHeart,postHeartCount, imgUrls.toString(),optionsList);
+        return PostDetailResponseDto.of(post,room,postHeart,imgUrls.toString(),optionsList);
     }
 
     @Override
@@ -250,6 +248,7 @@ public class PostServiceImpl implements PostService {
     @Transactional
     public PostEditResponseDto editPost(PostRoomEditRequestDto postRoomEditRequestDto) {
         Long userId = JwtUtil.getMemberId();
+
         Post post = postRepository.findByPostIdAndUserId(postRoomEditRequestDto.getPostId(), userId)
                         .orElseThrow(() -> new PostNotFoundException(postRoomEditRequestDto.getPostId()));
         post.setTitle(postRoomEditRequestDto.getTitle());
@@ -258,6 +257,7 @@ public class PostServiceImpl implements PostService {
 
         DateLog dateLog = dateLogRepository.findById(post.getDateId())
                 .orElseThrow(() -> new DateLogNotFoundException(post.getDateId()));
+
         dateLog.setLastUserId(userId);
         dateLog.setUpdatedAt(LocalDate.now());
         dateLogRepository.save(dateLog);

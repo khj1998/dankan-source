@@ -3,14 +3,17 @@ package com.dankan.service.image;
 import com.dankan.domain.Image;
 import com.dankan.domain.Post;
 import com.dankan.domain.Room;
+import com.dankan.domain.RoomReview;
 import com.dankan.dto.request.image.ImageEditRequestDto;
 import com.dankan.dto.request.image.ImageRequestDto;
 import com.dankan.dto.response.image.ImageResponseDto;
 import com.dankan.enum_converter.ImageTypeEnum;
 import com.dankan.exception.image.ImageNotFoundException;
 import com.dankan.exception.post.PostNotFoundException;
+import com.dankan.exception.review.ReviewNotFoundException;
 import com.dankan.repository.ImageRepository;
 import com.dankan.repository.PostRepository;
+import com.dankan.repository.ReviewRepository;
 import com.dankan.repository.RoomRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.transaction.annotation.Transactional;
@@ -23,10 +26,12 @@ import java.util.List;
 public class ImageServiceImpl implements ImageService {
     private final PostRepository postRepository;
     private final ImageRepository imageRepository;
+    private final ReviewRepository reviewRepository;
 
-    public ImageServiceImpl(final PostRepository postRepository, final ImageRepository imageRepository) {
+    public ImageServiceImpl(final PostRepository postRepository, final ImageRepository imageRepository,final ReviewRepository reviewRepository) {
         this.postRepository = postRepository;
         this.imageRepository = imageRepository;
+        this.reviewRepository = reviewRepository;
     }
 
     @Override
@@ -49,12 +54,13 @@ public class ImageServiceImpl implements ImageService {
     @Override
     @Transactional
     public ImageResponseDto addReviewImages(ImageRequestDto imageRequestDto, String imgUrls)  {
-        String[] imgUrlList = imgUrls.split(" ");
+        Image image = Image.of(imageRequestDto.getType(), imgUrls, imageRequestDto.getId());
+        imageRepository.save(image);
 
-        for (String s : imgUrlList) {
-            Image image = Image.of(imageRequestDto.getType(), s, imageRequestDto.getId());
-            imageRepository.save(image);
-        }
+        RoomReview review = reviewRepository.findById(imageRequestDto.getId())
+                .orElseThrow(() -> new ReviewNotFoundException(imageRequestDto.getId()));
+        review.setImageId(image.getImageId());
+        reviewRepository.save(review);
 
         return ImageResponseDto.builder()
                 .imgUrls(imgUrls)
@@ -71,8 +77,6 @@ public class ImageServiceImpl implements ImageService {
         String[] lastImgUrls = imageEditRequestDto.getLastImgUrl().split(" ");
         String[] newImgUrls = imgUrls.split(" ");
         List<Image> imageList = new ArrayList<>();
-
-        log.info("리스트 크기 확인 {},{}",lastImgUrls.length,newImgUrls.length);
 
         for (String lastImgUrl : lastImgUrls) {
             Image image = imageRepository.findEditImage(post.getRoomId(), lastImgUrl,imageType)

@@ -1,10 +1,8 @@
 package com.dankan.dto.response.review;
 
-import com.dankan.domain.Options;
-import com.dankan.domain.Room;
-import com.dankan.domain.RoomReview;
-import com.dankan.domain.User;
+import com.dankan.domain.*;
 import com.dankan.enum_converter.RoomTypeEnum;
+import com.dankan.enum_converter.SatisfyEnum;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.*;
 
@@ -38,14 +36,17 @@ public class ReviewResponseDto {
     private String roomType;
     private String imgUrl;
 
-    public static ReviewResponseDto of(User user,RoomReview roomReview,Options option) {
-        String roomType = RoomTypeEnum.getRoomTypeName(option.getValue());
+    public static ReviewResponseDto of(User user,RoomReview roomReview) {
 
         return ReviewResponseDto.builder()
                 .reviewId(roomReview.getReviewId())
                 .updatedAt(LocalDate.now())
-                .roomType(roomType)
                 .totalRate(roomReview.getTotalRate())
+                .cleanRate(roomReview.getCleanRate())
+                .noiseRate(roomReview.getNoiseRate())
+                .accessRate(roomReview.getAccessRate())
+                .hostRate(roomReview.getHostRate())
+                .facilityRate(roomReview.getFacilityRate())
                 .nickName(user.getNickname())
                 .content(roomReview.getContent())
                 .startedAt(roomReview.getResidencePeriod().getStartedAt())
@@ -55,13 +56,11 @@ public class ReviewResponseDto {
                 .build();
     }
 
-    public static ReviewResponseDto of(User user, RoomReview roomReview,String imageUrl, Options option) {
-        String roomType = RoomTypeEnum.getRoomTypeName(option.getValue());
+    public static ReviewResponseDto of(User user, RoomReview roomReview, String imgUrls) {
 
         return ReviewResponseDto.builder()
                 .reviewId(roomReview.getReviewId())
                 .updatedAt(LocalDate.now())
-                .roomType(roomType)
                 .totalRate(roomReview.getTotalRate())
                 .nickName(user.getNickname())
                 .content(roomReview.getContent())
@@ -69,23 +68,21 @@ public class ReviewResponseDto {
                 .endAt(roomReview.getResidencePeriod().getEndAt())
                 .address(roomReview.getAddress())
                 .addressDetail(roomReview.getAddressDetail())
-                .imgUrl(imageUrl)
+                .imgUrl(imgUrls)
                 .build();
     }
 
-    public static ReviewResponseDto of(RoomReview roomReview, String imageUrl,Options option) {
-        String roomType = RoomTypeEnum.getRoomTypeName(option.getValue());
+    public static ReviewResponseDto of(RoomReview roomReview, String imgUrls) {
 
         return ReviewResponseDto.builder()
                 .reviewId(roomReview.getReviewId())
                 .updatedAt(LocalDate.now())
-                .roomType(roomType)
                 .content(roomReview.getContent())
                 .startedAt(roomReview.getResidencePeriod().getStartedAt())
                 .endAt(roomReview.getResidencePeriod().getEndAt())
                 .address(roomReview.getAddress())
                 .addressDetail(roomReview.getAddressDetail())
-                .imgUrl(imageUrl)
+                .imgUrl(imgUrls)
                 .build();
     }
 }

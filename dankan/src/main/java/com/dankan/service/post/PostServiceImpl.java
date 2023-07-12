@@ -200,15 +200,20 @@ public class PostServiceImpl implements PostService {
 
         if (!isWatched) {
             recentWatchRepository.save(recentWatchPost);
+        } else {
+            recentWatchRepository.updateDate(LocalDate.now(),postId);
         }
 
         PostHeart postHeart = postHeartRepository.findByUserIdAndPostId(userId,post.getPostId());
 
         Room room = roomRepository.findById(post.getRoomId())
-                .orElseThrow(() -> new RoomNotFoundException(post.getRoomId()));
+                .orElseThrow(
+                        () -> new RoomNotFoundException(post.getRoomId())
+                );
+
         List<Options> optionsList = optionsRepository.findByRoomId(room.getRoomId());
 
-        for (imageType=0L;imageType<3L;imageType+=1) {
+        for (imageType = 0L; imageType < 3L;imageType += 1) {
             List<Image> imgList = imageRepository.findByIdAndImageType(room.getRoomId(),imageType);
 
             for (Image img : imgList) {
@@ -230,9 +235,11 @@ public class PostServiceImpl implements PostService {
                 .updatedAt(LocalDate.now())
                 .lastUserId(userId)
                 .build();
+
         dateLogRepository.save(dateLog);
 
         Room room = Room.of(postRoomRequestDto,userId,dateLog.getId());
+
         roomRepository.save(room);
 
         List<Options> optionsList = Options.of(room.getRoomId(),postRoomRequestDto);

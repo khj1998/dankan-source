@@ -19,6 +19,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -173,7 +174,7 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
-    @Transactional
+    @Transactional(readOnly = true)
     public PostDetailResponseDto findPostDetail(Long postId) {
         Long userId = JwtUtil.getMemberId();
         Boolean isWatched = false;
@@ -201,7 +202,7 @@ public class PostServiceImpl implements PostService {
         if (!isWatched) {
             recentWatchRepository.save(recentWatchPost);
         } else {
-            recentWatchRepository.updateDate(LocalDate.now(),postId);
+            recentWatchRepository.updateDate(LocalDateTime.now(),postId);
         }
 
         PostHeart postHeart = postHeartRepository.findByUserIdAndPostId(userId,post.getPostId());
@@ -229,12 +230,7 @@ public class PostServiceImpl implements PostService {
     public PostCreateResponseDto addPost(PostRoomRequestDto postRoomRequestDto) {
         Long userId = JwtUtil.getMemberId();
 
-        DateLog dateLog = DateLog.builder()
-                .createdAt(LocalDate.now())
-                .userId(userId)
-                .updatedAt(LocalDate.now())
-                .lastUserId(userId)
-                .build();
+        DateLog dateLog = DateLog.of(userId);
 
         dateLogRepository.save(dateLog);
 
@@ -262,13 +258,6 @@ public class PostServiceImpl implements PostService {
         post.setContent(postRoomEditRequestDto.getContent());
         postRepository.save(post);
 
-        DateLog dateLog = dateLogRepository.findById(post.getDateId())
-                .orElseThrow(() -> new DateLogNotFoundException(post.getDateId()));
-
-        dateLog.setLastUserId(userId);
-        dateLog.setUpdatedAt(LocalDate.now());
-        dateLogRepository.save(dateLog);
-
         return PostEditResponseDto.of(post);
     }
 
@@ -278,6 +267,10 @@ public class PostServiceImpl implements PostService {
         Long userId = JwtUtil.getMemberId();
         Post post = postRepository.findByPostIdAndUserId(postId,userId)
                         .orElseThrow(() -> new PostNotFoundException(postId));
+
+        DateLog dateLog = DateLog.of(userId);
+        dateLogRepository.save(dateLog);
+
         postRepository.delete(post);
     }
 
@@ -288,12 +281,7 @@ public class PostServiceImpl implements PostService {
         PostHeart postHeart = postHeartRepository.findByUserIdAndPostId(userId,postHeartRequestDto.getPostId());
 
         if (postHeart == null) {
-            DateLog dateLog = DateLog.builder()
-                    .createdAt(LocalDate.now())
-                    .userId(userId)
-                    .updatedAt(LocalDate.now())
-                    .lastUserId(userId)
-                    .build();
+            DateLog dateLog = DateLog.of(userId);
             dateLogRepository.save(dateLog);
 
             postHeart = PostHeart.builder()

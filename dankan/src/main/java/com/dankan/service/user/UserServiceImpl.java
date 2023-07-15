@@ -94,12 +94,7 @@ public class UserServiceImpl implements UserService {
                 .build();
 
         //날짜 로그
-        DateLog dateLog = DateLog.builder()
-                .createdAt(LocalDate.now())
-                .userId(id)
-                .lastUserId(id)
-                .updatedAt(LocalDate.now())
-                .build();
+        DateLog dateLog = DateLog.of(id);
 
         User user = User.builder()
                 .userId(id)

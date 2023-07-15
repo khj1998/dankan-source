@@ -66,12 +66,7 @@ public class ReviewServiceImpl implements ReviewService {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new UserIdNotFoundException(userId.toString()));
 
-        DateLog dateLog = DateLog.builder()
-                .userId(userId)
-                .createdAt(LocalDate.now())
-                .lastUserId(userId)
-                .updatedAt(LocalDate.now())
-                .build();
+        DateLog dateLog = DateLog.of(userId);
         dateLogRepository.save(dateLog);
 
         RoomReview roomReview = RoomReview.of(reviewRequestDto,user, dateLog.getId());

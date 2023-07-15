@@ -9,6 +9,7 @@ import lombok.*;
 
 import javax.swing.text.html.Option;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Setter
@@ -19,7 +20,7 @@ import java.util.List;
 public class PostDetailResponseDto {
     // post 응답
     private Long postId;
-    private LocalDate updatedAt;
+    private LocalDateTime updatedAt;
     private String title;
     private String content;
     private Boolean isHearted;

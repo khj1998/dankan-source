@@ -257,7 +257,6 @@ public class PostServiceImpl implements PostService {
         post.setTitle(postRoomEditRequestDto.getTitle());
         post.setContent(postRoomEditRequestDto.getContent());
         postRepository.save(post);
-
         return PostEditResponseDto.of(post);
     }
 

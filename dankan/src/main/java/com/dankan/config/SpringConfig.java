@@ -111,7 +111,7 @@ public class SpringConfig {
 
     @Bean
     public ImageService roomService() {
-        return new ImageServiceImpl(postRepository,imageRepository);
+        return new ImageServiceImpl(postRepository,imageRepository,reviewRepository);
     }
 
     @Bean

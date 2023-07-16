@@ -8,6 +8,7 @@ import org.hibernate.annotations.Type;
 
 import javax.persistence.*;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.UUID;
 
@@ -33,7 +34,7 @@ public class RecentWatchPost {
     private Long postId;
 
     @CreationTimestamp
-    private LocalDate updatedAt;
+    private LocalDateTime updatedAt;
 
     public static RecentWatchPost of(Long userId, Long postId) {
         return RecentWatchPost.builder()

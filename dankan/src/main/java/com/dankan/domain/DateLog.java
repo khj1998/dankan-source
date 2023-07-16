@@ -7,6 +7,7 @@ import org.hibernate.annotations.UpdateTimestamp;
 
 import javax.persistence.*;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @ApiModel(value = "날짜 로그 테이블")
 @Getter
@@ -23,14 +24,15 @@ public class DateLog {
     private Long id;
 
     @Column(name = "created_at", nullable = false, columnDefinition = "date")
-    private LocalDate createdAt;
+    private LocalDateTime createdAt;
 
     @Column(name = "user_id", nullable = false, columnDefinition = "bigint")
     private Long userId;
 
-    @Column(name = "updated_at", nullable = false, columnDefinition = "date")
-    private LocalDate updatedAt;
-
-    @Column(name = "last_user_id", nullable = false, columnDefinition = "bigint")
-    private Long lastUserId;
+    public static DateLog of(Long userId) {
+        return DateLog.builder()
+                .userId(userId)
+                .createdAt(LocalDateTime.now())
+                .build();
+    }
 }

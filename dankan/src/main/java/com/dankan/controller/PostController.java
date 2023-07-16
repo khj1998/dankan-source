@@ -36,10 +36,7 @@ public class PostController {
 
     @ApiOperation("매물 번호로 조회 API")
     @ApiResponses({
-            @ApiResponse(responseCode = "200",description = "매물 번호로 조회 성공 "),
-            @ApiResponse(responseCode = "401",description = "인증되지 않은 사용자"),
-            @ApiResponse(responseCode = "403",description = "유저가 Member | Admin 권한이 없음"),
-            @ApiResponse(responseCode = "404",description = "매물 번호 조회에 실패함")
+            @ApiResponse(responseCode = "200",description = "매물 번호로 조회 성공 ")
     })
     @GetMapping
     public ResponseEntity<PostResponseDto> getPostByRoomId(@RequestParam("roomId") Long roomId) {
@@ -49,10 +46,7 @@ public class PostController {
 
     @ApiOperation("찜한 매물 조회 API")
     @ApiResponses({
-            @ApiResponse(responseCode = "200",description = "찜한 매물 조회 성공 "),
-            @ApiResponse(responseCode = "401",description = "인증되지 않은 사용자"),
-            @ApiResponse(responseCode = "403",description = "유저가 Member | Admin 권한이 없음"),
-            @ApiResponse(responseCode = "404",description = "찜한 매물 조회에 실패함")
+            @ApiResponse(responseCode = "200",description = "찜한 매물 조회 성공 ")
     })
     @GetMapping("/heart")
     public ResponseEntity<List<PostResponseDto>> getHeartPost(@RequestParam("pages") Integer pages) {
@@ -62,10 +56,7 @@ public class PostController {
 
     @ApiOperation("최근 본 매물 N개 조회 API")
     @ApiResponses({
-            @ApiResponse(responseCode = "200",description = "최근 본 매물 조회 성공"),
-            @ApiResponse(responseCode = "401",description = "인증되지 않은 사용자"),
-            @ApiResponse(responseCode = "403",description = "유저가 Member | Admin 권한이 없음"),
-            @ApiResponse(responseCode = "404",description = "최근 본 매물 조회에 실패함")
+            @ApiResponse(responseCode = "200",description = "최근 본 매물 조회 성공")
     })
     @GetMapping("/recent/watch")
     public ResponseEntity<List<PostResponseDto>> getRecentWatchPost(@RequestParam("pages") Integer pages) {
@@ -75,10 +66,7 @@ public class PostController {
 
     @ApiOperation("매매 게시물 최신순 조회 API")
     @ApiResponses({
-            @ApiResponse(responseCode = "200",description = "매매 게시물 최신순 조회 성공 "),
-            @ApiResponse(responseCode = "401",description = "인증되지 않은 사용자"),
-            @ApiResponse(responseCode = "403",description = "유저가 Member | Admin 권한이 없음"),
-            @ApiResponse(responseCode = "404",description = "매매 게시물 최신순 조회에 실패함")
+            @ApiResponse(responseCode = "200",description = "매매 게시물 최신순 조회 성공 ")
     })
     @GetMapping("/recent")
     public ResponseEntity<List<PostResponseDto>> getRecentPost(@RequestParam("pages") Integer pages) {
@@ -88,10 +76,7 @@ public class PostController {
 
     @ApiOperation("등록한 매매 게시물 조회")
     @ApiResponses({
-            @ApiResponse(responseCode = "200",description = "등록한 매매 게시물 조회 성공 "),
-            @ApiResponse(responseCode = "401",description = "인증되지 않은 사용자"),
-            @ApiResponse(responseCode = "403",description = "유저가 Member | Admin 권한이 없음"),
-            @ApiResponse(responseCode = "404",description = "등록한 매매 게시물 조회에 실패함")
+            @ApiResponse(responseCode = "200",description = "등록한 매매 게시물 조회 성공 ")
     })
     @GetMapping("/my-room")
     public ResponseEntity<List<PostResponseDto>> getMyPost(@RequestParam("pages") Integer pages) {
@@ -101,10 +86,7 @@ public class PostController {
 
     @ApiOperation("매매 게시물 상세 조회 API")
     @ApiResponses({
-            @ApiResponse(responseCode = "200",description = "매매 게시물 상세 조회 성공 "),
-            @ApiResponse(responseCode = "401",description = "인증되지 않은 사용자"),
-            @ApiResponse(responseCode = "403",description = "유저가 Member | Admin 권한이 없음"),
-            @ApiResponse(responseCode = "404",description = "매매 게시물 상세 조회에 실패함")
+            @ApiResponse(responseCode = "200",description = "매매 게시물 상세 조회 성공 ")
     })
     @GetMapping("/detail")
     public ResponseEntity<PostDetailResponseDto> getPostDetail(@RequestParam("postId") Long postId) {
@@ -114,10 +96,7 @@ public class PostController {
 
     @ApiOperation("매매 게시물 등록 API")
     @ApiResponses({
-            @ApiResponse(responseCode = "200",description = "매매 게시물 등록 성공 "),
-            @ApiResponse(responseCode = "401",description = "인증되지 않은 사용자"),
-            @ApiResponse(responseCode = "403",description = "유저가 Member | Admin 권한이 없음"),
-            @ApiResponse(responseCode = "404",description = "매매 게시물 등록에 실패함")
+            @ApiResponse(responseCode = "200",description = "매매 게시물 등록 성공 ")
     })
     @PostMapping
     public ResponseEntity<PostCreateResponseDto> addPost(@RequestBody PostRoomRequestDto postRoomRequestDto) {
@@ -127,10 +106,7 @@ public class PostController {
 
     @ApiOperation("매물 이미지 등록 API")
     @ApiResponses({
-            @ApiResponse(responseCode = "200",description = "매물 이미지 등록 성공"),
-            @ApiResponse(responseCode = "401",description = "인증되지 않은 사용자"),
-            @ApiResponse(responseCode = "403",description = "유저가 Member | Admin 권한이 없음"),
-            @ApiResponse(responseCode = "404",description = "매물 이미지 등록 실패")
+            @ApiResponse(responseCode = "200",description = "매물 이미지 등록 성공")
     })
     @PostMapping(value = "/image",consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<ImageResponseDto> addPostImage(@ModelAttribute ImageRequestDto imageRequestDto) throws IOException {
@@ -146,10 +122,7 @@ public class PostController {
     
     @ApiOperation("매매 게시물 수정 API")
     @ApiResponses({
-            @ApiResponse(responseCode = "200",description = "매매 게시물 수정 성공"),
-            @ApiResponse(responseCode = "401",description = "인증되지 않은 사용자"),
-            @ApiResponse(responseCode = "403",description = "사용자가 Member | Admin 권한이 없음"),
-            @ApiResponse(responseCode = "404",description = "매매 게시물 수정에 실패함")
+            @ApiResponse(responseCode = "200",description = "매매 게시물 수정 성공")
     })
     @PostMapping("/edit")
     public ResponseEntity<PostEditResponseDto> editPost(@RequestBody PostRoomEditRequestDto postRoomEditRequestDto) {
@@ -159,10 +132,7 @@ public class PostController {
 
     @ApiOperation("매물 이미지 수정 API")
     @ApiResponses({
-            @ApiResponse(responseCode = "200",description = "매물 이미지 수정 성공"),
-            @ApiResponse(responseCode = "401",description = "인증되지 않은 사용자"),
-            @ApiResponse(responseCode = "403",description = "유저가 Member | Admin 권한이 없음"),
-            @ApiResponse(responseCode = "404",description = "매물 이미지 수정 실패")
+            @ApiResponse(responseCode = "200",description = "매물 이미지 수정 성공")
     })
     @PostMapping(value = "/image/edit",consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<ImageResponseDto> editRoomImage(@ModelAttribute ImageEditRequestDto imageEditRequestDto) throws IOException {
@@ -178,10 +148,7 @@ public class PostController {
 
     @ApiOperation("매매 게시물 찜 API")
     @ApiResponses({
-            @ApiResponse(responseCode = "200",description = "매매 게시물 찜 추가/취소 성공"),
-            @ApiResponse(responseCode = "401",description = "인증되지 않은 사용자"),
-            @ApiResponse(responseCode = "403",description = "사용자가 Member | Admin 권한이 없음"),
-            @ApiResponse(responseCode = "404",description = "매매 게시물 찜에 실패함")
+            @ApiResponse(responseCode = "200",description = "매매 게시물 찜 추가/취소 성공")
     })
     @PostMapping("/heart")
     public ResponseEntity<PostHeartResponseDto> heartPost(@RequestBody PostHeartRequestDto postHeartRequestDto) {
@@ -191,10 +158,7 @@ public class PostController {
 
     @ApiOperation("매매 게시물 삭제 API")
     @ApiResponses({
-            @ApiResponse(responseCode = "200",description = "매매 게시물 삭제 성공"),
-            @ApiResponse(responseCode = "401",description = "인증되지 않은 사용자"),
-            @ApiResponse(responseCode = "403",description = "사용자가 Member | Admin 권한이 없음"),
-            @ApiResponse(responseCode = "404",description = "매매 게시물 삭제에 실패함")
+            @ApiResponse(responseCode = "200",description = "매매 게시물 삭제 성공")
     })
     @DeleteMapping("/delete")
     public ResponseEntity deletePost(@RequestParam Long postId) {

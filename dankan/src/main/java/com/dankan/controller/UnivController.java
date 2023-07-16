@@ -24,10 +24,7 @@ public class UnivController {
     @Operation(summary = "대학교 리스트 조회 api", description = "사용자 리스트 조회")
     @ApiResponses(
             value = {
-                    @ApiResponse(responseCode = "200", description = "조회 환료"),
-                    @ApiResponse(responseCode = "401", description = "토큰 만료"),
-                    @ApiResponse(responseCode = "403", description = "권한 없음"),
-                    @ApiResponse(responseCode = "404", description = "해당 멤버 없음"),
+                    @ApiResponse(responseCode = "200", description = "조회 환료")
             }
     )
     @GetMapping("/info")

@@ -7,6 +7,7 @@ import org.hibernate.annotations.UpdateTimestamp;
 
 import javax.persistence.*;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Date;
 
 @ApiModel(value = "매매 게시물 엔티티")
@@ -34,7 +35,7 @@ public class Post {
     private Long userId;
 
     @UpdateTimestamp
-    private LocalDate updatedAt;
+    private LocalDateTime updatedAt;
 
     @Column(name = "title",nullable = false,length = 64,columnDefinition = "varchar")
     private String title;

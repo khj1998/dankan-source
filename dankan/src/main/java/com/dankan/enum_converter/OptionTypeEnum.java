@@ -16,8 +16,8 @@ public enum OptionTypeEnum {
     책장("7"),
     침대("8"),
     옷장("9"),
-    싱크대("10"),
-    신발장("11");
+    싱크대("-1"),
+    신발장("-2");
 
     private final String value;
 

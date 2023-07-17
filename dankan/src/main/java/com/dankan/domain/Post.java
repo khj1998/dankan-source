@@ -3,6 +3,7 @@ package com.dankan.domain;
 import com.dankan.dto.request.post.PostRoomRequestDto;
 import io.swagger.annotations.ApiModel;
 import lombok.*;
+import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import javax.persistence.*;
@@ -33,6 +34,9 @@ public class Post {
 
     @Column(name = "user_id",nullable = false,columnDefinition = "bigint")
     private Long userId;
+
+    @CreationTimestamp
+    private LocalDateTime createdAt;
 
     @UpdateTimestamp
     private LocalDateTime updatedAt;

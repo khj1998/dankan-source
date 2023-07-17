@@ -20,7 +20,7 @@ public class ReviewDetailResponseDto {
     private String univ;
     private LocalDate startedAt;
     private LocalDate endAt;
-    private Long totalRate;
+    private Double totalRate;
     private String content;
     private LocalDateTime updatedAt;
     private String imgUrl;

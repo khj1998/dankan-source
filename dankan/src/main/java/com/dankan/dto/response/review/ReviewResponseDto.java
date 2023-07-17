@@ -23,7 +23,7 @@ public class ReviewResponseDto {
     private String nickName;
     private String univ;
     private String content;
-    private Long totalRate;
+    private Double totalRate;
     private Long cleanRate;
     private Long noiseRate;
     private Long accessRate;

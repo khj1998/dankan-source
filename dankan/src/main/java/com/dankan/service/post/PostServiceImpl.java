@@ -1,11 +1,12 @@
 package com.dankan.service.post;
 
 import com.dankan.domain.*;
+import com.dankan.dto.request.post.PostFilterRequestDto;
 import com.dankan.dto.request.post.PostRoomEditRequestDto;
 import com.dankan.dto.response.post.*;
 import com.dankan.dto.request.post.PostHeartRequestDto;
 import com.dankan.dto.request.post.PostRoomRequestDto;
-import com.dankan.exception.datelog.DateLogNotFoundException;
+import com.dankan.enum_converter.*;
 import com.dankan.exception.image.ImageNotFoundException;
 import com.dankan.exception.post.PostNotFoundException;
 import com.dankan.exception.room.RoomNotFoundException;
@@ -17,11 +18,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
 import org.springframework.data.domain.Sort;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 @Slf4j
 public class PostServiceImpl implements PostService {
@@ -32,7 +30,6 @@ public class PostServiceImpl implements PostService {
     private final RecentWatchRepository recentWatchRepository;
     private final OptionsRepository optionsRepository;
     private final ImageRepository imageRepository;
-
 
     public PostServiceImpl(
             PostRepository postRepository,
@@ -49,6 +46,151 @@ public class PostServiceImpl implements PostService {
         this.dateLogRepository = dateLogRepository;
         this.optionsRepository = optionsRepository;
         this.imageRepository = imageRepository;
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<PostFilterResponseDto> getPostByFilter(PostFilterRequestDto postFilterRequestDto) {
+        Long memberId = JwtUtil.getMemberId();
+        List<PostFilterResponseDto> responseDtoList = new ArrayList<>();
+        List<Room> roomList = roomRepository.findRoomByFilter(postFilterRequestDto);
+
+        if (roomList != null) {
+
+            for (Room room : roomList) {
+                Post post = postRepository.findByRoomId(room.getRoomId())
+                        .orElseThrow(() -> new PostNotFoundException(room.getRoomId()));
+
+                List<Options> optionsList = optionsRepository.findByRoomId(room.getRoomId());
+
+                if (!isOptionSame(optionsList,postFilterRequestDto)) {
+                    continue;
+                }
+
+                PostHeart postHeart = postHeartRepository.findByUserIdAndPostId(memberId,post.getPostId());
+
+                Image roomImage = imageRepository.findMainImage(room.getRoomId(),0L)
+                        .orElseThrow(() -> new ImageNotFoundException(room.getRoomId()));
+
+                PostFilterResponseDto responseDto = PostFilterResponseDto.of(post,room,postHeart, roomImage.getImageUrl(),optionsList);
+                responseDtoList.add(responseDto);
+            }
+        }
+
+        if (postFilterRequestDto.getLowCostOrder() == null && postFilterRequestDto.getHeartOrder() == null) {
+            responseDtoList.sort(
+                    Comparator.comparing(PostFilterResponseDto::getCreatedAt).reversed()
+            );
+        } else if (postFilterRequestDto.getLowCostOrder() != null) {
+            Comparator<PostFilterResponseDto> createdAtSort = Comparator.comparing(PostFilterResponseDto::getCreatedAt).reversed();
+            responseDtoList.sort(
+                    Comparator.comparing(PostFilterResponseDto::getPrice)
+                            .thenComparing(createdAtSort)
+            );
+        } else if (postFilterRequestDto.getHeartOrder() != null) {
+            responseDtoList.sort(
+                    Comparator.comparing(PostFilterResponseDto::getIsHearted)
+                            .thenComparing(PostFilterResponseDto::getCreatedAt).reversed()
+            );
+        }
+
+        return responseDtoList;
+    }
+
+    private Boolean isOptionSame(List<Options> optionsList,PostFilterRequestDto postFilterRequestDto) {
+        Boolean isSame = true;
+        String etcOptionValues = "0123";
+
+        for (Options options : optionsList) {
+            if (postFilterRequestDto.getDealType() != null && options.getCodeKey().equals("DealType")) {
+                String dealTypeValue = DealTypeEnum.getDealTypeValue(postFilterRequestDto.getDealType());
+
+                if (!dealTypeValue.equals(options.getValue())) {
+                    isSame = false;
+                    break;
+                }
+            }
+
+            if (postFilterRequestDto.getPriceType() != null && options.getCodeKey().equals("PriceType")) {
+                String priceTypeValue = PriceTypeEnum.getPriceTypeValue(postFilterRequestDto.getPriceType());
+
+                if (!priceTypeValue.equals(options.getValue())) {
+                    isSame = false;
+                    break;
+                }
+            }
+
+            if (postFilterRequestDto.getRoomType().size() > 0 && options.getCodeKey().equals("RoomType")) {
+                String roomTypeValue = "";
+
+                for (String roomType : postFilterRequestDto.getRoomType()) {
+                    roomTypeValue += RoomTypeEnum.getRoomTypeValue(roomType);
+                }
+
+                if (!roomTypeValue.contains(options.getValue())) {
+                    isSame = false;
+                    break;
+                }
+            }
+
+            if (postFilterRequestDto.getRoomStructure().size() > 0 && options.getCodeKey().equals("StructureType")) {
+                String roomStructureValue = "";
+
+                for (String roomStructure : postFilterRequestDto.getRoomStructure()) {
+                    roomStructureValue += StructureTypeEnum.getStructureTypeValue(roomStructure);
+                }
+
+                if (!roomStructureValue.contains(options.getValue())) {
+                    isSame = false;
+                    break;
+                }
+            }
+
+            if (postFilterRequestDto.getFullOption() != null && options.getCodeKey().equals("Option")) {
+                if (!options.getValue().contains("0123")) {
+                    isSame = false;
+                    break;
+                }
+            }
+
+            if (postFilterRequestDto.getCanPark() != null && options.getCodeKey().equals("EtcOption")) {
+                String parkValue = EtcOptionTypeEnum.getEtcOptionTypeValue(postFilterRequestDto.getCanPark());
+
+                if (!parkValue.equals(options.getValue())) {
+                    isSame = false;
+                    break;
+                }
+            }
+
+            if (postFilterRequestDto.getPet() != null && options.getCodeKey().equals("EtcOption")) {
+                String petValue = EtcOptionTypeEnum.getEtcOptionTypeValue(postFilterRequestDto.getPet());
+
+                if (!etcOptionValues.contains(petValue)) {
+                    isSame = false;
+                    break;
+                }
+            }
+
+            if (postFilterRequestDto.getOnlyWomen() != null && options.getCodeKey().equals("EtcOption")) {
+                String onlyWomenValue = EtcOptionTypeEnum.getEtcOptionTypeValue(postFilterRequestDto.getOnlyWomen());
+
+                if (!etcOptionValues.contains(onlyWomenValue)) {
+                    isSame = false;
+                    break;
+                }
+            }
+
+            if (postFilterRequestDto.getLoan() != null && options.getCodeKey().equals("EtcOption")) {
+                String loanValue =  EtcOptionTypeEnum.getEtcOptionTypeValue(postFilterRequestDto.getLoan());
+
+                if (!etcOptionValues.contains(loanValue)) {
+                    isSame = false;
+                    break;
+                }
+            }
+        }
+
+        return isSame;
     }
 
     @Override
@@ -174,7 +316,7 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
-    @Transactional(readOnly = true)
+    @Transactional
     public PostDetailResponseDto findPostDetail(Long postId) {
         Long userId = JwtUtil.getMemberId();
         Boolean isWatched = false;

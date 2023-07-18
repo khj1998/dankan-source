@@ -86,7 +86,7 @@ public class PostDetailResponseDto {
                 priceType = PriceTypeEnum.getPriceTypeName(option.getValue());
             }
 
-            if (option.getCodeKey().equals("Structure")) {
+            if (option.getCodeKey().equals("StructureType")) {
                 structure = StructureTypeEnum.getStructureTypeName(option.getValue());
             }
 

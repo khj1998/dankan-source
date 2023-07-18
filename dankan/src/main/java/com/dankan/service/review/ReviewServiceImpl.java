@@ -144,7 +144,13 @@ public class ReviewServiceImpl implements ReviewService {
             }
         }
 
-        return ReviewRateResponseDto.of(reviewList, address,imgUrl);
+        Room room = roomRepository.findFirstByRoomAddress_Address(address)
+                .orElseThrow(() -> new RoomNotFoundException(address));
+
+        Options option = optionsRepository.findRoomTypeOption(room.getRoomId(),"RoomType")
+                .orElseThrow(() -> new OptionNotFoundException("RoomType"));
+
+        return ReviewRateResponseDto.of(reviewList,option,address,imgUrl);
     }
 
     @Override

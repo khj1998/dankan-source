@@ -8,13 +8,14 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface OptionsRepository extends JpaRepository<Options, OptionsId> {
     List<Options> findByRoomId(Long roomId);
 
     @Query(value = "select o from Options o where o.roomId=:roomId "+
-            "and o.codeKey in (:codeKeys)")
-    List<Options> findRateOptions(@Param("roomId") Long roomId,
-                                  @Param("codeKeys") List<String> codeKeys);
+            "and o.codeKey = :codeKey")
+    Optional<Options> findRoomTypeOption(@Param("roomId") Long roomId,
+                                         @Param("codeKey") String codeKey);
 }

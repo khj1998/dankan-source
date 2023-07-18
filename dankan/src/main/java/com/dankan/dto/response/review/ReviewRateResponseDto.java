@@ -29,8 +29,9 @@ public class ReviewRateResponseDto {
     private Double avgFacilityRate;
     private String imgUrl;
 
-    public static ReviewRateResponseDto of(List<RoomReview> reviewList, String address,String imgUrl) {
+    public static ReviewRateResponseDto of(List<RoomReview> reviewList,Options options,String address,String imgUrl) {
         Long reviewCount = (long) reviewList.size();
+        String roomTypeName = RoomTypeEnum.getRoomTypeName(options.getValue());
 
         Double avgTotalRate = 0.0;
         Double avgCleanRate = 0.0;
@@ -59,6 +60,7 @@ public class ReviewRateResponseDto {
 
         return ReviewRateResponseDto.builder()
                 .address(address)
+                .roomType(roomTypeName)
                 .reviewCount(reviewCount)
                 .avgTotalRate(Math.round(avgTotalRate*10)/10.0)
                 .avgCleanRate(Math.round(avgCleanRate*10)/10.0)

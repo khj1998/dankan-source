@@ -242,7 +242,9 @@ public class PostServiceImpl implements PostService {
     public List<PostResponseDto> findHeartPost(Integer pages) {
         List<PostResponseDto> postResponseDtoList = new ArrayList<>();
         Long userId = JwtUtil.getMemberId();
-        Pageable pageable = PageRequest.of(pages,5);
+
+        Sort sort = Sort.by(Sort.Direction.DESC,"createdAt");
+        Pageable pageable = PageRequest.of(pages,5,sort);
 
         List<PostHeart> postHeartList = postHeartRepository.findByUserId(userId,pageable);
 
@@ -268,7 +270,9 @@ public class PostServiceImpl implements PostService {
     public List<PostResponseDto> findMyPost(Integer pages) {
         List<PostResponseDto> postResponseDtoList = new ArrayList<>();
         Long userId = JwtUtil.getMemberId();
-        Pageable pageable = PageRequest.of(pages,5);
+
+        Sort sort = Sort.by(Sort.Direction.DESC,"createdAt");
+        Pageable pageable = PageRequest.of(pages,5,sort);
 
         List<Post> postList = postRepository.findByUserId(userId,pageable);
 

@@ -2,9 +2,11 @@ package com.dankan.domain;
 
 import io.swagger.annotations.ApiModel;
 import lombok.*;
+import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.Type;
 
 import javax.persistence.*;
+import java.time.LocalDateTime;
 
 @ApiModel(value = "찜한 게시물 엔티티")
 @Getter
@@ -28,6 +30,10 @@ public class PostHeart {
 
     @Column(name = "date_id", columnDefinition = "int")
     private Long dateId;
+
+    @CreationTimestamp
+    @Column(name = "created_at",columnDefinition = "datetime")
+    private LocalDateTime createdAt;
 
     public static PostHeart of(Long postId, Long userId,Long dateId) {
         return PostHeart.builder()

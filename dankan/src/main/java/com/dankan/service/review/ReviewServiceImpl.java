@@ -57,12 +57,6 @@ public class ReviewServiceImpl implements ReviewService {
     public ReviewResponseDto addReview(ReviewRequestDto reviewRequestDto) {
         Long userId = JwtUtil.getMemberId();
 
-        Boolean isReviewExisted = reviewRepository.findReview(userId,reviewRequestDto.getAddress()).isPresent();
-
-        if (isReviewExisted) {
-            throw new ReviewDuplicatedException(reviewRequestDto.getAddress());
-        }
-
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new UserIdNotFoundException(userId.toString()));
 

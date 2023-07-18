@@ -23,7 +23,6 @@ public class TokenController {
     @ApiOperation(value = "토큰이 만료됐는지 확인")
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "정상 응답"),
-            @ApiResponse(responseCode = "404", description = "해당 멤버 없음"),
     })
     public ResponseEntity<Boolean> isExpiredAt() {
         return ResponseEntity.ok(tokenService.isExpired());
@@ -33,7 +32,6 @@ public class TokenController {
     @ApiOperation(value = "토큰 재발급")
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "정상 응답"),
-            @ApiResponse(responseCode = "404", description = "해당 멤버 없음"),
     })
     public ResponseEntity<TokenResponseDto> reissueAccessToken(@RequestBody TokenRequestDto tokenRequestDto) {
         return ResponseEntity.ok(tokenService.reissueAccessToken(tokenRequestDto));

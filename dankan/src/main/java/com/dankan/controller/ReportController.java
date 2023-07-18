@@ -24,10 +24,7 @@ public class ReportController {
 
     @ApiOperation("매물 게시물 신고 API")
     @ApiResponses({
-            @ApiResponse(responseCode = "200",description = "매물 게시물 신고 등록 성공 "),
-            @ApiResponse(responseCode = "401",description = "인증되지 않은 사용자"),
-            @ApiResponse(responseCode = "403",description = "유저가 Member | Admin 권한이 없음"),
-            @ApiResponse(responseCode = "404",description = "매물 게시물 신고 등록에 실패함")
+            @ApiResponse(responseCode = "200",description = "매물 게시물 신고 등록 성공 ")
     })
     @PostMapping("/post")
     public ResponseEntity<Boolean> addPostReport(@RequestBody RoomReportRequestDto roomReportRequestDto) {
@@ -36,10 +33,7 @@ public class ReportController {
 
     @ApiOperation("매물 리뷰 신고 API")
     @ApiResponses({
-            @ApiResponse(responseCode = "200",description = "매물 리뷰 신고 등록 성공 "),
-            @ApiResponse(responseCode = "401",description = "인증되지 않은 사용자"),
-            @ApiResponse(responseCode = "403",description = "유저가 Member | Admin 권한이 없음"),
-            @ApiResponse(responseCode = "404",description = "매물 리뷰 신고 등록에 실패함")
+            @ApiResponse(responseCode = "200",description = "매물 리뷰 신고 등록 성공 ")
     })
     @PostMapping("/review")
     public ResponseEntity<Boolean> addReviewReport(@RequestBody ReviewReportRequestDto reviewReportRequestDto) {

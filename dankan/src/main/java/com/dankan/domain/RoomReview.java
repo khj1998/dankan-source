@@ -53,8 +53,8 @@ public class RoomReview {
     @Column(name = "address_detail",nullable = false,length = 50,columnDefinition = "varchar")
     private String addressDetail;
 
-    @Column(name = "total_rate",nullable = false,columnDefinition = "int")
-    private Long totalRate;
+    @Column(name = "total_rate",nullable = false,columnDefinition = "double")
+    private Double totalRate;
 
     @Column(name = "clean_rate",nullable = false,columnDefinition = "int")
     private Long cleanRate;

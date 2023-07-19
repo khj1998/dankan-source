@@ -324,7 +324,7 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
-    @Transactional(readOnly = true)
+    @Transactional
     public PostDetailResponseDto findPostDetail(Long postId) {
         Long userId = JwtUtil.getMemberId();
         Boolean isWatched = false;

@@ -193,7 +193,7 @@ public class PostController {
     @ApiResponses({
             @ApiResponse(responseCode = "200",description = "거래완료 게시물 조회 성공")
     })
-    @GetMapping("/trade-end")
+    @GetMapping("/trade-end/list")
     public ResponseEntity<List<PostResponseDto>> getTradeEndPost(@RequestParam Integer pages) {
         List<PostResponseDto> responseDtoList = postService.getTradeEndPost(pages);
         return ResponseEntity.ok(responseDtoList);

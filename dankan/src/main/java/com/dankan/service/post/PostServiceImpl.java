@@ -62,6 +62,11 @@ public class PostServiceImpl implements PostService {
         if (roomList != null) {
 
             for (Room room : roomList) {
+
+                if (!room.getIsTradeable()) {
+                    continue;
+                }
+
                 Post post = postRepository.findByRoomId(room.getRoomId())
                         .orElseThrow(() -> new PostNotFoundException(room.getRoomId()));
 
@@ -201,7 +206,7 @@ public class PostServiceImpl implements PostService {
     @Transactional(readOnly = true)
     public PostResponseDto getPostByRoomId(Long roomId) {
         Long userId = JwtUtil.getMemberId();
-        Room room = roomRepository.findById(roomId)
+        Room room = roomRepository.findById(roomId,true)
                 .orElseThrow(() -> new RoomNotFoundException(roomId));
 
         Post post = postRepository.findByRoomId(roomId)
@@ -223,7 +228,7 @@ public class PostServiceImpl implements PostService {
         List<PostResponseDto> responseDtoList = new ArrayList<>();
         Sort sort = Sort.by(Sort.Direction.DESC,"updatedAt");
         Pageable pageable = PageRequest.of(pages,5,sort);
-        Slice<Post> postList = postRepository.findAll(pageable);
+        Slice<Post> postList = postRepository.findAllPost(true,pageable);
 
         for (Post post : postList) {
             Room room = roomRepository.findById(post.getRoomId())
@@ -242,7 +247,7 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
-    @Transactional(readOnly = true)
+    @Transactional
     public List<PostResponseDto> findHeartPost(Integer pages) {
         List<PostResponseDto> postResponseDtoList = new ArrayList<>();
         Long userId = JwtUtil.getMemberId();
@@ -255,6 +260,12 @@ public class PostServiceImpl implements PostService {
         for (PostHeart postHeart : postHeartList) {
             Post post = postRepository.findById(postHeart.getPostId())
                     .orElseThrow(() -> new PostNotFoundException(postHeart.getPostId()));
+
+            if (!post.getIsShown()) {
+                postHeartRepository.delete(postHeart);
+                continue;
+            }
+
             Room room = roomRepository.findById(post.getRoomId())
                     .orElseThrow(() -> new RoomNotFoundException(post.getRoomId()));
             List<Options> optionsList = optionsRepository.findByRoomId(room.getRoomId());
@@ -278,7 +289,7 @@ public class PostServiceImpl implements PostService {
         Sort sort = Sort.by(Sort.Direction.DESC,"createdAt");
         Pageable pageable = PageRequest.of(pages,5,sort);
 
-        List<Post> postList = postRepository.findByUserId(userId,pageable);
+        List<Post> postList = postRepository.findByUserId(userId,true,pageable);
 
         for (Post post : postList) {
             Room room = roomRepository.findById(post.getRoomId())
@@ -296,7 +307,7 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
-    @Transactional(readOnly = true)
+    @Transactional
     public List<PostResponseDto> findRecentWatchPost(Integer pages) {
         List<PostResponseDto> postResponseDtoList = new ArrayList<>();
         Long userId = JwtUtil.getMemberId();
@@ -308,6 +319,11 @@ public class PostServiceImpl implements PostService {
             Long postId = recentWatchPost.getPostId();
             Post post = postRepository.findById(postId)
                     .orElseThrow(() -> new PostNotFoundException(postId));
+
+            if (!post.getIsShown()) {
+                recentWatchRepository.delete(recentWatchPost);
+                continue;
+            }
 
             Room room = roomRepository.findById(post.getRoomId())
                     .orElseThrow(() -> new RoomNotFoundException(post.getRoomId()));
@@ -446,5 +462,53 @@ public class PostServiceImpl implements PostService {
         }
 
         return PostHeartResponseDto.of(postHeart.getPostId(),userId);
+    }
+
+    @Override
+    @Transactional
+    public Boolean setTradeEnd(Long postId) {
+        Long userId = JwtUtil.getMemberId();
+
+        Post post = postRepository.findByPostIdAndUserId(postId,userId)
+                .orElseThrow(() -> new PostNotFoundException(postId));
+
+        Room room = roomRepository.findById(post.getRoomId())
+                .orElseThrow(() -> new RoomNotFoundException(post.getRoomId()));
+
+        post.setIsShown(false);
+        room.setIsTradeable(false);
+
+        postRepository.save(post);
+        roomRepository.save(room);
+
+        return true;
+    }
+
+    @Override
+    @Transactional
+    public List<PostResponseDto> getTradeEndPost(Integer pages) {
+        List<PostResponseDto> responseDtoList = new ArrayList<>();
+        Long userId = JwtUtil.getMemberId();
+
+        Sort sort = Sort.by(Sort.Direction.DESC,"createdAt");
+        Pageable pageable = PageRequest.of(pages,10,sort);
+
+        List<Post> postList = postRepository.findByUserId(userId,false,pageable);
+
+        for (Post post : postList) {
+
+            Room room = roomRepository.findById(post.getRoomId())
+                    .orElseThrow(() -> new RoomNotFoundException(post.getRoomId()));
+
+            Image image = imageRepository.findMainImage(room.getRoomId(),0L)
+                    .orElseThrow(() -> new ImageNotFoundException(room.getRoomId()));
+
+            List<Options> optionsList = optionsRepository.findByRoomId(room.getRoomId());
+
+            PostResponseDto responseDto = PostResponseDto.of(post,room,image.getImageUrl(),optionsList);
+            responseDtoList.add(responseDto);
+        }
+
+        return responseDtoList;
     }
 }

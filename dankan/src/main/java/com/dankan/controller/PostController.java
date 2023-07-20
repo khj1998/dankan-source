@@ -6,6 +6,7 @@ import com.dankan.dto.request.image.ImageRequestDto;
 import com.dankan.dto.response.post.*;
 import com.dankan.dto.response.image.ImageResponseDto;
 import com.dankan.dto.request.post.PostHeartRequestDto;
+import com.dankan.repository.PostRepository;
 import com.dankan.service.post.PostService;
 import com.dankan.service.image.ImageService;
 import com.dankan.service.s3.S3UploadService;
@@ -177,5 +178,24 @@ public class PostController {
     public ResponseEntity deletePost(@RequestParam Long postId) {
         postService.deletePost(postId);
         return ResponseEntity.ok().build();
+    }
+
+    @ApiOperation("게시물 거래완료 처리 API")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200",description = "게시물 거래완료 처리 성공")
+    })
+    @PostMapping("/trade-end/add")
+    public ResponseEntity<Boolean> addTradeEnd(@RequestParam Long postId) {
+        return ResponseEntity.ok(postService.setTradeEnd(postId));
+    }
+
+    @ApiOperation("내 거래완료 목록 확인 API")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200",description = "거래완료 게시물 조회 성공")
+    })
+    @GetMapping("/trade-end")
+    public ResponseEntity<List<PostResponseDto>> getTradeEndPost(@RequestParam Integer pages) {
+        List<PostResponseDto> responseDtoList = postService.getTradeEndPost(pages);
+        return ResponseEntity.ok(responseDtoList);
     }
 }

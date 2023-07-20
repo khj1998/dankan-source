@@ -18,6 +18,7 @@ import java.util.List;
 
 @ApiModel(value = "매물 엔티티")
 @Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
@@ -50,6 +51,9 @@ public class Room {
 
     @Embedded
     private RoomAddress roomAddress;
+
+    @Column(name = "is_tradeable",nullable = false,columnDefinition = "bit")
+    private Boolean isTradeable;
 
     public static Room of(PostRoomRequestDto postRoomRequestDto, Long userId,Long dateId) {
         String[] addressParts = postRoomRequestDto.getAddress().split(" ");
@@ -94,6 +98,7 @@ public class Room {
                 .elevatorOption(postRoomRequestDto.getElevators())
                 .roomDiscussion(discussion)
                 .roomAddress(address)
+                .isTradeable(true)
                 .build();
     }
 }

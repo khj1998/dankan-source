@@ -19,4 +19,6 @@ public interface PostService {
     List<PostResponseDto> findRecentWatchPost(Integer pages);
     void deletePost(Long postId);
     PostHeartResponseDto heartPost(PostHeartRequestDto postHeartRequestDto);
+    Boolean setTradeEnd(Long postId);
+    List<PostResponseDto> getTradeEndPost(Integer  pages);
 }

@@ -1,6 +1,8 @@
 package com.dankan.domain.embedded;
 
 import lombok.*;
+import org.hibernate.annotations.Filter;
+import retrofit2.http.Field;
 
 import javax.persistence.Column;
 import javax.persistence.Embeddable;

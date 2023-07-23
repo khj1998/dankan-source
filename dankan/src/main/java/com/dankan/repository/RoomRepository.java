@@ -11,7 +11,8 @@ import java.util.Optional;
 
 @Repository
 public interface RoomRepository extends JpaRepository<Room, Long>, RoomFilterCustomRepository {
-    Optional<Room> findFirstByRoomAddress_Address(String address);
+
+    Optional<Room> findFirstByRoomAddress_Address(@Param("address") String address);
 
     @Query("select r from Room r where r.roomId = :roomId and  "
             +"r.isTradeable = :isTradeable")

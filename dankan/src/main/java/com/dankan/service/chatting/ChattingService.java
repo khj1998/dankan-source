@@ -1,9 +1,7 @@
 package com.dankan.service.chatting;
 
-import com.dankan.dto.response.chatting.ChattingLogResponseDto;
-
-import java.util.List;
+import com.dankan.vo.UserInfo;
 
 public interface ChattingService {
-    public List<ChattingLogResponseDto> getHistory(Long id);
+    public UserInfo getInfo(Long id);
 }

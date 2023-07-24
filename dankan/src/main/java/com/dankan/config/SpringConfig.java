@@ -146,6 +146,6 @@ public class SpringConfig {
 
     @Bean
     public ChattingService chattingService() {
-        return new ChattingServiceImpl(userRepository, dynamoDBService());
+        return new ChattingServiceImpl(userRepository);
     }
 }

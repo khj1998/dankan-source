@@ -1,5 +1,6 @@
 package com.dankan.controller;
 
+import com.dankan.domain.chat.Chatting;
 import com.dankan.dto.request.email.EmailCodeRequestDto;
 import com.dankan.dto.request.email.EmailRequestDto;
 import com.dankan.dto.request.sns.CertificationRequestDto;
@@ -9,12 +10,14 @@ import com.dankan.dto.response.report.ReportResponseDto;
 import com.dankan.dto.response.user.UserResponseDto;
 import com.dankan.dto.request.certification.SendMessageRequestDto;
 import com.dankan.service.chatting.ChattingService;
+import com.dankan.service.chatting.DynamoDBService;
 import com.dankan.service.report.ReportService;
 import com.dankan.service.email.EmailService;
 import com.dankan.service.sms.SmsService;
 import com.dankan.service.token.TokenService;
 import com.dankan.service.user.UserService;
 import com.dankan.vo.ChattingMessageResponse;
+import com.dankan.vo.UserInfo;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.v3.oas.annotations.Operation;
@@ -31,6 +34,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.*;
 
 import javax.websocket.server.PathParam;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -46,6 +50,7 @@ public class AdminController {
     private final ReportService reportService;
     private final EmailService emailService;
     private final ChattingService chattingService;
+    private final DynamoDBService dynamoDBService;
 
     @Operation(summary = "특정 사용자 정보 api", description = "특정 사용자 정보 조회")
     @ApiResponses(
@@ -207,6 +212,23 @@ public class AdminController {
     })
     @GetMapping("/chatting/log")
     public ResponseEntity<List<ChattingLogResponseDto>> getChattingLog(@RequestParam("roomId") Long id) {
-        return ResponseEntity.ok(chattingService.getHistory(id));
+        final List<Chatting> chattings = dynamoDBService.findMessageHistory(id);
+        List<ChattingLogResponseDto> list = new ArrayList<>();
+
+        for(Chatting chatting : chattings) {
+            UserInfo info = chattingService.getInfo(Long.parseLong(chatting.getMemberId()));
+
+            list.add(
+                    ChattingLogResponseDto.builder()
+                            .roomId(chatting.getRoomId())
+                            .message(chatting.getMessage())
+                            .publishedAt(chatting.getPublishedAt())
+                            .senderName(info.getNickname())
+                            .imgUrl(info.getProfileImg())
+                            .build()
+            );
+        }
+
+        return ResponseEntity.ok(list);
     }
 }

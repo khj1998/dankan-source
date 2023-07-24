@@ -1,12 +1,7 @@
 package com.dankan.dto.response.user;
 
 import com.dankan.domain.User;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.Setter;
-
-import java.util.UUID;
+import lombok.*;
 
 @Getter
 @Setter

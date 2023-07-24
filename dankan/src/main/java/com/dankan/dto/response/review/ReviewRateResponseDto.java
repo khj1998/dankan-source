@@ -19,7 +19,6 @@ import java.util.UUID;
 public class ReviewRateResponseDto {
 
     private String address;
-    private String roomType;
     private Double avgTotalRate;
     private Long reviewCount;
     private Double avgCleanRate;
@@ -29,7 +28,7 @@ public class ReviewRateResponseDto {
     private Double avgFacilityRate;
     private String imgUrl;
 
-    public static ReviewRateResponseDto of(List<RoomReview> reviewList, String address,String imgUrl) {
+    public static ReviewRateResponseDto of(List<RoomReview> reviewList,String address,String imgUrl) {
         Long reviewCount = (long) reviewList.size();
 
         Double avgTotalRate = 0.0;

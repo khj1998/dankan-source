@@ -8,7 +8,7 @@ import java.util.Date;
 @Getter
 public class ReviewRequestDto {
     private String content;
-    private Long totalRate;
+    private Double totalRate;
     private String cleanRate;
     private String noiseRate;
     private String accessRate;

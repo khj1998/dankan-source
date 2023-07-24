@@ -22,6 +22,9 @@ public class PostReport {
     @Column(name = "report_id", columnDefinition = "int")
     private Long reportId;
 
+    @Column(name = "report_type",columnDefinition = "int")
+    private Long reportType;
+
     @Column(name="user_id",nullable = false, columnDefinition = "bigint")
     private Long userId;
 

@@ -6,6 +6,7 @@ import com.dankan.enum_converter.SatisfyEnum;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.*;
+import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import javax.persistence.*;
@@ -53,8 +54,8 @@ public class RoomReview {
     @Column(name = "address_detail",nullable = false,length = 50,columnDefinition = "varchar")
     private String addressDetail;
 
-    @Column(name = "total_rate",nullable = false,columnDefinition = "int")
-    private Long totalRate;
+    @Column(name = "total_rate",nullable = false,columnDefinition = "double")
+    private Double totalRate;
 
     @Column(name = "clean_rate",nullable = false,columnDefinition = "int")
     private Long cleanRate;

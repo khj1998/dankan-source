@@ -6,6 +6,7 @@ import com.dankan.dto.request.image.ImageRequestDto;
 import com.dankan.dto.response.post.*;
 import com.dankan.dto.response.image.ImageResponseDto;
 import com.dankan.dto.request.post.PostHeartRequestDto;
+import com.dankan.repository.PostRepository;
 import com.dankan.service.post.PostService;
 import com.dankan.service.image.ImageService;
 import com.dankan.service.s3.S3UploadService;
@@ -94,6 +95,19 @@ public class PostController {
         return ResponseEntity.ok(responseDto);
     }
 
+    @ApiOperation("매매 게시물 필터 조회 API")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200",description = "매매 게시물 필터 조회 성공"),
+            @ApiResponse(responseCode = "401",description = "인증되지 않은 사용자"),
+            @ApiResponse(responseCode = "403",description = "유저가 Member | Admin 권한이 없음"),
+            @ApiResponse(responseCode = "404",description = "매매 게시물 필터 조회 실패")
+    })
+    @PostMapping("/filter")
+    public ResponseEntity<List<PostFilterResponseDto>> doPostFilter(@RequestBody PostFilterRequestDto postFilterRequestDto) {
+        List<PostFilterResponseDto> responseDtoList = postService.getPostByFilter(postFilterRequestDto);
+        return ResponseEntity.ok(responseDtoList);
+    }
+
     @ApiOperation("매매 게시물 등록 API")
     @ApiResponses({
             @ApiResponse(responseCode = "200",description = "매매 게시물 등록 성공 ")
@@ -164,5 +178,24 @@ public class PostController {
     public ResponseEntity deletePost(@RequestParam Long postId) {
         postService.deletePost(postId);
         return ResponseEntity.ok().build();
+    }
+
+    @ApiOperation("게시물 거래완료 처리 API")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200",description = "게시물 거래완료 처리 성공")
+    })
+    @PostMapping("/trade-end/add")
+    public ResponseEntity<Boolean> addTradeEnd(@RequestParam Long postId) {
+        return ResponseEntity.ok(postService.setTradeEnd(postId));
+    }
+
+    @ApiOperation("내 거래완료 목록 확인 API")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200",description = "거래완료 게시물 조회 성공")
+    })
+    @GetMapping("/trade-end/list")
+    public ResponseEntity<List<PostResponseDto>> getTradeEndPost(@RequestParam Integer pages) {
+        List<PostResponseDto> responseDtoList = postService.getTradeEndPost(pages);
+        return ResponseEntity.ok(responseDtoList);
     }
 }

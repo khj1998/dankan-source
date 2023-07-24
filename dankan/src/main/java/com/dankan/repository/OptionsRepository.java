@@ -14,10 +14,8 @@ import java.util.Optional;
 public interface OptionsRepository extends JpaRepository<Options, OptionsId> {
     List<Options> findByRoomId(Long roomId);
 
-    Optional<Options> findByRoomIdAndCodeKey(Long roomId, String codeKey);
-
     @Query(value = "select o from Options o where o.roomId=:roomId "+
-            "and o.codeKey in (:codeKeys)")
-    List<Options> findRateOptions(@Param("roomId") Long roomId,
-                                  @Param("codeKeys") List<String> codeKeys);
+            "and o.codeKey = :codeKey")
+    Optional<Options> findRoomTypeOption(@Param("roomId") Long roomId,
+                                         @Param("codeKey") String codeKey);
 }

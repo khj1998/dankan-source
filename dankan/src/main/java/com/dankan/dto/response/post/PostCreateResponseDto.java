@@ -84,7 +84,7 @@ public class PostCreateResponseDto {
                 }
             }
 
-            if (option.getCodeKey().equals("Structure")) {
+            if (option.getCodeKey().equals("StructureType")) {
                 structure = StructureTypeEnum.getStructureTypeName(option.getValue());
             }
 

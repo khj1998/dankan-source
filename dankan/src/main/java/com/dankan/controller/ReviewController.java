@@ -7,6 +7,7 @@ import com.dankan.dto.response.review.ReviewRateResponseDto;
 import com.dankan.dto.response.review.ReviewResponseDto;
 import com.dankan.dto.request.review.ReviewDetailRequestDto;
 import com.dankan.dto.request.review.ReviewRequestDto;
+import com.dankan.dto.response.review.ReviewSearchResponse;
 import com.dankan.repository.ImageRepository;
 import com.dankan.service.image.ImageService;
 import com.dankan.service.review.ReviewService;
@@ -119,10 +120,10 @@ public class ReviewController {
     @ApiResponses({
             @ApiResponse(responseCode = "200",description = "건물명으로 후기 검색 성공")
     })
-    @GetMapping("/building-name")
-    public ResponseEntity<List<ReviewResponseDto>> searchReview(@RequestParam("buildingName") String buildingName,
-                                                                @RequestParam("sortType") String sortType) {
-        List<ReviewResponseDto> responseDtoList = reviewService.findReviewByBuildingName(buildingName,sortType);
+    @GetMapping("/building")
+    public ResponseEntity<List<ReviewSearchResponse>> searchReview(@RequestParam("buildingName") String buildingName,
+                                                                   @RequestParam("sortType") String sortType) {
+        List<ReviewSearchResponse> responseDtoList = reviewService.findReviewByBuildingName(buildingName,sortType);
         return ResponseEntity.ok(responseDtoList);
     }
 }

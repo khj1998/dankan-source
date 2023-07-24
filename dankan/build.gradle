@@ -12,17 +12,6 @@ plugins {
     id "io.sentry.jvm.gradle" version "3.11.0"
 }
 
-sentry {
-    // Generates a JVM (Java, Kotlin, etc.) source bundle and uploads your source code to Sentry.
-    // This enables source context, allowing you to see your source
-    // code as part of your stack traces in Sentry.
-    includeSourceContext = true
-
-    org = "___ORG_SLUG___"
-    projectName = "dankan-backend"
-    def authToken = System.getenv("SENTRY_AUTH_TOKEN")
-}
-
 group = 'com.dunji'
 version = '0.0.1-SNAPSHOT'
 sourceCompatibility = '11'
@@ -89,10 +78,6 @@ dependencies {
 
     //slack
     implementation 'com.github.maricn:logback-slack-appender:1.4.0'
-
-    //Sentry
-    implementation 'io.sentry:sentry-spring-boot-starter:5.6.0'
-    implementation 'io.sentry:sentry-logback:5.6.0'
 
     //chatting
     implementation 'org.springframework.boot:spring-boot-starter-websocket'

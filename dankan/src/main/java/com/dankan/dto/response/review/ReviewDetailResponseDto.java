@@ -24,6 +24,7 @@ public class ReviewDetailResponseDto {
     private String content;
     private LocalDateTime updatedAt;
     private String imgUrl;
+    private String roomType;
 
     public static ReviewDetailResponseDto of(User user, RoomReview roomReview, List<Image> imageList) {
         String imgUrls = "";

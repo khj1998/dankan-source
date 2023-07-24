@@ -21,4 +21,8 @@ public interface ReviewRepository extends JpaRepository<RoomReview, Long> {
 
     List<RoomReview> findByAddress(String address);
     List<RoomReview> findByAddress(String address,Pageable pageable);
+
+    @Query(value = "select * from review r where match (r.address) " +
+            "against (:buildingName IN NATURAL LANGUAGE MODE)",nativeQuery = true)
+    List<RoomReview> findByBuildingName(@Param("buildingName") String buildingName);
 }

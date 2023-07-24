@@ -31,12 +31,12 @@ public class ReviewResponseDto {
     private Long facilityRate;
     private LocalDate startedAt;
     private LocalDate endAt;
+    private String buildingName;
     private String address;
-    private String addressDetail;
-    private String roomType;
     private String imgUrl;
 
     public static ReviewResponseDto of(User user,RoomReview roomReview) {
+        String[] addressInfo = roomReview.getAddress().split(" ");
 
         return ReviewResponseDto.builder()
                 .reviewId(roomReview.getReviewId())
@@ -51,12 +51,12 @@ public class ReviewResponseDto {
                 .content(roomReview.getContent())
                 .startedAt(roomReview.getResidencePeriod().getStartedAt())
                 .endAt(roomReview.getResidencePeriod().getEndAt())
-                .address(roomReview.getAddress())
-                .addressDetail(roomReview.getAddressDetail())
+                .buildingName(addressInfo[4])
                 .build();
     }
 
     public static ReviewResponseDto of(User user, RoomReview roomReview, String imgUrls) {
+       String[] addressInfo = roomReview.getAddress().split(" ");
 
         return ReviewResponseDto.builder()
                 .reviewId(roomReview.getReviewId())
@@ -66,22 +66,21 @@ public class ReviewResponseDto {
                 .content(roomReview.getContent())
                 .startedAt(roomReview.getResidencePeriod().getStartedAt())
                 .endAt(roomReview.getResidencePeriod().getEndAt())
-                .address(roomReview.getAddress())
-                .addressDetail(roomReview.getAddressDetail())
+                .buildingName(addressInfo[4])
                 .imgUrl(imgUrls)
                 .build();
     }
 
-    public static ReviewResponseDto of(RoomReview roomReview, String imgUrls) {
+    public static ReviewResponseDto of(RoomReview roomReview,String imgUrls) {
+        String[] addressInfo = roomReview.getAddress().split(" ");
 
         return ReviewResponseDto.builder()
                 .reviewId(roomReview.getReviewId())
+                .totalRate(roomReview.getTotalRate())
+                .address(roomReview.getAddress())
                 .updatedAt(LocalDate.now())
                 .content(roomReview.getContent())
-                .startedAt(roomReview.getResidencePeriod().getStartedAt())
-                .endAt(roomReview.getResidencePeriod().getEndAt())
-                .address(roomReview.getAddress())
-                .addressDetail(roomReview.getAddressDetail())
+                .buildingName(addressInfo[4])
                 .imgUrl(imgUrls)
                 .build();
     }

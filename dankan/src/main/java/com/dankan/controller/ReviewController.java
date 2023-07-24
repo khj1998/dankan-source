@@ -114,4 +114,15 @@ public class ReviewController {
         reviewService.deleteReview(reviewId);
         return ResponseEntity.ok().build();
     }
+
+    @ApiOperation("건물명으로 후기 검색 API")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200",description = "건물명으로 후기 검색 성공")
+    })
+    @GetMapping("/building-name")
+    public ResponseEntity<List<ReviewResponseDto>> searchReview(@RequestParam("buildingName") String buildingName,
+                                                                @RequestParam("sortType") String sortType) {
+        List<ReviewResponseDto> responseDtoList = reviewService.findReviewByBuildingName(buildingName,sortType);
+        return ResponseEntity.ok(responseDtoList);
+    }
 }

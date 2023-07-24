@@ -27,6 +27,8 @@ public class RoomFilterCustomRepositoryImpl extends QuerydslRepositorySupport im
         QRoom qRoom = QRoom.room;
         BooleanBuilder builder = new BooleanBuilder();
 
+        builder.and(qRoom.isTradeable.eq(true));
+
         if (postFilterRequestDto.getAddress() != null) {
             builder.and(qRoom.roomAddress.address.contains(postFilterRequestDto.getAddress()));
         }
@@ -79,10 +81,6 @@ public class RoomFilterCustomRepositoryImpl extends QuerydslRepositorySupport im
         
         if (postFilterRequestDto.getElevator() != null) {
             builder.and(qRoom.elevatorOption.eq(1L));
-        }
-
-        if (postFilterRequestDto.getCanDeal()) {
-
         }
 
         if (!builder.hasValue()) {

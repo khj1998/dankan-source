@@ -8,8 +8,6 @@ plugins {
     id 'java'
     id 'org.springframework.boot' version '2.7.6'
     id 'io.spring.dependency-management' version '1.0.15.RELEASE'
-    // To upload your source code to Sentry so it can be shown in stack traces, use our Gradle plugin.
-    id "io.sentry.jvm.gradle" version "3.11.0"
 }
 
 group = 'com.dunji'
@@ -93,6 +91,9 @@ dependencies {
             "javax.persistence:javax.persistence-api",
             "javax.annotation:javax.annotation-api",
             "com.querydsl:querydsl-apt:${queryDslVersion}:jpa")
+
+    //cache
+    implementation 'org.springframework.boot:spring-boot-starter-cache'
 }
 
 //QueryDSL

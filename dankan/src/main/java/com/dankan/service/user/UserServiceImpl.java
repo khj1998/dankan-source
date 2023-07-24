@@ -16,7 +16,10 @@ import com.dankan.repository.DateLogRepository;
 import com.dankan.repository.TokenRepository;
 import com.dankan.repository.UserRepository;
 import com.dankan.util.JwtUtil;
+import com.dankan.vo.UserInfo;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.cache.annotation.CachePut;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
@@ -64,6 +67,11 @@ public class UserServiceImpl implements UserService {
 
             userRepository.save(user);
 
+            /**
+             * TODO: spring boot event로 변경
+             **/
+            this.updateEvent(JwtUtil.getMemberId());
+
             return UserResponseDto.of(user);
         }
     }
@@ -75,6 +83,11 @@ public class UserServiceImpl implements UserService {
         user.setProfileImg(imgUrl);
 
         userRepository.save(user);
+
+        /**
+         * TODO: spring boot event로 변경
+         **/
+        this.updateEvent(JwtUtil.getMemberId());
 
         return UserResponseDto.of(user);
     }
@@ -169,5 +182,11 @@ public class UserServiceImpl implements UserService {
         return userRepository.findUserByUserId(JwtUtil.getMemberId()).orElseThrow(
                 () -> new UserIdNotFoundException(JwtUtil.getMemberId().toString())
         ).getAuthorities();
+    }
+
+    @Override
+    @CachePut(key = "#id", value = "userInfo")
+    public UserInfo updateEvent(final Long id) {
+        return userRepository.findName(id).orElseThrow();
     }
 }

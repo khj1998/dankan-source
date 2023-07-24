@@ -23,6 +23,14 @@ public class ReviewSearchResponse {
         Double avgTotalRate = 0.0;
         String buildingName = roomReviewList.get(0).getAddress().split(" ")[4];
 
+        for (RoomReview roomReview : roomReviewList) {
+            avgTotalRate += roomReview.getTotalRate();
+        }
+
+        if (roomReviewList.size() > 0) {
+            avgTotalRate = avgTotalRate / (double) roomReviewList.size();
+        }
+
         return ReviewSearchResponse.builder()
                 .buildingName(buildingName)
                 .address(roomReviewList.get(0).getAddress())

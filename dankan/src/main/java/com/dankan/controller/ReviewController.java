@@ -121,9 +121,8 @@ public class ReviewController {
             @ApiResponse(responseCode = "200",description = "건물명으로 후기 검색 성공")
     })
     @GetMapping("/building")
-    public ResponseEntity<List<ReviewSearchResponse>> searchReview(@RequestParam("buildingName") String buildingName,
-                                                                   @RequestParam("sortType") String sortType) {
-        List<ReviewSearchResponse> responseDtoList = reviewService.findReviewByBuildingName(buildingName,sortType);
+    public ResponseEntity<List<ReviewSearchResponse>> searchReview(@RequestParam("buildingName") String buildingName) {
+        List<ReviewSearchResponse> responseDtoList = reviewService.findReviewByBuildingName(buildingName);
         return ResponseEntity.ok(responseDtoList);
     }
 }

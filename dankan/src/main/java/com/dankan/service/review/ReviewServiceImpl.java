@@ -105,7 +105,7 @@ public class ReviewServiceImpl implements ReviewService {
 
     @Override
     @Transactional(readOnly = true)
-    public List<ReviewSearchResponse> findReviewByBuildingName(String buildingName, String sortType) {
+    public List<ReviewSearchResponse> findReviewByBuildingName(String buildingName) {
         List<ReviewSearchResponse> responseDtoList = new ArrayList<>();
         HashMap<String,List<RoomReview>> reviewHashMap = new HashMap<>();
 
@@ -141,11 +141,10 @@ public class ReviewServiceImpl implements ReviewService {
             responseDtoList.add(reviewSearchResponse);
         }
 
-        if (sortType.equals("별점순")) { // 별점 순 조회
-            responseDtoList.sort(
-                    Comparator.comparing(ReviewSearchResponse::getAvgTotalRate)
-            );
-        }
+
+        responseDtoList.sort( //별점 순 조회
+                Comparator.comparing(ReviewSearchResponse::getAvgTotalRate).reversed()
+        );
         
         return responseDtoList;
     }

@@ -88,7 +88,6 @@ dependencies {
     implementation 'com.amazonaws:aws-java-sdk-dynamodb:1.11.805'
 
     //Query DSL
-    implementation 'org.hibernate.search:hibernate-search-orm:5.11.8.Final'
     implementation "com.querydsl:querydsl-jpa:${queryDslVersion}"
     annotationProcessor(
             "javax.persistence:javax.persistence-api",

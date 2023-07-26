@@ -17,5 +17,6 @@ public interface ReviewService {
     List<ReviewResponseDto> findRecentReview(Integer pages);
     List<ReviewResponseDto> findReviewByStar(Integer pages);
     List<ReviewSearchResponse> findReviewByBuildingName(String buildingName);
+    List<ReviewSearchResponse> findReviewByAddress(String address);
     void deleteReview(Long reviewId);
 }

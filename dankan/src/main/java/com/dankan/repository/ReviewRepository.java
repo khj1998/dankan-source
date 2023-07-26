@@ -17,12 +17,23 @@ public interface ReviewRepository extends JpaRepository<RoomReview, Long> {
     @Query("select r from RoomReview r where r.userId = :userId and "
           +"r.address = :address")
     Optional<RoomReview> findReview(@Param("userId") Long userId, @Param("address")String address);
-    Optional<RoomReview> findByUserIdAndReviewId(Long userId,Long reviewId);
 
-    List<RoomReview> findByAddress(String address);
+    @Query("select r from RoomReview r where r.userId = :userId and " +
+            "r.reviewId = :reviewId")
+    Optional<RoomReview> findByUserIdAndReviewId(@Param("userId") Long userId
+                                                ,@Param("reviewId") Long reviewId);
+
+    @Query("select r from RoomReview r where r.address = :address")
+    List<RoomReview> findByAddress(@Param("address") String address);
+
+    @Query("select r from RoomReview r where r.address = :address")
     List<RoomReview> findByAddress(String address,Pageable pageable);
 
     @Query(value = "select * from review r where match (r.address) " +
             "against (:buildingName IN NATURAL LANGUAGE MODE)",nativeQuery = true)
-    List<RoomReview> findByBuildingName(@Param("buildingName") String buildingName);
+    List<RoomReview> findByBuildingSearch(@Param("buildingName") String buildingName);
+
+    @Query(value = "select * from review r where match (r.address) " +
+            "against (:address IN NATURAL LANGUAGE MODE)",nativeQuery = true)
+    List<RoomReview> findByAddressSearch(@Param("address") String address);
 }

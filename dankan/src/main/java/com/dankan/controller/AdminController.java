@@ -46,9 +46,7 @@ import java.util.UUID;
 public class AdminController {
     private final UserService userService;
     private final TokenService tokenService;
-    private final SmsService smsService;
     private final ReportService reportService;
-    private final EmailService emailService;
     private final ChattingService chattingService;
     private final DynamoDBService dynamoDBService;
 
@@ -103,32 +101,6 @@ public class AdminController {
         return ResponseEntity.ok().build();
     }
 
-    @Operation(summary = "핸드폰 본인 인증 문자 발송 api", description = "핸드폰 본인 인증 문자 발송")
-    @ApiResponses(
-            value = {
-                    @ApiResponse(responseCode = "200", description = "본인 인증 메시지 보내기 환료"),
-                    @ApiResponse(responseCode = "403", description = "관리자 권한 없음"),
-            }
-    )
-    @PostMapping("/user/message")
-    public ResponseEntity sendIdentifyMessage(@RequestBody SendMessageRequestDto SendMessageRequestDto) {
-        smsService.sendMessage(SendMessageRequestDto.getPhoneNumber());
-
-        return ResponseEntity.ok().build();
-    }
-
-    @Operation(summary = "사용자 핸드폰 인증 api", description = "사용자 핸드폰 인증")
-    @ApiResponses(
-            value = {
-                    @ApiResponse(responseCode = "200", description = "핸드폰 인증 환료"),
-                    @ApiResponse(responseCode = "403", description = "관리자 권한 없음"),
-            }
-    )
-    @PostMapping("/user/verify")
-    public ResponseEntity<Boolean> verifyUser(@RequestBody CertificationRequestDto certificationRequestDto) {
-        return ResponseEntity.ok(smsService.verifyNumber(certificationRequestDto));
-    }
-
     @Operation(summary = "특정 게시물 신고 조회 api",description = "특정 게시물 신고 조회")
     @ApiResponses(
             value = {
@@ -179,30 +151,6 @@ public class AdminController {
     public ResponseEntity removeReviewReport(@RequestParam("reportId") Long  reportId) {
         reportService.removeReviewReport(reportId);
         return ResponseEntity.ok().build();
-    }
-
-    @Operation(summary = "대학교 인증 메일 발송 api", description = "대학교 인증 메일 발송")
-    @ApiResponses(
-            value = {
-                    @ApiResponse(responseCode = "200", description = "발송 환료"),
-                    @ApiResponse(responseCode = "403", description = "관리자 권한 없음"),
-            }
-    )
-    @PostMapping("/univ/mail")
-    public ResponseEntity<String> mailConfirm(@RequestBody EmailRequestDto email) throws Exception {
-        return ResponseEntity.ok(emailService.sendSimpleMessage(email.getEmail()));
-    }
-
-    @Operation(summary = "대학교 인증 코드 확인 api")
-    @ApiResponses(
-            value = {
-                    @ApiResponse(responseCode = "200", description = "발송 환료"),
-                    @ApiResponse(responseCode = "403", description = "관리자 권한 없음"),
-            }
-    )
-    @PostMapping("univ/verify-code")
-    public ResponseEntity<Boolean> verifyEmailCode(@RequestBody EmailCodeRequestDto emailCodeRequestDto) {
-        return ResponseEntity.ok(emailService.verifyCode(emailCodeRequestDto));
     }
 
     @ApiOperation("채팅 기록 조회 API")

@@ -123,14 +123,14 @@ public class UserServiceImpl implements UserService {
         Token token = Token.of(user);
         tokenRepository.save(token);
 
-        return LoginResponseDto.of(user,token);
+        return LoginResponseDto.of(user,token,false);
     }
 
     @Override
     public LoginResponseDto signIn(User user) {
         Token token = tokenRepository.findByUserId(user.getUserId()).orElseThrow(() -> new UserIdNotFoundException(user.getUserId().toString()));
 
-        return LoginResponseDto.of(user,token);
+        return LoginResponseDto.of(user,token,true);
     }
 
     @Override

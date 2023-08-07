@@ -1,8 +1,6 @@
 package com.dankan.controller;
 
-import com.dankan.dto.request.email.EmailCodeRequestDto;
 import com.dankan.dto.response.univ.UnivListResponseDto;
-import com.dankan.service.email.EmailServiceImpl;
 import com.dankan.service.univ.UnivService;
 import io.swagger.annotations.Api;
 import io.swagger.v3.oas.annotations.Operation;

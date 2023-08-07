@@ -1,5 +1,6 @@
 package com.dankan.controller;
 
+import com.dankan.dto.response.univ.UnivListResponseDto;
 import com.dankan.dto.request.email.EmailCodeRequestDto;
 import com.dankan.dto.request.email.EmailRequestDto;
 import com.dankan.dto.response.univ.UnivListResponseDto;

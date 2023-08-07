@@ -9,7 +9,6 @@ import org.springframework.stereotype.Repository;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.UUID;
 
 @Repository
 public interface ReviewRepository extends JpaRepository<RoomReview, Long> {
@@ -29,11 +28,9 @@ public interface ReviewRepository extends JpaRepository<RoomReview, Long> {
     @Query("select r from RoomReview r where r.address = :address")
     List<RoomReview> findByAddress(String address,Pageable pageable);
 
-    @Query(value = "select * from review r where match (r.address) " +
-            "against (:buildingName IN NATURAL LANGUAGE MODE)",nativeQuery = true)
+    @Query(value = "select * from review r where r.address like %:buildingName%",nativeQuery = true)
     List<RoomReview> findByBuildingSearch(@Param("buildingName") String buildingName);
 
-    @Query(value = "select * from review r where match (r.address) " +
-            "against (:address IN NATURAL LANGUAGE MODE)",nativeQuery = true)
+    @Query(value = "select * from review r where r.address like %:address%",nativeQuery = true)
     List<RoomReview> findByAddressSearch(@Param("address") String address);
 }

@@ -1,5 +1,7 @@
 package com.dankan.controller;
 
+import com.dankan.dto.request.certification.SendMessageRequestDto;
+import com.dankan.dto.request.sns.CertificationRequestDto;
 import com.dankan.dto.response.logout.LogoutResponseDto;
 import com.dankan.dto.response.user.UserResponseDto;
 import com.dankan.service.s3.S3UploadService;
@@ -99,5 +101,32 @@ public class UserController {
     @GetMapping("/logout")
     public ResponseEntity<LogoutResponseDto> logout() {
         return ResponseEntity.ok(userService.logout());
+    }
+
+
+    @Operation(summary = "핸드폰 본인 인증 문자 발송 api", description = "핸드폰 본인 인증 문자 발송")
+    @ApiResponses(
+            value = {
+                    @ApiResponse(responseCode = "200", description = "본인 인증 메시지 보내기 환료"),
+                    @ApiResponse(responseCode = "403", description = "관리자 권한 없음"),
+            }
+    )
+    @PostMapping("/message")
+    public ResponseEntity sendIdentifyMessage(@RequestBody SendMessageRequestDto SendMessageRequestDto) {
+        smsService.sendMessage(SendMessageRequestDto.getPhoneNumber());
+
+        return ResponseEntity.ok().build();
+    }
+
+    @Operation(summary = "사용자 핸드폰 인증 api", description = "사용자 핸드폰 인증")
+    @ApiResponses(
+            value = {
+                    @ApiResponse(responseCode = "200", description = "핸드폰 인증 환료"),
+                    @ApiResponse(responseCode = "403", description = "관리자 권한 없음"),
+            }
+    )
+    @PostMapping("/verify")
+    public ResponseEntity<Boolean> verifyUser(@RequestBody CertificationRequestDto certificationRequestDto) {
+        return ResponseEntity.ok(smsService.verifyNumber(certificationRequestDto));
     }
 }

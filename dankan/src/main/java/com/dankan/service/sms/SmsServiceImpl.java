@@ -68,8 +68,8 @@ public class SmsServiceImpl implements SmsService {
     @Override
     public Boolean verifyNumber(CertificationRequestDto certificationRequestDto) {
         if(userNum.get(certificationRequestDto.getPhoneNumber()).equals(certificationRequestDto.getNumber().toString())) {
-            User user = userRepository.findByPhoneNum(certificationRequestDto.getPhoneNumber()).orElseThrow(
-                    () -> new PhoneNumberNotFoundException(certificationRequestDto.getPhoneNumber())
+            User user = userRepository.findById(JwtUtil.getMemberId()).orElseThrow(
+                    () -> new UserIdNotFoundException(JwtUtil.getMemberId().toString())
             );
 
             user.setPhoneNum(certificationRequestDto.getPhoneNumber());

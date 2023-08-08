@@ -198,4 +198,15 @@ public class PostController {
         List<PostResponseDto> responseDtoList = postService.getTradeEndPost(pages);
         return ResponseEntity.ok(responseDtoList);
     }
+
+    @ApiOperation("주소로 최근 매물 조회")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200",description = "주소로 최근 매물 조회 성공")
+    })
+    @GetMapping("/recent/address")
+    public ResponseEntity<List<PostResponseDto>> getRecentPostByAddress(@RequestParam Integer pages,
+                                                                        @RequestParam String address) {
+        List<PostResponseDto> responseDtoList = postService.findRecentPostByAddress(pages,address);
+        return ResponseEntity.ok(responseDtoList);
+    }
 }

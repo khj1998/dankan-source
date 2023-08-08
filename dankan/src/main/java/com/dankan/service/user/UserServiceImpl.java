@@ -114,7 +114,7 @@ public class UserServiceImpl implements UserService {
                 .dateId(dateLogRepository.save(dateLog).getId())
                 .authorities(Arrays.asList(authority))
                 .email(oauthLoginResponseDto.getEmail())
-                .nickname(oauthLoginResponseDto.getNickname())
+                .name(oauthLoginResponseDto.getNickname())
                 .profileImg(oauthLoginResponseDto.getProfileImg())
                 .userType(0L) // 카카오 로그인, 그외 로그인 타입을 객체 지향적으로 분리해 of를 쓸 예정입니다. 더 고민해봐야해요.
                 .build();

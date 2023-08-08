@@ -13,6 +13,7 @@ public interface PostService {
     PostCreateResponseDto addPost(PostRoomRequestDto postRoomRequestDto);
     PostEditResponseDto editPost(PostRoomEditRequestDto postRoomEditRequestDto);
     List<PostResponseDto> findRecentPost(Integer pages);
+    List<PostResponseDto> findRecentPostByAddress(Integer pages,String address);
     List<PostResponseDto> findHeartPost(Integer pages);
     List<PostResponseDto> findMyPost(Integer pages);
     PostDetailResponseDto findPostDetail(Long postId);

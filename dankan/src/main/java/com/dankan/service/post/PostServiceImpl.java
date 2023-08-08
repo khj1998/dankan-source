@@ -247,6 +247,16 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
+    @Transactional(readOnly = true)
+    public List<PostResponseDto> findRecentPostByAddress(Integer pages,String address) {
+        Long userId = JwtUtil.getMemberId();
+        List<PostResponseDto> responseDtoList = new ArrayList<>();
+        Sort sort = Sort.by(Sort.Direction.DESC,"updatedAt");
+        Pageable pageable = PageRequest.of(pages,5,sort);
+        return null;
+    }
+
+    @Override
     @Transactional
     public List<PostResponseDto> findHeartPost(Integer pages) {
         List<PostResponseDto> postResponseDtoList = new ArrayList<>();

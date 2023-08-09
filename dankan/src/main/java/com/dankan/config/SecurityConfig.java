@@ -62,7 +62,8 @@ public class SecurityConfig {
                         "/swagger-resources/**",
                         "/token/**",
                         "/chat/**",
-                        "/chatting/**"
+                        "/chatting/**",
+                        "/health/**"
                 );
             }
         };

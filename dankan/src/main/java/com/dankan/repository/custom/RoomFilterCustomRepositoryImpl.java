@@ -33,6 +33,10 @@ public class RoomFilterCustomRepositoryImpl extends QuerydslRepositorySupport im
             builder.and(qRoom.roomAddress.address.contains(postFilterRequestDto.getAddress()));
         }
 
+        if (postFilterRequestDto.getUniv() != null) {
+            builder.and(qRoom.univ.contains(postFilterRequestDto.getUniv()));
+        }
+
         if (postFilterRequestDto.getMinPayPrice()!=null && postFilterRequestDto.getMaxPayPrice()!=null) {
             builder.and(qRoom.roomCost.price.between(postFilterRequestDto.getMinPayPrice(),postFilterRequestDto.getMaxPayPrice()));
         }

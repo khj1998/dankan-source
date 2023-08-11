@@ -65,15 +65,15 @@ public class PostController {
         return ResponseEntity.ok(responseDtoList);
     }
 
-    @ApiOperation("매매 게시물 최신순 조회 API")
+    /*@ApiOperation("매매 게시물 최신순 조회 API")
     @ApiResponses({
             @ApiResponse(responseCode = "200",description = "매매 게시물 최신순 조회 성공 ")
     })
     @GetMapping("/recent")
     public ResponseEntity<List<PostResponseDto>> getRecentPost(@RequestParam("pages") Integer pages) {
-        List<PostResponseDto> responseDtoList = postService.findRecentPost(pages);
+        List<PostResponseDto> responseDtoList = postService.findRecentPostByUniv(pages);
         return ResponseEntity.ok(responseDtoList);
-    }
+    }*/
 
     @ApiOperation("등록한 매매 게시물 조회")
     @ApiResponses({
@@ -206,7 +206,7 @@ public class PostController {
     @GetMapping("/recent/address")
     public ResponseEntity<List<PostResponseDto>> getRecentPostByAddress(@RequestParam Integer pages,
                                                                         @RequestParam String address) {
-        List<PostResponseDto> responseDtoList = postService.findRecentPostByAddress(pages,address);
+        List<PostResponseDto> responseDtoList = postService.findRecentPostByAddress(pages, address);
         return ResponseEntity.ok(responseDtoList);
     }
 }

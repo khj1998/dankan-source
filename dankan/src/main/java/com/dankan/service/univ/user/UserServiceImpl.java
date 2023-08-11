@@ -1,4 +1,4 @@
-package com.dankan.service.user;
+package com.dankan.service.univ.user;
 
 import com.dankan.domain.Authority;
 import com.dankan.domain.DateLog;
@@ -19,10 +19,8 @@ import com.dankan.util.JwtUtil;
 import com.dankan.vo.UserInfo;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.cache.annotation.CachePut;
-import org.springframework.cache.annotation.Cacheable;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.*;
 

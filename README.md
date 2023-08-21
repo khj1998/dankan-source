@@ -1,8 +1,7 @@
 # Dankan-BackEnd
 
-### Infra 구성도 (미완)
-![image](https://user-images.githubusercontent.com/91772497/221348143-f4f03dd6-d149-4026-8254-7a27b0723877.png)
-
+### BackEnd Architecture
+![단칸 아키텍처](https://github.com/Nestsoft-Team/Dankan-Backend/assets/80220062/6f5046dd-005e-4b54-b771-def090c654f9)
 
 
 ### Commit Convention

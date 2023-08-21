@@ -3,10 +3,12 @@ package com.dankan.domain;
 import com.dankan.dto.request.post.PostRoomRequestDto;
 import io.swagger.annotations.ApiModel;
 import lombok.*;
+import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import javax.persistence.*;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Date;
 
 @ApiModel(value = "매매 게시물 엔티티")
@@ -33,14 +35,20 @@ public class Post {
     @Column(name = "user_id",nullable = false,columnDefinition = "bigint")
     private Long userId;
 
+    @CreationTimestamp
+    private LocalDateTime createdAt;
+
     @UpdateTimestamp
-    private LocalDate updatedAt;
+    private LocalDateTime updatedAt;
 
     @Column(name = "title",nullable = false,length = 64,columnDefinition = "varchar")
     private String title;
 
     @Column(name = "content",nullable = false,columnDefinition = "varchar")
     private String content;
+
+    @Column(name = "is_shown",nullable = false,columnDefinition = "bit")
+    private Boolean isShown;
 
     public static Post of(PostRoomRequestDto postRoomRequestDto,Long userId, Long roomId,Long dateId) {
         return Post.builder()
@@ -49,6 +57,7 @@ public class Post {
                 .roomId(roomId)
                 .title(postRoomRequestDto.getTitle())
                 .content(postRoomRequestDto.getContent())
+                .isShown(true)
                 .build();
     }
 }

@@ -15,7 +15,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
-import java.util.UUID;
+import java.time.LocalDateTime;
 
 @Slf4j
 public class ReportServiceImpl implements ReportService {
@@ -53,12 +53,7 @@ public class ReportServiceImpl implements ReportService {
         Room room = roomRepository.findById(roomId)
                 .orElseThrow(() -> new RoomNotFoundException(roomId));
 
-        DateLog dateLog = DateLog.builder()
-                .userId(userId)
-                .createdAt(LocalDate.now())
-                .lastUserId(userId)
-                .updatedAt(LocalDate.now())
-                .build();
+        DateLog dateLog = DateLog.of(userId);
         dateLogRepository.save(dateLog);
 
         PostReport postReport = PostReport.of(room, userId,dateLog.getId());
@@ -75,12 +70,7 @@ public class ReportServiceImpl implements ReportService {
         RoomReview roomReview = reviewRepository.findById(reviewReportRequestDto.getReviewId())
                 .orElseThrow(() -> new ReviewNotFoundException(reviewReportRequestDto.getReviewId()));
 
-        DateLog dateLog = DateLog.builder()
-                .userId(userId)
-                .createdAt(LocalDate.now())
-                .lastUserId(userId)
-                .updatedAt(LocalDate.now())
-                .build();
+        DateLog dateLog = DateLog.of(userId);
         dateLogRepository.save(dateLog);
 
         ReviewReport reviewReport = ReviewReport.of(userId,dateLog.getId(),roomReview);
@@ -90,7 +80,7 @@ public class ReportServiceImpl implements ReportService {
     }
 
     @Override
-    @Transactional
+    @Transactional(readOnly = true)
     public ReportResponseDto findPostReport(Long reportId) {
         PostReport postReport = postReportRepository.findById(reportId)
                 .orElseThrow(() -> new PostReportNotFoundException(reportId));
@@ -105,7 +95,7 @@ public class ReportServiceImpl implements ReportService {
     }
 
     @Override
-    @Transactional
+    @Transactional(readOnly = true)
     public ReportResponseDto findReviewReport(Long reportId) {
         ReviewReport reviewReport = reviewReportRepository.findById(reportId)
                 .orElseThrow(() -> new ReviewReportNotFoundException(reportId));

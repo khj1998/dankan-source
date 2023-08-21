@@ -1,6 +1,8 @@
 package com.dankan.domain.embedded;
 
 import lombok.*;
+import org.hibernate.annotations.Filter;
+import retrofit2.http.Field;
 
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
@@ -35,4 +37,7 @@ public class RoomAddress {
 
     @Column(name = "address_detail",nullable = false,length = 50,columnDefinition = "varchar")
     private String addressDetail;
+
+    @Column(name = "building_name",nullable = false, length = 128, columnDefinition = "varchar")
+    private String buildingName;
 }

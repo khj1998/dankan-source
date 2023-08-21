@@ -1,5 +1,6 @@
 package com.dankan.controller;
 
+import com.dankan.domain.chat.Chatting;
 import com.dankan.dto.request.email.EmailCodeRequestDto;
 import com.dankan.dto.request.email.EmailRequestDto;
 import com.dankan.dto.request.sns.CertificationRequestDto;
@@ -9,12 +10,14 @@ import com.dankan.dto.response.report.ReportResponseDto;
 import com.dankan.dto.response.user.UserResponseDto;
 import com.dankan.dto.request.certification.SendMessageRequestDto;
 import com.dankan.service.chatting.ChattingService;
+import com.dankan.service.chatting.DynamoDBService;
 import com.dankan.service.report.ReportService;
 import com.dankan.service.email.EmailService;
 import com.dankan.service.sms.SmsService;
 import com.dankan.service.token.TokenService;
 import com.dankan.service.user.UserService;
 import com.dankan.vo.ChattingMessageResponse;
+import com.dankan.vo.UserInfo;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.v3.oas.annotations.Operation;
@@ -31,6 +34,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.*;
 
 import javax.websocket.server.PathParam;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -42,18 +46,15 @@ import java.util.UUID;
 public class AdminController {
     private final UserService userService;
     private final TokenService tokenService;
-    private final SmsService smsService;
     private final ReportService reportService;
-    private final EmailService emailService;
     private final ChattingService chattingService;
+    private final DynamoDBService dynamoDBService;
 
     @Operation(summary = "특정 사용자 정보 api", description = "특정 사용자 정보 조회")
     @ApiResponses(
             value = {
                     @ApiResponse(responseCode = "200", description = "정보 조회 완료"),
-                    @ApiResponse(responseCode = "401", description = "토큰 만료"),
                     @ApiResponse(responseCode = "403", description = "관리자 권한 없음"),
-                    @ApiResponse(responseCode = "404", description = "해당 멤버 없음"),
             }
     )
     @GetMapping("/user/info")
@@ -66,9 +67,7 @@ public class AdminController {
     @ApiResponses(
             value = {
                     @ApiResponse(responseCode = "200", description = "정보 조회 완료"),
-                    @ApiResponse(responseCode = "401", description = "토큰 만료"),
                     @ApiResponse(responseCode = "403", description = "관리자 권한 없음"),
-                    @ApiResponse(responseCode = "404", description = "해당 멤버 없음"),
             }
     )
     @GetMapping("/user/whole-info")
@@ -80,9 +79,7 @@ public class AdminController {
     @ApiResponses(
             value = {
                     @ApiResponse(responseCode = "200", description = "정보 조회 완료"),
-                    @ApiResponse(responseCode = "401", description = "토큰 만료"),
                     @ApiResponse(responseCode = "403", description = "관리자 권한 없음"),
-                    @ApiResponse(responseCode = "404", description = "해당 멤버 없음"),
             }
     )
     @GetMapping("/token/info")
@@ -94,9 +91,7 @@ public class AdminController {
     @ApiResponses(
             value = {
                     @ApiResponse(responseCode = "200", description = "조회 환료"),
-                    @ApiResponse(responseCode = "401", description = "토큰 만료"),
                     @ApiResponse(responseCode = "403", description = "관리자 권한 없음"),
-                    @ApiResponse(responseCode = "404", description = "해당 멤버 없음"),
             }
     )
     @DeleteMapping("/user/delete")
@@ -106,43 +101,11 @@ public class AdminController {
         return ResponseEntity.ok().build();
     }
 
-    @Operation(summary = "핸드폰 본인 인증 문자 발송 api", description = "핸드폰 본인 인증 문자 발송")
-    @ApiResponses(
-            value = {
-                    @ApiResponse(responseCode = "200", description = "본인 인증 메시지 보내기 환료"),
-                    @ApiResponse(responseCode = "401", description = "토큰 만료"),
-                    @ApiResponse(responseCode = "403", description = "관리자 권한 없음"),
-                    @ApiResponse(responseCode = "404", description = "해당 멤버 없음"),
-            }
-    )
-    @PostMapping("/user/message")
-    public ResponseEntity sendIdentifyMessage(@RequestBody SendMessageRequestDto SendMessageRequestDto) {
-        smsService.sendMessage(SendMessageRequestDto.getPhoneNumber());
-
-        return ResponseEntity.ok().build();
-    }
-
-    @Operation(summary = "사용자 핸드폰 인증 api", description = "사용자 핸드폰 인증")
-    @ApiResponses(
-            value = {
-                    @ApiResponse(responseCode = "200", description = "핸드폰 인증 환료"),
-                    @ApiResponse(responseCode = "401", description = "토큰 만료"),
-                    @ApiResponse(responseCode = "403", description = "관리자 권한 없음"),
-                    @ApiResponse(responseCode = "404", description = "해당 멤버 없음"),
-            }
-    )
-    @PostMapping("/user/verify")
-    public ResponseEntity<Boolean> verifyUser(@RequestBody CertificationRequestDto certificationRequestDto) {
-        return ResponseEntity.ok(smsService.verifyNumber(certificationRequestDto));
-    }
-
     @Operation(summary = "특정 게시물 신고 조회 api",description = "특정 게시물 신고 조회")
     @ApiResponses(
             value = {
                     @ApiResponse(responseCode = "200", description = "특정 게시물 신고 조회 완료"),
-                    @ApiResponse(responseCode = "401", description = "토큰 만료"),
                     @ApiResponse(responseCode = "403", description = "관리자 권한 없음"),
-                    @ApiResponse(responseCode = "404", description = "해당 맴버 없음")
             }
     )
     @GetMapping("/post-report/find")
@@ -155,9 +118,7 @@ public class AdminController {
     @ApiResponses(
             value = {
                     @ApiResponse(responseCode = "200", description = "특정 게시물 신고 삭제 완료"),
-                    @ApiResponse(responseCode = "401", description = "토큰 만료"),
                     @ApiResponse(responseCode = "403", description = "관리자 권한 없음"),
-                    @ApiResponse(responseCode = "404", description = "해당 맴버 없음")
             }
     )
     @DeleteMapping("/post-report/remove")
@@ -170,9 +131,7 @@ public class AdminController {
     @ApiResponses(
             value = {
                     @ApiResponse(responseCode = "200", description = "특정 리뷰 신고 조회 완료"),
-                    @ApiResponse(responseCode = "401", description = "토큰 만료"),
                     @ApiResponse(responseCode = "403", description = "관리자 권한 없음"),
-                    @ApiResponse(responseCode = "404", description = "해당 맴버 없음")
             }
     )
     @GetMapping("/review-report/find")
@@ -185,9 +144,7 @@ public class AdminController {
     @ApiResponses(
             value = {
                     @ApiResponse(responseCode = "200", description = "특정 리뷰 신고 삭제 완료"),
-                    @ApiResponse(responseCode = "401", description = "토큰 만료"),
                     @ApiResponse(responseCode = "403", description = "관리자 권한 없음"),
-                    @ApiResponse(responseCode = "404", description = "해당 맴버 없음")
             }
     )
     @DeleteMapping("/review-report/remove")
@@ -196,43 +153,30 @@ public class AdminController {
         return ResponseEntity.ok().build();
     }
 
-    @Operation(summary = "대학교 인증 메일 발송 api", description = "대학교 인증 메일 발송")
-    @ApiResponses(
-            value = {
-                    @ApiResponse(responseCode = "200", description = "발송 환료"),
-                    @ApiResponse(responseCode = "401", description = "토큰 만료"),
-                    @ApiResponse(responseCode = "403", description = "권한 없음"),
-                    @ApiResponse(responseCode = "404", description = "해당 멤버 없음"),
-            }
-    )
-    @PostMapping("/univ/mail")
-    public ResponseEntity<String> mailConfirm(@RequestBody EmailRequestDto email) throws Exception {
-        return ResponseEntity.ok(emailService.sendSimpleMessage(email.getEmail()));
-    }
-
-    @Operation(summary = "대학교 인증 코드 확인 api")
-    @ApiResponses(
-            value = {
-                    @ApiResponse(responseCode = "200", description = "발송 환료"),
-                    @ApiResponse(responseCode = "401", description = "토큰 만료"),
-                    @ApiResponse(responseCode = "403", description = "권한 없음"),
-                    @ApiResponse(responseCode = "404", description = "해당 멤버 없음"),
-            }
-    )
-    @PostMapping("univ/verify-code")
-    public ResponseEntity<Boolean> verifyEmailCode(@RequestBody EmailCodeRequestDto emailCodeRequestDto) {
-        return ResponseEntity.ok(emailService.verifyCode(emailCodeRequestDto));
-    }
-
     @ApiOperation("채팅 기록 조회 API")
     @ApiResponses({
             @ApiResponse(responseCode = "200",description = "기록 조회 성공 "),
-            @ApiResponse(responseCode = "401",description = "인증되지 않은 사용자"),
-            @ApiResponse(responseCode = "403",description = "Admin 권한이 없음"),
-            @ApiResponse(responseCode = "404",description = "해당 멤버 없음")
+            @ApiResponse(responseCode = "403",description = "관리자 권한이 없음"),
     })
     @GetMapping("/chatting/log")
     public ResponseEntity<List<ChattingLogResponseDto>> getChattingLog(@RequestParam("roomId") Long id) {
-        return ResponseEntity.ok(chattingService.getHistory(id));
+        final List<Chatting> chattings = dynamoDBService.findMessageHistory(id);
+        List<ChattingLogResponseDto> list = new ArrayList<>();
+
+        for(Chatting chatting : chattings) {
+            UserInfo info = chattingService.getInfo(Long.parseLong(chatting.getMemberId()));
+
+            list.add(
+                    ChattingLogResponseDto.builder()
+                            .roomId(chatting.getRoomId())
+                            .message(chatting.getMessage())
+                            .publishedAt(chatting.getPublishedAt())
+                            .senderName(info.getNickname())
+                            .imgUrl(info.getProfileImg())
+                            .build()
+            );
+        }
+
+        return ResponseEntity.ok(list);
     }
 }

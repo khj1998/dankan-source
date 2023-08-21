@@ -17,9 +17,8 @@ import java.util.UUID;
 @AllArgsConstructor
 @Builder
 public class ReviewRateResponseDto {
-    private String imageUrl;
+
     private String address;
-    private String roomType;
     private Double avgTotalRate;
     private Long reviewCount;
     private Double avgCleanRate;
@@ -27,10 +26,10 @@ public class ReviewRateResponseDto {
     private Double avgAccessRate;
     private Double avgHostRate;
     private Double avgFacilityRate;
+    private String imgUrl;
 
-    public static ReviewRateResponseDto of(Room room,List<RoomReview> reviewList, String imageUrl,Options option,List<Options> optionsList) {
+    public static ReviewRateResponseDto of(List<RoomReview> reviewList,String address,String imgUrl) {
         Long reviewCount = (long) reviewList.size();
-        String roomType = RoomTypeEnum.getRoomTypeName(option.getValue());
 
         Double avgTotalRate = 0.0;
         Double avgCleanRate = 0.0;
@@ -41,24 +40,11 @@ public class ReviewRateResponseDto {
 
         for (RoomReview roomReview : reviewList) {
             avgTotalRate += roomReview.getTotalRate();
-        }
-
-        for (Options options : optionsList) {
-            if (options.getCodeKey().contains("CleanRate")) {
-                avgCleanRate += Long.parseLong(options.getValue());
-            }
-            if (options.getCodeKey().contains("NoiseRate")) {
-                avgNoiseRate += Long.parseLong(options.getValue());
-            }
-            if (options.getCodeKey().contains("AccessRate")) {
-                avgAccessRate += Long.parseLong(options.getValue());
-            }
-            if (options.getCodeKey().contains("HostRate")) {
-                avgHostRate += Long.parseLong(options.getValue());
-            }
-            if (options.getCodeKey().contains("FacilityRate")){
-                avgFacilityRate += Long.parseLong(options.getValue());
-            }
+            avgCleanRate += roomReview.getCleanRate();
+            avgNoiseRate += roomReview.getNoiseRate();
+            avgAccessRate += roomReview.getAccessRate();
+            avgHostRate += roomReview.getHostRate();
+            avgFacilityRate += roomReview.getFacilityRate();
         }
 
         if (reviewCount > 0) {
@@ -71,16 +57,15 @@ public class ReviewRateResponseDto {
         }
 
         return ReviewRateResponseDto.builder()
-                .address(room.getRoomAddress().getAddress())
+                .address(address)
                 .reviewCount(reviewCount)
-                .imageUrl(imageUrl)
-                .roomType(roomType)
                 .avgTotalRate(Math.round(avgTotalRate*10)/10.0)
                 .avgCleanRate(Math.round(avgCleanRate*10)/10.0)
                 .avgNoiseRate(Math.round(avgNoiseRate*10)/10.0)
                 .avgAccessRate(Math.round(avgAccessRate*10)/10.0)
                 .avgHostRate(Math.round(avgHostRate*10)/10.0)
                 .avgFacilityRate(Math.round(avgFacilityRate*10)/10.0)
+                .imgUrl(imgUrl)
                 .build();
     }
 }

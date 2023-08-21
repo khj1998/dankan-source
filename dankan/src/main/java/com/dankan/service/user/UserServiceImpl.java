@@ -16,7 +16,10 @@ import com.dankan.repository.DateLogRepository;
 import com.dankan.repository.TokenRepository;
 import com.dankan.repository.UserRepository;
 import com.dankan.util.JwtUtil;
+import com.dankan.vo.UserInfo;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.cache.annotation.CachePut;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
@@ -64,6 +67,11 @@ public class UserServiceImpl implements UserService {
 
             userRepository.save(user);
 
+            /**
+             * TODO: spring boot event로 변경
+             **/
+            this.updateEvent(JwtUtil.getMemberId());
+
             return UserResponseDto.of(user);
         }
     }
@@ -75,6 +83,11 @@ public class UserServiceImpl implements UserService {
         user.setProfileImg(imgUrl);
 
         userRepository.save(user);
+
+        /**
+         * TODO: spring boot event로 변경
+         **/
+        this.updateEvent(JwtUtil.getMemberId());
 
         return UserResponseDto.of(user);
     }
@@ -94,12 +107,7 @@ public class UserServiceImpl implements UserService {
                 .build();
 
         //날짜 로그
-        DateLog dateLog = DateLog.builder()
-                .createdAt(LocalDate.now())
-                .userId(id)
-                .lastUserId(id)
-                .updatedAt(LocalDate.now())
-                .build();
+        DateLog dateLog = DateLog.of(id);
 
         User user = User.builder()
                 .userId(id)
@@ -115,14 +123,14 @@ public class UserServiceImpl implements UserService {
         Token token = Token.of(user);
         tokenRepository.save(token);
 
-        return LoginResponseDto.of(user,token);
+        return LoginResponseDto.of(user,token,false);
     }
 
     @Override
     public LoginResponseDto signIn(User user) {
         Token token = tokenRepository.findByUserId(user.getUserId()).orElseThrow(() -> new UserIdNotFoundException(user.getUserId().toString()));
 
-        return LoginResponseDto.of(user,token);
+        return LoginResponseDto.of(user,token,true);
     }
 
     @Override
@@ -174,5 +182,11 @@ public class UserServiceImpl implements UserService {
         return userRepository.findUserByUserId(JwtUtil.getMemberId()).orElseThrow(
                 () -> new UserIdNotFoundException(JwtUtil.getMemberId().toString())
         ).getAuthorities();
+    }
+
+    @Override
+    @CachePut(key = "#id", value = "userInfo")
+    public UserInfo updateEvent(final Long id) {
+        return userRepository.findName(id).orElseThrow();
     }
 }

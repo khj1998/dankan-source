@@ -32,6 +32,7 @@ public class PostResponseDto {
     private Double roomSize;
     private Double roomRealSize;
     private String imgUrl;
+    private String univ;
 
     public static PostResponseDto of(Post post, Room room, PostHeart postHeart, String imgUrl, List<Options> optionsList) {
         Boolean isHearted = postHeart!=null;
@@ -67,6 +68,7 @@ public class PostResponseDto {
                 .roomSize(room.getRoomStructure().getRoomSize())
                 .roomRealSize(room.getRoomStructure().getRealRoomSize())
                 .imgUrl(imgUrl)
+                .univ(room.getUniv())
                 .build();
     }
 
@@ -102,6 +104,7 @@ public class PostResponseDto {
                 .roomSize(room.getRoomStructure().getRoomSize())
                 .roomRealSize(room.getRoomStructure().getRealRoomSize())
                 .imgUrl(imgUrl)
+                .univ(room.getUniv())
                 .build();
     }
 }

@@ -6,6 +6,7 @@ import java.util.List;
 
 @Getter
 public class PostFilterRequestDto {
+    private String univ;
     private String address;
     private String dealType;
     private List<String> roomType;

@@ -19,7 +19,7 @@ import java.util.UUID;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class ReviewResponseDto {
     private Long reviewId;
-    private LocalDate updatedAt;
+    private LocalDate createdAt;
     private String nickName;
     private String univ;
     private String content;
@@ -40,7 +40,7 @@ public class ReviewResponseDto {
 
         return ReviewResponseDto.builder()
                 .reviewId(roomReview.getReviewId())
-                .updatedAt(LocalDate.now())
+                .createdAt(roomReview.getCreatedAt())
                 .totalRate(roomReview.getTotalRate())
                 .cleanRate(roomReview.getCleanRate())
                 .noiseRate(roomReview.getNoiseRate())
@@ -60,7 +60,7 @@ public class ReviewResponseDto {
 
         return ReviewResponseDto.builder()
                 .reviewId(roomReview.getReviewId())
-                .updatedAt(LocalDate.now())
+                .createdAt(roomReview.getCreatedAt())
                 .totalRate(roomReview.getTotalRate())
                 .nickName(user.getNickname())
                 .content(roomReview.getContent())
@@ -78,7 +78,7 @@ public class ReviewResponseDto {
                 .reviewId(roomReview.getReviewId())
                 .totalRate(roomReview.getTotalRate())
                 .address(roomReview.getAddress())
-                .updatedAt(LocalDate.now())
+                .createdAt(roomReview.getCreatedAt())
                 .content(roomReview.getContent())
                 .buildingName(addressInfo[4])
                 .imgUrl(imgUrls)

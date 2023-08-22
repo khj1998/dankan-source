@@ -1,22 +1,15 @@
 package com.dankan.controller;
 
 import com.dankan.domain.chat.Chatting;
-import com.dankan.dto.request.email.EmailCodeRequestDto;
-import com.dankan.dto.request.email.EmailRequestDto;
-import com.dankan.dto.request.sns.CertificationRequestDto;
 import com.dankan.dto.response.chatting.ChattingLogResponseDto;
 import com.dankan.dto.response.login.TokenResponseDto;
 import com.dankan.dto.response.report.ReportResponseDto;
 import com.dankan.dto.response.user.UserResponseDto;
-import com.dankan.dto.request.certification.SendMessageRequestDto;
 import com.dankan.service.chatting.ChattingService;
 import com.dankan.service.chatting.DynamoDBService;
 import com.dankan.service.report.ReportService;
-import com.dankan.service.email.EmailService;
-import com.dankan.service.sms.SmsService;
 import com.dankan.service.token.TokenService;
-import com.dankan.service.user.UserService;
-import com.dankan.vo.ChattingMessageResponse;
+import com.dankan.service.univ.user.UserService;
 import com.dankan.vo.UserInfo;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -31,12 +24,10 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.*;
 
 import javax.websocket.server.PathParam;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
 
 @Controller
 @RequestMapping("/admin")

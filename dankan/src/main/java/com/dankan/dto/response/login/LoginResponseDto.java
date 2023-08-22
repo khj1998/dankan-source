@@ -18,9 +18,8 @@ public class LoginResponseDto {
     private Boolean gender;
     private Long userType;
     private String univEmail;
-    private Boolean isExistedUser;
 
-    public static LoginResponseDto of(User user, Token token,Boolean isExistedUser) {
+    public static LoginResponseDto of(User user, Token token) {
         return LoginResponseDto.builder()
                 .id(user.getUserId())
                 .accessToken(token.getAccessToken())
@@ -30,7 +29,6 @@ public class LoginResponseDto {
                 .profileImg(user.getProfileImg())
                 .phoneNum(user.getPhoneNum())
                 .userType(user.getUserType())
-                .isExistedUser(isExistedUser)
                 .build();
     }
 }

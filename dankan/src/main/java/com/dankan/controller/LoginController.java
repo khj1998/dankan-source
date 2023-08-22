@@ -5,14 +5,10 @@ import com.dankan.dto.response.login.LoginResponseDto;
 import com.dankan.dto.response.login.OauthLoginResponseDto;
 import com.dankan.service.login.OAuthService;
 import com.dankan.service.login.SocialLoginType;
-import com.dankan.service.user.UserService;
+import com.dankan.service.univ.user.UserService;
 import io.swagger.annotations.Api;
-import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.responses.ApiResponse;
-import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 

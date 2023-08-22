@@ -22,7 +22,7 @@ public class ReviewDetailResponseDto {
     private LocalDate endAt;
     private Double totalRate;
     private String content;
-    private LocalDateTime updatedAt;
+    private LocalDate createdAt;
     private String imgUrl;
     private String roomType;
 
@@ -39,7 +39,7 @@ public class ReviewDetailResponseDto {
                 .startedAt(roomReview.getResidencePeriod().getStartedAt())
                 .endAt(roomReview.getResidencePeriod().getEndAt())
                 .content(roomReview.getContent())
-                .updatedAt(roomReview.getUpdatedAt())
+                .createdAt(roomReview.getCreatedAt())
                 .imgUrl(imgUrls)
                 .build();
     }

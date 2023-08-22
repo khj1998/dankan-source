@@ -23,16 +23,16 @@ public class User {
     @Column(name = "date_id", nullable = false, columnDefinition = "int")
     private Long dateId;
 
-    @Column(name = "name",nullable = false,length = 10,columnDefinition = "varchar")
+    @Column(unique = true,length = 16,columnDefinition = "varchar")
     private String name;
 
     @Column(length = 16,columnDefinition = "varchar")
     private String nickname;
 
-    @Column(nullable = false, unique = true,length = 40,columnDefinition = "varchar")
+    @Column(unique = true,length = 40,columnDefinition = "varchar")
     private String email;
 
-    @Column(nullable = false,columnDefinition = "text")
+    @Column(columnDefinition = "text")
     private String profileImg;
 
     @Column(unique = true,length = 15,columnDefinition = "varchar")

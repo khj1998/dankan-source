@@ -38,6 +38,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public boolean checkDuplicatedName(String name) {
         final Optional<UserResponseDto> user = userRepository.findByNickname(name);
 
@@ -49,6 +50,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    @Transactional
     public UserResponseDto modifyNickName(final String name) {
         boolean isDuplicated = checkDuplicatedName(name);
 
@@ -75,6 +77,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    @Transactional
     public UserResponseDto modifyProfileImg(final String imgUrl) {
         User user = userRepository.findById(JwtUtil.getMemberId()).orElseThrow(() -> new UserIdNotFoundException(JwtUtil.getMemberId().toString()));
 
@@ -91,11 +94,13 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public Optional<User> checkDuplicatedEmail(String email) {
         return userRepository.findByEmail(email);
     }
 
     @Override
+    @Transactional
     public LoginResponseDto signUp(OauthLoginResponseDto oauthLoginResponseDto) {
         long id = System.currentTimeMillis();
 
@@ -121,17 +126,19 @@ public class UserServiceImpl implements UserService {
         Token token = Token.of(user);
         tokenRepository.save(token);
 
-        return LoginResponseDto.of(user,token,false);
+        return LoginResponseDto.of(user,token);
     }
 
     @Override
+    @Transactional(readOnly = true)
     public LoginResponseDto signIn(User user) {
         Token token = tokenRepository.findByUserId(user.getUserId()).orElseThrow(() -> new UserIdNotFoundException(user.getUserId().toString()));
 
-        return LoginResponseDto.of(user,token,true);
+        return LoginResponseDto.of(user,token);
     }
 
     @Override
+    @Transactional(readOnly = true)
     public UserResponseDto findUserByNickname() {
         return userRepository.findByUserId(JwtUtil.getMemberId()).orElseThrow(
                 () -> new UserIdNotFoundException(JwtUtil.getMemberId().toString())
@@ -139,11 +146,13 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<UserResponseDto> findAll() {
         return userRepository.findUserList();
     }
 
     @Override
+    @Transactional(readOnly = true)
     public UserResponseDto findUserByNickname(String name) {
         return userRepository.findByNickname(name).orElseThrow(
                 () -> new UserNameNotFoundException(name)
@@ -151,17 +160,20 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    @Transactional
     public void deleteUser() {
         userRepository.deleteById(JwtUtil.getMemberId());
 
     }
 
     @Override
+    @Transactional
     public void deleteUser(final String name) {
         userRepository.delete(userRepository.findUserByNickname(name).orElseThrow(() -> new UserNameExistException(name)));
     }
 
     @Override
+    @Transactional
     public LogoutResponseDto logout() {
         String expiredAccessToken = JwtUtil.logout();
 
@@ -176,6 +188,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<Authority> getAuthorities() {
         return userRepository.findUserByUserId(JwtUtil.getMemberId()).orElseThrow(
                 () -> new UserIdNotFoundException(JwtUtil.getMemberId().toString())

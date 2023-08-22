@@ -223,6 +223,10 @@ public class ReviewServiceImpl implements ReviewService {
         String imgUrl = "";
         List<RoomReview> reviewList = reviewRepository.findByAddress(address);
 
+        if (reviewList.size() == 0) {
+            throw new ReviewNotFoundException(address);
+        }
+
         // 하나의 도로명 주소에는 여러 방이 있을 수 있습니다. 어떤 이미지를 대표로 가져올지 고려해봐야 합니다.
         for (RoomReview roomReview : reviewList) {
             if (roomReview.getImageId()!=null) {

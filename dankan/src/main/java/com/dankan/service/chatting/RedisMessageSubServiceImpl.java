@@ -30,6 +30,7 @@ public class RedisMessageSubServiceImpl implements RedisMessageSubService {
     public void onMessage(Message message, byte[] pattern) {
         log.info("called");
         String publishMessage = (String) redisTemplate.getStringSerializer().deserialize(message.getBody());
+        log.info("publish : {}",publishMessage);
 
         try {
             ChattingMessageResponse chattingMessage = objectMapper.readValue(publishMessage, ChattingMessageResponse.class);

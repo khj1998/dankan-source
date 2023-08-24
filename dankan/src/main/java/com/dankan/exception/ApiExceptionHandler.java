@@ -53,7 +53,7 @@ public class ApiExceptionHandler {
 
     @ExceptionHandler(ReviewNotFoundException.class)
     public ResponseEntity<ApiErrorResponse> handleException(ReviewNotFoundException ex) {
-        ApiErrorResponse response = new ApiErrorResponse("ERROR-0006", "Review is not found : review id is " + ex.getMessage());
+        ApiErrorResponse response = new ApiErrorResponse("ERROR-0006", "Review is not found : review id/address is " + ex.getMessage());
         return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
     }
 

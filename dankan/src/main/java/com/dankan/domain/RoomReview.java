@@ -42,8 +42,11 @@ public class RoomReview {
     @Column(name = "content",nullable = false,columnDefinition = "varchar")
     private String content;
 
+    @CreationTimestamp
+    private LocalDate createdAt;
+
     @UpdateTimestamp
-    private LocalDateTime updatedAt;
+    private LocalDate updatedAt;
 
     @Embedded
     private ResidencePeriod residencePeriod;
@@ -51,7 +54,7 @@ public class RoomReview {
     @Column(name = "address",nullable = false,length = 100,columnDefinition = "varchar")
     private String address;
 
-    @Column(name = "address_detail",nullable = false,length = 50,columnDefinition = "varchar")
+    @Column(name = "address_detail",length = 50,columnDefinition = "varchar")
     private String addressDetail;
 
     @Column(name = "total_rate",nullable = false,columnDefinition = "double")

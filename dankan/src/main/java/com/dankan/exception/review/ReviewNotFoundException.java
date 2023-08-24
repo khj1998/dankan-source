@@ -17,4 +17,9 @@ public class ReviewNotFoundException extends RuntimeException {
         super(id.toString());
         this.message = id.toString();
     }
+
+    public ReviewNotFoundException(String address) {
+        super(address);
+        this.message = address;
+    }
 }

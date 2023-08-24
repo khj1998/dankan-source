@@ -20,32 +20,34 @@ import java.util.stream.Collectors;
 @Slf4j
 @Component
 @RequiredArgsConstructor
-public class KakaoOauth implements SocialOauth {
+public class GoogleOauth implements SocialOauth {
+    private final String googleBaseURL = "https://accounts.google.com/o/oauth2/v2/auth";
+    private final String googleBaseTokenURL = "https://oauth2.googleapis.com/token";
 
-    private final String kakaoBaseURL = "https://kauth.kakao.com/oauth/authorize";
-    private final String kakaoBaseTokenURL = "https://kauth.kakao.com/oauth/token";
+    @Value("${GOOGLE_CLIENT_ID}")
+    private String googleClientId;
 
-    @Value("${KAKAO_API_KEY}")
-    private String kakaoApiKey;
+    @Value("${GOOGLE_CLIENT_SECRET}")
+    private String googleClientSecret;
 
-    @Value("${KAKAO_REDIRECT_URL}")
-    private String kakaoTokenRedirectURI;
+    @Value("${GOOGLE_REDIRECT_URL}")
+    private String googleTokenRedirectURI;
 
     private final Gson gson;
 
     @Override
     public String getOauthRedirectURL() {
         Map<String, Object> params = new HashMap<>();
-        params.put("client_id", kakaoApiKey);
-        params.put("redirect_uri", kakaoTokenRedirectURI);
+        params.put("client_id", googleClientId);
+        params.put("redirect_uri", googleTokenRedirectURI);
         params.put("response_type","code");
-        params.put("scope","openid,account_email,profile_nickname,profile_image");
+        params.put("scope","openid https://www.googleapis.com/auth/userinfo.email");
 
         String redirectURI = "?"+params.entrySet().stream()
                 .map(x -> x.getKey() + "=" + x.getValue())
                 .collect(Collectors.joining("&"));
 
-        return kakaoBaseURL+redirectURI;
+        return googleBaseURL+redirectURI;
     }
 
     @Override
@@ -53,13 +55,13 @@ public class KakaoOauth implements SocialOauth {
         RestTemplate restTemplate = new RestTemplate();
 
         HttpEntity<MultiValueMap<String,String>> httpEntity = getHttpEntity(code);
-        ResponseEntity<String> responseEntity = restTemplate.postForEntity(kakaoBaseTokenURL,httpEntity,String.class);
+        ResponseEntity<String> responseEntity = restTemplate.postForEntity(googleBaseTokenURL,httpEntity,String.class);
 
         if(responseEntity.getStatusCode() == HttpStatus.OK){
             return responseEntity.getBody();
         }
 
-        return "카카오 로그인 실패";
+        return "구글 로그인 실패";
     }
 
     @Override
@@ -69,7 +71,6 @@ public class KakaoOauth implements SocialOauth {
 
         return OauthLoginResponseDto.builder()
                 .email(jsonObject.get("email").getAsString())
-                .profileImg(jsonObject.get("picture").getAsString())
                 .build();
     }
 
@@ -90,8 +91,9 @@ public class KakaoOauth implements SocialOauth {
 
         MultiValueMap<String,String> params = new LinkedMultiValueMap<>();
         params.add("grant_type","authorization_code");
-        params.add("client_id",kakaoApiKey);
-        params.add("redirect_uri",kakaoTokenRedirectURI);
+        params.add("client_id",googleClientId);
+        params.add("client_secret",googleClientSecret);
+        params.add("redirect_uri",googleTokenRedirectURI);
         params.add("code",code);
 
         return new HttpEntity<>(params, headers);

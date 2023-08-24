@@ -6,7 +6,7 @@ import com.dankan.dto.response.logout.LogoutResponseDto;
 import com.dankan.dto.response.user.UserResponseDto;
 import com.dankan.service.s3.S3UploadService;
 import com.dankan.service.sms.SmsService;
-import com.dankan.service.user.UserService;
+import com.dankan.service.univ.user.UserService;
 import io.swagger.annotations.Api;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -19,9 +19,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import javax.websocket.server.PathParam;
 import java.io.IOException;
-import java.util.Random;
 
 @Controller
 @RequestMapping("/user")

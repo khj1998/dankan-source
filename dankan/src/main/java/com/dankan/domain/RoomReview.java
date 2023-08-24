@@ -48,6 +48,9 @@ public class RoomReview {
     @UpdateTimestamp
     private LocalDate updatedAt;
 
+    @Column(name = "deleted_at",columnDefinition = "date")
+    private LocalDate deletedAt;
+
     @Embedded
     private ResidencePeriod residencePeriod;
 

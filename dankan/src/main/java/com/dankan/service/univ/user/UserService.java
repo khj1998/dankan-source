@@ -26,4 +26,6 @@ public interface UserService {
     public LogoutResponseDto logout();
     public List<Authority> getAuthorities();
     public UserInfo updateEvent(Long id);
+    UserInfo deleteEvent(Long id);
+    UserInfo deleteEvent(String nickname);
 }

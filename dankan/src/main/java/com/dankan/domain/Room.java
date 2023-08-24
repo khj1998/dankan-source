@@ -36,6 +36,9 @@ public class Room {
     @Column(name = "user_id",nullable = false, columnDefinition = "bigint")
     private Long userId;
 
+    @Column(name = "date_id",nullable = false, columnDefinition = "bigint")
+    private Long dateId;
+
     @Column(name = "elevator_option",nullable = false,columnDefinition = "tinyint")
     private Long elevatorOption;
 

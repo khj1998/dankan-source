@@ -74,16 +74,19 @@ public class ReviewServiceImpl implements ReviewService {
 
         RoomReview roomReview = reviewRepository.findByUserIdAndReviewId(userId,reviewId)
                 .orElseThrow(() -> new ReviewNotFoundException(reviewId));
-        reviewRepository.delete(roomReview);
+
+        roomReview.setDeletedAt(LocalDate.now());
+
+        reviewRepository.save(roomReview);
     }
 
     @Override
     @Transactional(readOnly = true)
     public List<ReviewResponseDto> findRecentReview(Integer pages) {
         List<ReviewResponseDto> responseDtoList = new ArrayList<>();
-        Sort sort = Sort.by(Sort.Direction.DESC,"updatedAt");
+        Sort sort = Sort.by(Sort.Direction.DESC,"createdAt");
         Pageable pageable =  PageRequest.of(pages,5,sort);
-        Slice<RoomReview> roomReviewList = reviewRepository.findAll(pageable);
+        Slice<RoomReview> roomReviewList = reviewRepository.findActiveReview(pageable);
 
         for (RoomReview roomReview : roomReviewList) {
             String imgUrls = "";
@@ -199,7 +202,7 @@ public class ReviewServiceImpl implements ReviewService {
         List<ReviewResponseDto> responseDtoList = new ArrayList<>();
         Sort sort = Sort.by(Sort.Direction.DESC,"totalRate");
         Pageable pageable = PageRequest.of(pages,5,sort);
-        Slice<RoomReview> roomReviewList = reviewRepository.findAll(pageable);
+        Slice<RoomReview> roomReviewList = reviewRepository.findActiveReview(pageable);
 
         for (RoomReview roomReview : roomReviewList) {
             String imgUrls = "";
@@ -243,7 +246,7 @@ public class ReviewServiceImpl implements ReviewService {
     @Transactional(readOnly = true)
     public List<ReviewDetailResponseDto> findReviewDetail(ReviewDetailRequestDto reviewDetailRequestDto) {
         List<ReviewDetailResponseDto> responseDtoList = new ArrayList<>();
-        Sort sort = Sort.by(Sort.Direction.DESC,"updatedAt");
+        Sort sort = Sort.by(Sort.Direction.DESC,"createdAt");
         Pageable pageable = PageRequest.of(reviewDetailRequestDto.getPages(),5,sort);
         List<RoomReview> roomReviewList = reviewRepository.findByAddress(reviewDetailRequestDto.getAddress(),pageable);
 

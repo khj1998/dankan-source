@@ -38,4 +38,7 @@ public interface UserRepository extends JpaRepository<User, Long> {
 
     @Query(value = "select new com.dankan.vo.UserInfo(user.nickname, user.profileImg) from User user where  user.userId = :id")
     public Optional<UserInfo> findName(@Param("id") Long id);
+
+    @Query(value = "select new com.dankan.vo.UserInfo(user.nickname, user.profileImg) from User user where user.nickname = :nickname")
+    Optional<UserInfo> findName(@Param("nickname") String nickname);
 }

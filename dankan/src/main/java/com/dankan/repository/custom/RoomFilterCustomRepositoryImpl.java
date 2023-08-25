@@ -28,6 +28,7 @@ public class RoomFilterCustomRepositoryImpl extends QuerydslRepositorySupport im
         BooleanBuilder builder = new BooleanBuilder();
 
         builder.and(qRoom.isTradeable.eq(true));
+        builder.and(qRoom.univ.eq(postFilterRequestDto.getUniv()));
 
         if (postFilterRequestDto.getAddress() != null) {
             builder.and(qRoom.roomAddress.address.contains(postFilterRequestDto.getAddress()));

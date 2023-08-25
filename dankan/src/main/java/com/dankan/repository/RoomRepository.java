@@ -24,4 +24,7 @@ public interface RoomRepository extends JpaRepository<Room, Long>, RoomFilterCus
     @Query("select r from Room r where r.roomId = :roomId and  "
             +"r.isTradeable = :isTradeable")
     Optional<Room> findById(@Param("roomId") Long roomId,@Param("isTradeable") Boolean isTradeable);
+
+    @Query("select r from Room r where r.roomId = :roomId")
+    Optional<Room> findByRoomId(@Param("roomId") Long roomId);
 }

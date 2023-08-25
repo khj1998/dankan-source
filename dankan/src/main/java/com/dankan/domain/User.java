@@ -47,6 +47,9 @@ public class User {
     @Column(length = 36, columnDefinition = "varchar")
     private String univEmail;
 
+    @Column(name = "deleted_at",columnDefinition = "date")
+    private LocalDate deletedAt;
+
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(
             name = "user_roles",

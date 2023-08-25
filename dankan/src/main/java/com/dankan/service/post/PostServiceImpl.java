@@ -231,22 +231,25 @@ public class PostServiceImpl implements PostService {
         Long userId = JwtUtil.getMemberId();
         List<PostResponseDto> responseDtoList = new ArrayList<>();
         Sort sort = Sort.by(Sort.Direction.DESC,"created_at");
-        Pageable pageable = PageRequest.of(pages,5,sort);
+        Pageable pageable = PageRequest.of(pages,10,sort);
 
         Slice<Room> roomList = roomRepository.findRoomByAddress(address,true,pageable);
 
         for (Room room : roomList) {
-            Post post = postRepository.findByRoomId(room.getRoomId())
-                    .orElseThrow(() -> new PostNotFoundException(room.getRoomId()));
+            Optional<Post> post = postRepository.findByRoomId(room.getRoomId());
 
-            PostHeart postHeart = postHeartRepository.findByUserIdAndPostId(userId,post.getPostId());
+            if (post.isEmpty()) {
+                continue;
+            }
+
+            PostHeart postHeart = postHeartRepository.findByUserIdAndPostId(userId,post.get().getPostId());
 
             List<Options> optionsList = optionsRepository.findByRoomId(room.getRoomId());
 
             Image roomImage = imageRepository.findMainImage(room.getRoomId(),0L)
                     .orElseThrow(() -> new ImageNotFoundException(room.getRoomId()));
 
-            PostResponseDto responseDto = PostResponseDto.of(post,room,postHeart,roomImage.getImageUrl(),optionsList);
+            PostResponseDto responseDto = PostResponseDto.of(post.get(),room,postHeart,roomImage.getImageUrl(),optionsList);
             responseDtoList.add(responseDto);
         }
 
@@ -260,7 +263,7 @@ public class PostServiceImpl implements PostService {
         Long userId = JwtUtil.getMemberId();
 
         Sort sort = Sort.by(Sort.Direction.DESC,"createdAt");
-        Pageable pageable = PageRequest.of(pages,5,sort);
+        Pageable pageable = PageRequest.of(pages,10,sort);
 
         List<PostHeart> postHeartList = postHeartRepository.findByUserId(userId,pageable);
 
@@ -268,7 +271,7 @@ public class PostServiceImpl implements PostService {
             Post post = postRepository.findById(postHeart.getPostId())
                     .orElseThrow(() -> new PostNotFoundException(postHeart.getPostId()));
 
-            if (!post.getIsShown()) {
+            if (post.getDeletedAt() == null) {
                 postHeartRepository.delete(postHeart);
                 continue;
             }
@@ -294,9 +297,9 @@ public class PostServiceImpl implements PostService {
         Long userId = JwtUtil.getMemberId();
 
         Sort sort = Sort.by(Sort.Direction.DESC,"createdAt");
-        Pageable pageable = PageRequest.of(pages,5,sort);
+        Pageable pageable = PageRequest.of(pages,10,sort);
 
-        List<Post> postList = postRepository.findByUserId(userId,true,pageable);
+        List<Post> postList = postRepository.findByUserId(userId,pageable);
 
         for (Post post : postList) {
             Room room = roomRepository.findById(post.getRoomId())
@@ -318,8 +321,8 @@ public class PostServiceImpl implements PostService {
     public List<PostResponseDto> findRecentWatchPost(Integer pages) {
         List<PostResponseDto> postResponseDtoList = new ArrayList<>();
         Long userId = JwtUtil.getMemberId();
-        Sort sort = Sort.by(Sort.Direction.DESC,"createdAt");
-        Pageable pageable = PageRequest.of(pages,5,sort);
+        Sort sort = Sort.by(Sort.Direction.DESC,"updatedAt");
+        Pageable pageable = PageRequest.of(pages,10,sort);
         List<RecentWatchPost> recentWatchPostList = recentWatchRepository.findAllByUserId(userId,pageable);
 
         for (RecentWatchPost recentWatchPost : recentWatchPostList) {
@@ -327,7 +330,7 @@ public class PostServiceImpl implements PostService {
             Post post = postRepository.findById(postId)
                     .orElseThrow(() -> new PostNotFoundException(postId));
 
-            if (!post.getIsShown()) {
+            if (post.getDeletedAt()==null) {
                 recentWatchRepository.delete(recentWatchPost);
                 continue;
             }
@@ -411,6 +414,7 @@ public class PostServiceImpl implements PostService {
                 .orElseThrow(() -> new UserIdNotFoundException(userId.toString()));
 
         Room room = Room.of(postRoomRequestDto,user);
+        room.setDateId(dateLog.getId());
 
         roomRepository.save(room);
 
@@ -444,10 +448,16 @@ public class PostServiceImpl implements PostService {
         Post post = postRepository.findByPostIdAndUserId(postId,userId)
                         .orElseThrow(() -> new PostNotFoundException(postId));
 
+        Room room = roomRepository.findByRoomId(post.getRoomId())
+                .orElseThrow(() -> new RoomNotFoundException(post.getRoomId().toString()));
+
+        room.setIsTradeable(false);
+
         DateLog dateLog = DateLog.of(userId);
         dateLogRepository.save(dateLog);
 
-        postRepository.delete(post);
+        post.setDeletedAt(LocalDate.now());
+        postRepository.save(post);
     }
 
     @Override
@@ -485,7 +495,7 @@ public class PostServiceImpl implements PostService {
         Room room = roomRepository.findById(post.getRoomId())
                 .orElseThrow(() -> new RoomNotFoundException(post.getRoomId()));
 
-        post.setIsShown(false);
+        post.setDeletedAt(LocalDate.now());
         room.setIsTradeable(false);
 
         postRepository.save(post);
@@ -503,7 +513,7 @@ public class PostServiceImpl implements PostService {
         Sort sort = Sort.by(Sort.Direction.DESC,"createdAt");
         Pageable pageable = PageRequest.of(pages,10,sort);
 
-        List<Post> postList = postRepository.findByUserId(userId,false,pageable);
+        List<Post> postList = postRepository.findByUserId(userId,pageable);
 
         for (Post post : postList) {
 

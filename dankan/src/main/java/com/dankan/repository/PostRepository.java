@@ -18,13 +18,10 @@ public interface PostRepository extends JpaRepository<Post, Long> {
           +"p.userId = :userId")
     Optional<Post> findByPostIdAndUserId(@Param("postId") Long postId,@Param("userId") Long userId);
 
-    @Query("select p from Post p where p.roomId = :roomId")
+    @Query("select p from Post p where p.roomId = :roomId and p.deletedAt is null")
     Optional<Post> findByRoomId(@Param("roomId") Long roomId);
 
     @Query("select p from Post p where p.userId = :userId and "
-        +"p.isShown = :isShown")
-    List<Post> findByUserId(@Param("userId") Long userId,@Param("isShown") Boolean isShown , Pageable pageable);
-
-    @Query("select p from Post p where p.isShown = :isShown")
-    Slice<Post> findAllPost(@Param("isShown") Boolean isShown, Pageable pageable);
+        +"p.deletedAt is null")
+    List<Post> findByUserId(@Param("userId") Long userId, Pageable pageable);
 }

@@ -47,7 +47,7 @@ public class Post {
     @Column(name = "content",nullable = false,columnDefinition = "varchar")
     private String content;
 
-    @Column(name = "is_shown",nullable = false,columnDefinition = "bit")
+    @Column(name = "is_shown",columnDefinition = "bit")
     private Boolean isShown;
 
     public static Post of(PostRoomRequestDto postRoomRequestDto,Long userId, Long roomId,Long dateId) {

@@ -18,8 +18,8 @@ public interface PostRepository extends JpaRepository<Post, Long> {
           +"p.userId = :userId")
     Optional<Post> findByPostIdAndUserId(@Param("postId") Long postId,@Param("userId") Long userId);
 
-    @Query("select p from Post p where p.roomId = :roomId")
-    Optional<Post> findByRoomId(@Param("roomId") Long roomId);
+    @Query("select p from Post p where p.roomId = :roomId and p.isShown = :isShown")
+    Optional<Post> findByRoomId(@Param("roomId") Long roomId,@Param("isShown") Boolean isShown);
 
     @Query("select p from Post p where p.userId = :userId and "
         +"p.isShown = :isShown")

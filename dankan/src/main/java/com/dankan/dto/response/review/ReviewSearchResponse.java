@@ -34,7 +34,7 @@ public class ReviewSearchResponse {
         return ReviewSearchResponse.builder()
                 .buildingName(buildingName)
                 .address(roomReviewList.get(0).getAddress())
-                .avgTotalRate(avgTotalRate)
+                .avgTotalRate(Math.round(avgTotalRate*10)/10.0)
                 .detailReviewCount((long) roomReviewList.size())
                 .imgUrl(imgUrl)
                 .build();

@@ -18,6 +18,7 @@ import com.dankan.repository.UserRepository;
 import com.dankan.util.JwtUtil;
 import com.dankan.vo.UserInfo;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.CachePut;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -162,14 +163,15 @@ public class UserServiceImpl implements UserService {
     @Override
     @Transactional
     public void deleteUser() {
-        userRepository.deleteById(JwtUtil.getMemberId());
+        Long memberId = JwtUtil.getMemberId();
 
+        this.deleteEvent(memberId);
     }
 
     @Override
     @Transactional
     public void deleteUser(final String name) {
-        userRepository.delete(userRepository.findUserByNickname(name).orElseThrow(() -> new UserNameExistException(name)));
+        this.deleteEvent(name);
     }
 
     @Override
@@ -199,5 +201,29 @@ public class UserServiceImpl implements UserService {
     @CachePut(key = "#id", value = "userInfo")
     public UserInfo updateEvent(final Long id) {
         return userRepository.findName(id).orElseThrow();
+    }
+
+    @Override
+    @CachePut(key = "#id",value = "userInfo")
+    public UserInfo deleteEvent(Long id) {
+        User user = userRepository.findById(id).orElseThrow(
+                () -> new UserIdNotFoundException(id.toString())
+        );
+        user.setNickname("알 수 없음");
+        userRepository.save(user);
+
+        return userRepository.findName(id).orElseThrow();
+    }
+
+    @Override
+    @CachePut(key = "#id",value = "userInfo")
+    public UserInfo deleteEvent(String nickname) {
+        User user = userRepository.findUserByNickname(nickname).orElseThrow(
+                () -> new UserNameNotFoundException(nickname)
+        );
+        user.setNickname("알 수 없음");
+        userRepository.save(user);
+
+        return userRepository.findName(nickname).orElseThrow();
     }
 }

@@ -47,8 +47,8 @@ public class Post {
     @Column(name = "content",nullable = false,columnDefinition = "varchar")
     private String content;
 
-    @Column(name = "is_shown",columnDefinition = "bit")
-    private Boolean isShown;
+    @Column(name = "deleted_at",columnDefinition = "date")
+    private LocalDate deletedAt;
 
     public static Post of(PostRoomRequestDto postRoomRequestDto,Long userId, Long roomId,Long dateId) {
         return Post.builder()
@@ -57,7 +57,6 @@ public class Post {
                 .roomId(roomId)
                 .title(postRoomRequestDto.getTitle())
                 .content(postRoomRequestDto.getContent())
-                .isShown(true)
                 .build();
     }
 }

@@ -71,7 +71,7 @@ public class PostServiceImpl implements PostService {
                     continue;
                 }
 
-                Post post = postRepository.findByRoomId(room.getRoomId())
+                Post post = postRepository.findByRoomId(room.getRoomId(),true)
                         .orElseThrow(() -> new PostNotFoundException(room.getRoomId()));
 
                 List<Options> optionsList = optionsRepository.findByRoomId(room.getRoomId());
@@ -213,7 +213,7 @@ public class PostServiceImpl implements PostService {
         Room room = roomRepository.findById(roomId,true)
                 .orElseThrow(() -> new RoomNotFoundException(roomId));
 
-        Post post = postRepository.findByRoomId(roomId)
+        Post post = postRepository.findByRoomId(roomId,true)
                 .orElseThrow(() -> new PostNotFoundException(roomId));
 
         PostHeart postHeart = postHeartRepository.findByUserIdAndPostId(userId,post.getPostId());

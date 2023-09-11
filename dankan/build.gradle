@@ -1,20 +1,13 @@
+buildscript {
+    ext {
+        queryDslVersion = "5.0.0"
+    }
+}
+
 plugins {
     id 'java'
     id 'org.springframework.boot' version '2.7.6'
     id 'io.spring.dependency-management' version '1.0.15.RELEASE'
-    // To upload your source code to Sentry so it can be shown in stack traces, use our Gradle plugin.
-    id "io.sentry.jvm.gradle" version "3.11.0"
-}
-
-sentry {
-    // Generates a JVM (Java, Kotlin, etc.) source bundle and uploads your source code to Sentry.
-    // This enables source context, allowing you to see your source
-    // code as part of your stack traces in Sentry.
-    includeSourceContext = true
-
-    org = "___ORG_SLUG___"
-    projectName = "dankan-backend"
-    def authToken = System.getenv("SENTRY_AUTH_TOKEN")
 }
 
 group = 'com.dunji'
@@ -84,10 +77,6 @@ dependencies {
     //slack
     implementation 'com.github.maricn:logback-slack-appender:1.4.0'
 
-    //Sentry
-    //implementation 'io.sentry:sentry-spring-boot-starter:5.6.0'
-    //implementation 'io.sentry:sentry-logback:5.6.0'
-
     //chatting
     implementation 'org.springframework.boot:spring-boot-starter-websocket'
     implementation 'org.springframework.boot:spring-boot-starter-data-redis'
@@ -95,6 +84,25 @@ dependencies {
     //dynamodb
     implementation 'com.github.derjust:spring-data-dynamodb:5.1.0'
     implementation 'com.amazonaws:aws-java-sdk-dynamodb:1.11.805'
+
+    //Query DSL
+    implementation "com.querydsl:querydsl-jpa:${queryDslVersion}"
+    annotationProcessor(
+            "javax.persistence:javax.persistence-api",
+            "javax.annotation:javax.annotation-api",
+            "com.querydsl:querydsl-apt:${queryDslVersion}:jpa")
+
+    //cache
+    implementation 'org.springframework.boot:spring-boot-starter-cache'
+}
+
+//QueryDSL
+sourceSets {
+    main {
+        java {
+            srcDirs = ["$projectDir/src/main/java", "$projectDir/build/generated"]
+        }
+    }
 }
 
 tasks.named('test') {

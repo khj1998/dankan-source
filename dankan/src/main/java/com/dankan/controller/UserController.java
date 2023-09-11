@@ -1,10 +1,12 @@
 package com.dankan.controller;
 
+import com.dankan.dto.request.certification.SendMessageRequestDto;
+import com.dankan.dto.request.sns.CertificationRequestDto;
 import com.dankan.dto.response.logout.LogoutResponseDto;
 import com.dankan.dto.response.user.UserResponseDto;
 import com.dankan.service.s3.S3UploadService;
 import com.dankan.service.sms.SmsService;
-import com.dankan.service.user.UserService;
+import com.dankan.service.univ.user.UserService;
 import io.swagger.annotations.Api;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -17,9 +19,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import javax.websocket.server.PathParam;
 import java.io.IOException;
-import java.util.Random;
 
 @Controller
 @RequestMapping("/user")
@@ -34,10 +34,7 @@ public class UserController {
     @Operation(summary = "닉네임 중복 체크 api", description = "닉네임 중복 체크")
     @ApiResponses(
             value = {
-                    @ApiResponse(responseCode = "200", description = "닉네임 사용 가능"),
-                    @ApiResponse(responseCode = "401", description = "토큰 만료"),
-                    @ApiResponse(responseCode = "403", description = "권한 없음"),
-                    @ApiResponse(responseCode = "404", description = "해당 멤버 없음"),
+                    @ApiResponse(responseCode = "200", description = "닉네임 사용 가능")
             }
     )
     @GetMapping("/nickname")
@@ -48,10 +45,7 @@ public class UserController {
     @Operation(summary = "닉네임 변경 api", description = "닉네임 변경")
     @ApiResponses(
             value = {
-                    @ApiResponse(responseCode = "200", description = "닉네임 변경 완료"),
-                    @ApiResponse(responseCode = "401", description = "토큰 만료"),
-                    @ApiResponse(responseCode = "403", description = "권한 없음"),
-                    @ApiResponse(responseCode = "404", description = "해당 멤버 없음"),
+                    @ApiResponse(responseCode = "200", description = "닉네임 변경 완료")
             }
     )
     @GetMapping("/modify-nickname")
@@ -62,10 +56,7 @@ public class UserController {
     @Operation(summary = "프로필 이미지 api", description = "프로필 이미지 변경")
     @ApiResponses(
             value = {
-                    @ApiResponse(responseCode = "200", description = "프로필 이미지 변경 완료"),
-                    @ApiResponse(responseCode = "401", description = "토큰 만료"),
-                    @ApiResponse(responseCode = "403", description = "권한 없음"),
-                    @ApiResponse(responseCode = "404", description = "해당 멤버 없음"),
+                    @ApiResponse(responseCode = "200", description = "프로필 이미지 변경 완료")
             }
     )
     @PostMapping(value = "/profileImg", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
@@ -78,10 +69,7 @@ public class UserController {
     @Operation(summary = "사용자 정보 조회 api", description = "사용자 정보 조회")
     @ApiResponses(
             value = {
-                    @ApiResponse(responseCode = "200", description = "조회 환료"),
-                    @ApiResponse(responseCode = "401", description = "토큰 만료"),
-                    @ApiResponse(responseCode = "403", description = "권한 없음"),
-                    @ApiResponse(responseCode = "404", description = "해당 멤버 없음"),
+                    @ApiResponse(responseCode = "200", description = "조회 환료")
             }
     )
     @GetMapping("/info")
@@ -92,10 +80,7 @@ public class UserController {
     @Operation(summary = "사용자 탈퇴 api", description = "사용자 회원 탈퇴")
     @ApiResponses(
             value = {
-                    @ApiResponse(responseCode = "200", description = "탈퇴 환료"),
-                    @ApiResponse(responseCode = "401", description = "토큰 만료"),
-                    @ApiResponse(responseCode = "403", description = "권한 없음"),
-                    @ApiResponse(responseCode = "404", description = "해당 멤버 없음"),
+                    @ApiResponse(responseCode = "200", description = "탈퇴 환료")
             }
     )
     @DeleteMapping("/delete")
@@ -108,14 +93,38 @@ public class UserController {
     @Operation(summary = "로그아웃 api", description = "로그아웃")
     @ApiResponses(
             value = {
-                    @ApiResponse(responseCode = "200", description = "로그아웃 환료"),
-                    @ApiResponse(responseCode = "401", description = "토큰 만료"),
-                    @ApiResponse(responseCode = "403", description = "권한 없음"),
-                    @ApiResponse(responseCode = "404", description = "해당 멤버 없음"),
+                    @ApiResponse(responseCode = "200", description = "로그아웃 환료")
             }
     )
     @GetMapping("/logout")
     public ResponseEntity<LogoutResponseDto> logout() {
         return ResponseEntity.ok(userService.logout());
+    }
+
+
+    @Operation(summary = "핸드폰 본인 인증 문자 발송 api", description = "핸드폰 본인 인증 문자 발송")
+    @ApiResponses(
+            value = {
+                    @ApiResponse(responseCode = "200", description = "본인 인증 메시지 보내기 환료"),
+                    @ApiResponse(responseCode = "403", description = "관리자 권한 없음"),
+            }
+    )
+    @PostMapping("/message")
+    public ResponseEntity sendIdentifyMessage(@RequestBody SendMessageRequestDto SendMessageRequestDto) {
+        smsService.sendMessage(SendMessageRequestDto.getPhoneNumber());
+
+        return ResponseEntity.ok().build();
+    }
+
+    @Operation(summary = "사용자 핸드폰 인증 api", description = "사용자 핸드폰 인증")
+    @ApiResponses(
+            value = {
+                    @ApiResponse(responseCode = "200", description = "핸드폰 인증 환료"),
+                    @ApiResponse(responseCode = "403", description = "관리자 권한 없음"),
+            }
+    )
+    @PostMapping("/verify")
+    public ResponseEntity<Boolean> verifyUser(@RequestBody CertificationRequestDto certificationRequestDto) {
+        return ResponseEntity.ok(smsService.verifyNumber(certificationRequestDto));
     }
 }

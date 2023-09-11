@@ -29,8 +29,8 @@ import com.dankan.service.token.TokenService;
 import com.dankan.service.token.TokenServiceImpl;
 import com.dankan.service.univ.UnivService;
 import com.dankan.service.univ.UnivServiceImpl;
-import com.dankan.service.user.UserService;
-import com.dankan.service.user.UserServiceImpl;
+import com.dankan.service.univ.user.UserService;
+import com.dankan.service.univ.user.UserServiceImpl;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -106,17 +106,19 @@ public class SpringConfig {
 
     @Bean
     public PostService postService() {
-        return new PostServiceImpl(postRepository,roomRepository,postHeartRepository,dateLogRepository,recentWatchRepository,optionsRepository,imageRepository);
+        return new PostServiceImpl(postRepository,roomRepository,postHeartRepository
+                ,dateLogRepository,recentWatchRepository,optionsRepository,imageRepository,userRepository);
     }
 
     @Bean
     public ImageService roomService() {
-        return new ImageServiceImpl(postRepository,imageRepository);
+        return new ImageServiceImpl(postRepository,imageRepository,reviewRepository);
     }
 
     @Bean
     public ReportService reportService() {
-        return new ReportServiceImpl(postReportRepository,reviewReportRepository,postRepository,roomRepository,reviewRepository,dateLogRepository);
+        return new ReportServiceImpl(postReportRepository,reviewReportRepository,postRepository
+                ,roomRepository,reviewRepository,dateLogRepository);
     }
 
     @Bean
@@ -146,6 +148,6 @@ public class SpringConfig {
 
     @Bean
     public ChattingService chattingService() {
-        return new ChattingServiceImpl(userRepository, dynamoDBService());
+        return new ChattingServiceImpl(userRepository);
     }
 }

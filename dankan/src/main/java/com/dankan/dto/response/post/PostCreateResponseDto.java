@@ -26,6 +26,7 @@ public class PostCreateResponseDto {
     private Long roomId;
     private String address;
     private String addressDetails;
+    private String buildingName;
     private String dealType;
     private String roomType;
     private Long elevators;
@@ -66,7 +67,7 @@ public class PostCreateResponseDto {
 
         for (Options option : optionsList) {
             if (option.getCodeKey().equals("DealType")) {
-                dealType = option.getValue().equals("0") ? "단기임대" : "양도";
+                dealType = DealTypeEnum.getDealTypeName(option.getValue());
             }
 
             if (option.getCodeKey().equals("RoomType")) {
@@ -83,7 +84,7 @@ public class PostCreateResponseDto {
                 }
             }
 
-            if (option.getCodeKey().equals("Structure")) {
+            if (option.getCodeKey().equals("StructureType")) {
                 structure = StructureTypeEnum.getStructureTypeName(option.getValue());
             }
 
@@ -115,6 +116,7 @@ public class PostCreateResponseDto {
                 .structure(structure)
                 .options(options)
                 .etcOptions(etcOptions)
+                .elevators(room.getElevatorOption())
                 .deposit(room.getRoomCost().getDeposit())
                 .price(room.getRoomCost().getPrice())
                 .managementCost(room.getRoomCost().getManagementCost())
@@ -129,6 +131,7 @@ public class PostCreateResponseDto {
                 .si(room.getRoomAddress().getSi())
                 .gu(room.getRoomAddress().getGu())
                 .dong(room.getRoomAddress().getDong())
+                .buildingName(room.getRoomAddress().getBuildingName())
                 .latitude(room.getRoomAddress().getLatitude())
                 .longitude(room.getRoomAddress().getLongitude())
                 .address(room.getRoomAddress().getAddress())

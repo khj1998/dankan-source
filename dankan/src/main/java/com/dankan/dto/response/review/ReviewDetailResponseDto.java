@@ -6,6 +6,7 @@ import com.dankan.domain.User;
 import lombok.*;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.List;
 
@@ -19,10 +20,11 @@ public class ReviewDetailResponseDto {
     private String univ;
     private LocalDate startedAt;
     private LocalDate endAt;
-    private Long totalRate;
+    private Double totalRate;
     private String content;
-    private LocalDate updatedAt;
+    private LocalDate createdAt;
     private String imgUrl;
+    private String roomType;
 
     public static ReviewDetailResponseDto of(User user, RoomReview roomReview, List<Image> imageList) {
         String imgUrls = "";
@@ -37,7 +39,7 @@ public class ReviewDetailResponseDto {
                 .startedAt(roomReview.getResidencePeriod().getStartedAt())
                 .endAt(roomReview.getResidencePeriod().getEndAt())
                 .content(roomReview.getContent())
-                .updatedAt(roomReview.getUpdatedAt())
+                .createdAt(roomReview.getCreatedAt())
                 .imgUrl(imgUrls)
                 .build();
     }

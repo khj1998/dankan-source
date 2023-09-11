@@ -1,4 +1,4 @@
-package com.dankan.service.user;
+package com.dankan.service.univ.user;
 
 import com.dankan.domain.Authority;
 import com.dankan.domain.User;
@@ -6,6 +6,7 @@ import com.dankan.dto.response.login.LoginResponseDto;
 import com.dankan.dto.response.login.OauthLoginResponseDto;
 import com.dankan.dto.response.logout.LogoutResponseDto;
 import com.dankan.dto.response.user.UserResponseDto;
+import com.dankan.vo.UserInfo;
 
 import java.util.List;
 import java.util.Optional;
@@ -24,4 +25,7 @@ public interface UserService {
     public void deleteUser(String name);
     public LogoutResponseDto logout();
     public List<Authority> getAuthorities();
+    public UserInfo updateEvent(Long id);
+    UserInfo deleteEvent(Long id);
+    UserInfo deleteEvent(String nickname);
 }

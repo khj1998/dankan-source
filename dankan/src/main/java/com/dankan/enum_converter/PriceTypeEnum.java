@@ -5,7 +5,7 @@ import lombok.Getter;
 
 @Getter
 public enum PriceTypeEnum {
-    주("0"),
+    주세("0"),
     월세("1"),
     전세("2"),
     반전세("3");

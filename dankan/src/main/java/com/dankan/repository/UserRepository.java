@@ -37,5 +37,8 @@ public interface UserRepository extends JpaRepository<User, Long> {
     public List<UserResponseDto> findUserList();
 
     @Query(value = "select new com.dankan.vo.UserInfo(user.nickname, user.profileImg) from User user where  user.userId = :id")
-    public UserInfo findName(Long id);
+    public Optional<UserInfo> findName(@Param("id") Long id);
+
+    @Query(value = "select new com.dankan.vo.UserInfo(user.nickname, user.profileImg) from User user where user.nickname = :nickname")
+    Optional<UserInfo> findName(@Param("nickname") String nickname);
 }

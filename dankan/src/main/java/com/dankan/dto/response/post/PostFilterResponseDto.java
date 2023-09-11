@@ -7,9 +7,9 @@ import com.dankan.domain.Room;
 import com.dankan.enum_converter.DealTypeEnum;
 import com.dankan.enum_converter.PriceTypeEnum;
 import com.dankan.enum_converter.StructureTypeEnum;
-import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.*;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Getter
@@ -17,8 +17,7 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-@JsonInclude(JsonInclude.Include.NON_NULL)
-public class PostResponseDto {
+public class PostFilterResponseDto {
     private Long postId;
     private String dealType;
     private Boolean isHearted;
@@ -32,9 +31,9 @@ public class PostResponseDto {
     private Double roomSize;
     private Double roomRealSize;
     private String imgUrl;
-    private String univ;
+    private LocalDateTime createdAt;
 
-    public static PostResponseDto of(Post post, Room room, PostHeart postHeart, String imgUrl, List<Options> optionsList) {
+    public static PostFilterResponseDto of(Post post, Room room, PostHeart postHeart, String imgUrl, List<Options> optionsList) {
         Boolean isHearted = postHeart!=null;
         String dealType = "";
         String priceType = "";
@@ -54,7 +53,8 @@ public class PostResponseDto {
             }
         }
 
-        return PostResponseDto.builder()
+        return PostFilterResponseDto.builder()
+                .createdAt(post.getCreatedAt())
                 .postId(post.getPostId())
                 .dealType(dealType)
                 .priceType(priceType)
@@ -68,43 +68,7 @@ public class PostResponseDto {
                 .roomSize(room.getRoomStructure().getRoomSize())
                 .roomRealSize(room.getRoomStructure().getRealRoomSize())
                 .imgUrl(imgUrl)
-                .univ(room.getUniv())
-                .build();
-    }
-
-    public static PostResponseDto of(Post post,Room room,String imgUrl, List<Options> optionsList) {
-        String dealType = "";
-        String priceType = "";
-        String structure = "";
-
-        for (Options options : optionsList) {
-            if (options.getCodeKey().equals("DealType")) {
-                dealType = DealTypeEnum.getDealTypeName(options.getValue());
-            }
-
-            if (options.getCodeKey().equals("PriceType")) {
-                priceType = PriceTypeEnum.getPriceTypeName(options.getValue());
-            }
-
-            if (options.getCodeKey().equals("StructureType")) {
-                structure = StructureTypeEnum.getStructureTypeName(options.getValue());
-            }
-        }
-
-        return PostResponseDto.builder()
-                .postId(post.getPostId())
-                .dealType(dealType)
-                .priceType(priceType)
-                .structure(structure)
-                .price(room.getRoomCost().getPrice())
-                .deposit(room.getRoomCost().getDeposit())
-                .address(room.getRoomAddress().getAddress())
-                .buildingName(room.getRoomAddress().getBuildingName())
-                .floor(room.getRoomStructure().getFloor())
-                .roomSize(room.getRoomStructure().getRoomSize())
-                .roomRealSize(room.getRoomStructure().getRealRoomSize())
-                .imgUrl(imgUrl)
-                .univ(room.getUniv())
+                .createdAt(post.getCreatedAt())
                 .build();
     }
 }

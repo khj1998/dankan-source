@@ -11,13 +11,16 @@ import com.dankan.enum_converter.RoomTypeEnum;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.*;
+import org.hibernate.annotations.CreationTimestamp;
 
 import javax.persistence.*;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
 @ApiModel(value = "매물 엔티티")
 @Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
@@ -33,7 +36,7 @@ public class Room {
     @Column(name = "user_id",nullable = false, columnDefinition = "bigint")
     private Long userId;
 
-    @Column(name = "date_id",nullable = false, columnDefinition = "int")
+    @Column(name = "date_id",nullable = false, columnDefinition = "bigint")
     private Long dateId;
 
     @Column(name = "elevator_option",nullable = false,columnDefinition = "tinyint")
@@ -51,7 +54,16 @@ public class Room {
     @Embedded
     private RoomAddress roomAddress;
 
-    public static Room of(PostRoomRequestDto postRoomRequestDto, Long userId,Long dateId) {
+    @Column(name = "is_tradeable",nullable = false,columnDefinition = "bit")
+    private Boolean isTradeable;
+
+    @Column(name = "univ",nullable = false,length = 16,columnDefinition = "varchar")
+    private String univ;
+
+    @CreationTimestamp
+    private LocalDateTime createdAt;
+
+    public static Room of(PostRoomRequestDto postRoomRequestDto,User user) {
         String[] addressParts = postRoomRequestDto.getAddress().split(" ");
 
         RoomCost cost = RoomCost.builder()
@@ -79,6 +91,7 @@ public class Room {
                 .si(addressParts[1])
                 .gu(addressParts[2])
                 .dong(addressParts[3])
+                .buildingName(addressParts[4])
                 .latitude(postRoomRequestDto.getLatitude())
                 .longitude(postRoomRequestDto.getLongitude())
                 .address(postRoomRequestDto.getAddress())
@@ -86,13 +99,14 @@ public class Room {
                 .build();
 
         return Room.builder()
-                .userId(userId)
-                .dateId(dateId)
+                .userId(user.getUserId())
                 .roomCost(cost)
                 .roomStructure(structure)
                 .elevatorOption(postRoomRequestDto.getElevators())
                 .roomDiscussion(discussion)
                 .roomAddress(address)
+                .isTradeable(true)
+                .univ(user.getUnivEmail())
                 .build();
     }
 }

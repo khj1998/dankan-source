@@ -1,4 +1,4 @@
-package com.dankan.service.user;
+package com.dankan.service.univ.user;
 
 import com.dankan.domain.Authority;
 import com.dankan.domain.DateLog;
@@ -16,10 +16,12 @@ import com.dankan.repository.DateLogRepository;
 import com.dankan.repository.TokenRepository;
 import com.dankan.repository.UserRepository;
 import com.dankan.util.JwtUtil;
+import com.dankan.vo.UserInfo;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.CachePut;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.*;
 
@@ -37,6 +39,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public boolean checkDuplicatedName(String name) {
         final Optional<UserResponseDto> user = userRepository.findByNickname(name);
 
@@ -48,6 +51,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    @Transactional
     public UserResponseDto modifyNickName(final String name) {
         boolean isDuplicated = checkDuplicatedName(name);
 
@@ -64,11 +68,17 @@ public class UserServiceImpl implements UserService {
 
             userRepository.save(user);
 
+            /**
+             * TODO: spring boot event로 변경
+             **/
+            this.updateEvent(JwtUtil.getMemberId());
+
             return UserResponseDto.of(user);
         }
     }
 
     @Override
+    @Transactional
     public UserResponseDto modifyProfileImg(final String imgUrl) {
         User user = userRepository.findById(JwtUtil.getMemberId()).orElseThrow(() -> new UserIdNotFoundException(JwtUtil.getMemberId().toString()));
 
@@ -76,15 +86,22 @@ public class UserServiceImpl implements UserService {
 
         userRepository.save(user);
 
+        /**
+         * TODO: spring boot event로 변경
+         **/
+        this.updateEvent(JwtUtil.getMemberId());
+
         return UserResponseDto.of(user);
     }
 
     @Override
+    @Transactional(readOnly = true)
     public Optional<User> checkDuplicatedEmail(String email) {
         return userRepository.findByEmail(email);
     }
 
     @Override
+    @Transactional
     public LoginResponseDto signUp(OauthLoginResponseDto oauthLoginResponseDto) {
         long id = System.currentTimeMillis();
 
@@ -94,19 +111,14 @@ public class UserServiceImpl implements UserService {
                 .build();
 
         //날짜 로그
-        DateLog dateLog = DateLog.builder()
-                .createdAt(LocalDate.now())
-                .userId(id)
-                .lastUserId(id)
-                .updatedAt(LocalDate.now())
-                .build();
+        DateLog dateLog = DateLog.of(id);
 
         User user = User.builder()
                 .userId(id)
                 .dateId(dateLogRepository.save(dateLog).getId())
                 .authorities(Arrays.asList(authority))
                 .email(oauthLoginResponseDto.getEmail())
-                .nickname(oauthLoginResponseDto.getNickname())
+                .name(oauthLoginResponseDto.getNickname())
                 .profileImg(oauthLoginResponseDto.getProfileImg())
                 .userType(0L) // 카카오 로그인, 그외 로그인 타입을 객체 지향적으로 분리해 of를 쓸 예정입니다. 더 고민해봐야해요.
                 .build();
@@ -119,6 +131,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public LoginResponseDto signIn(User user) {
         Token token = tokenRepository.findByUserId(user.getUserId()).orElseThrow(() -> new UserIdNotFoundException(user.getUserId().toString()));
 
@@ -126,6 +139,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public UserResponseDto findUserByNickname() {
         return userRepository.findByUserId(JwtUtil.getMemberId()).orElseThrow(
                 () -> new UserIdNotFoundException(JwtUtil.getMemberId().toString())
@@ -133,11 +147,13 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<UserResponseDto> findAll() {
         return userRepository.findUserList();
     }
 
     @Override
+    @Transactional(readOnly = true)
     public UserResponseDto findUserByNickname(String name) {
         return userRepository.findByNickname(name).orElseThrow(
                 () -> new UserNameNotFoundException(name)
@@ -145,17 +161,21 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    @Transactional
     public void deleteUser() {
-        userRepository.deleteById(JwtUtil.getMemberId());
+        Long memberId = JwtUtil.getMemberId();
 
+        this.deleteEvent(memberId);
     }
 
     @Override
+    @Transactional
     public void deleteUser(final String name) {
-        userRepository.delete(userRepository.findUserByNickname(name).orElseThrow(() -> new UserNameExistException(name)));
+        this.deleteEvent(name);
     }
 
     @Override
+    @Transactional
     public LogoutResponseDto logout() {
         String expiredAccessToken = JwtUtil.logout();
 
@@ -170,9 +190,40 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<Authority> getAuthorities() {
         return userRepository.findUserByUserId(JwtUtil.getMemberId()).orElseThrow(
                 () -> new UserIdNotFoundException(JwtUtil.getMemberId().toString())
         ).getAuthorities();
+    }
+
+    @Override
+    @CachePut(key = "#id", value = "userInfo")
+    public UserInfo updateEvent(final Long id) {
+        return userRepository.findName(id).orElseThrow();
+    }
+
+    @Override
+    @CachePut(key = "#id",value = "userInfo")
+    public UserInfo deleteEvent(Long id) {
+        User user = userRepository.findById(id).orElseThrow(
+                () -> new UserIdNotFoundException(id.toString())
+        );
+        user.setNickname("알 수 없음");
+        userRepository.save(user);
+
+        return userRepository.findName(id).orElseThrow();
+    }
+
+    @Override
+    @CachePut(key = "#id",value = "userInfo")
+    public UserInfo deleteEvent(String nickname) {
+        User user = userRepository.findUserByNickname(nickname).orElseThrow(
+                () -> new UserNameNotFoundException(nickname)
+        );
+        user.setNickname("알 수 없음");
+        userRepository.save(user);
+
+        return userRepository.findName(nickname).orElseThrow();
     }
 }

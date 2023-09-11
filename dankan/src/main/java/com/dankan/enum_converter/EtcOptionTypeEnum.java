@@ -6,7 +6,7 @@ import lombok.Getter;
 
 @Getter
 public enum EtcOptionTypeEnum {
-    주차공간("0"),
+    주차가능("0"),
     반려동물("1"),
     여성전용("2"),
     전세대출("3");

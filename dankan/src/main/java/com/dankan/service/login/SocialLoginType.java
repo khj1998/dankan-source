@@ -1,5 +1,6 @@
 package com.dankan.service.login;
 
 public enum SocialLoginType {
-    kakao
+    kakao,
+    google
 }

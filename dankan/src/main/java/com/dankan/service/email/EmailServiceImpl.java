@@ -10,7 +10,9 @@ import javax.mail.internet.MimeMessage.RecipientType;
 import com.dankan.domain.User;
 import com.dankan.dto.request.email.EmailCodeRequestDto;
 import com.dankan.exception.user.EmailNotFoundException;
+import com.dankan.exception.user.UserIdNotFoundException;
 import com.dankan.repository.UserRepository;
+import com.dankan.util.JwtUtil;
 import org.springframework.mail.MailException;
 import org.springframework.mail.javamail.JavaMailSender;
 
@@ -107,11 +109,11 @@ public class EmailServiceImpl implements EmailService {
 	@Override
 	public Boolean verifyCode(final EmailCodeRequestDto emailCodeRequestDto) {
 		if(codes.get(emailCodeRequestDto.getEmail()).equals(emailCodeRequestDto.getCode())) {
-			User user = userRepository.findByEmail(emailCodeRequestDto.getEmail()).orElseThrow(
-					() -> new EmailNotFoundException(emailCodeRequestDto.getEmail())
+			User user = userRepository.findById(JwtUtil.getMemberId()).orElseThrow(
+					() -> new UserIdNotFoundException(JwtUtil.getMemberId().toString())
 			);
 
-			user.setEmail(emailCodeRequestDto.getEmail());
+			user.setUnivEmail(emailCodeRequestDto.getEmail());
 
 			userRepository.save(user);
 

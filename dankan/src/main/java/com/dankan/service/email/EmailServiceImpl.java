@@ -15,6 +15,7 @@ import com.dankan.repository.UserRepository;
 import com.dankan.util.JwtUtil;
 import org.springframework.mail.MailException;
 import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.transaction.annotation.Transactional;
 
 public class EmailServiceImpl implements EmailService {
 
@@ -107,6 +108,7 @@ public class EmailServiceImpl implements EmailService {
 	}
 
 	@Override
+	@Transactional
 	public Boolean verifyCode(final EmailCodeRequestDto emailCodeRequestDto) {
 		if(codes.get(emailCodeRequestDto.getEmail()).equals(emailCodeRequestDto.getCode())) {
 			User user = userRepository.findById(JwtUtil.getMemberId()).orElseThrow(

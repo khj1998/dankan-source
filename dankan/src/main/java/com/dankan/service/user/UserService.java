@@ -1,4 +1,4 @@
-package com.dankan.service.univ.user;
+package com.dankan.service.user;
 
 import com.dankan.domain.Authority;
 import com.dankan.domain.User;

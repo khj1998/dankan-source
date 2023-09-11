@@ -6,7 +6,7 @@ import com.dankan.dto.response.logout.LogoutResponseDto;
 import com.dankan.dto.response.user.UserResponseDto;
 import com.dankan.service.s3.S3UploadService;
 import com.dankan.service.sms.SmsService;
-import com.dankan.service.univ.user.UserService;
+import com.dankan.service.user.UserService;
 import io.swagger.annotations.Api;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;

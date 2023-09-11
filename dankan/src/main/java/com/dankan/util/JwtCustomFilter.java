@@ -1,6 +1,8 @@
 package com.dankan.util;
 
 import com.dankan.domain.User;
+import com.dankan.exception.token.TokenNotFoundException;
+import com.dankan.repository.TokenRepository;
 import com.dankan.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -28,6 +30,7 @@ public class JwtCustomFilter extends OncePerRequestFilter {
     private String secretKey;
 
     private final UserRepository userRepository;
+    private final TokenRepository tokenRepository;
 
     @Override
     protected void doFilterInternal(final HttpServletRequest request, final HttpServletResponse response, final FilterChain filterChain) throws ServletException, IOException {
@@ -46,6 +49,10 @@ public class JwtCustomFilter extends OncePerRequestFilter {
 
         // Token 꺼내기
         String token = authorizationHeader.split(" ")[1];
+
+        tokenRepository.findTokenByAccessToken(token).orElseThrow(
+                () -> new TokenNotFoundException(token)
+        );
 
         // Token 검증
         if (!JwtUtil.validateToken(token)) {

@@ -97,10 +97,7 @@ public class PostController {
 
     @ApiOperation("매매 게시물 필터 조회 API")
     @ApiResponses({
-            @ApiResponse(responseCode = "200",description = "매매 게시물 필터 조회 성공"),
-            @ApiResponse(responseCode = "401",description = "인증되지 않은 사용자"),
-            @ApiResponse(responseCode = "403",description = "유저가 Member | Admin 권한이 없음"),
-            @ApiResponse(responseCode = "404",description = "매매 게시물 필터 조회 실패")
+            @ApiResponse(responseCode = "200",description = "매매 게시물 필터 조회 성공")
     })
     @PostMapping("/filter")
     public ResponseEntity<List<PostFilterResponseDto>> doPostFilter(@RequestBody PostFilterRequestDto postFilterRequestDto) {

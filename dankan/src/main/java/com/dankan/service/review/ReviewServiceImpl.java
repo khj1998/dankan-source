@@ -85,7 +85,7 @@ public class ReviewServiceImpl implements ReviewService {
     public List<ReviewResponseDto> findRecentReview(Integer pages) {
         List<ReviewResponseDto> responseDtoList = new ArrayList<>();
         Sort sort = Sort.by(Sort.Direction.DESC,"createdAt");
-        Pageable pageable =  PageRequest.of(pages,5,sort);
+        Pageable pageable =  PageRequest.of(pages,10,sort);
         Slice<RoomReview> roomReviewList = reviewRepository.findActiveReview(pageable);
 
         for (RoomReview roomReview : roomReviewList) {
@@ -108,51 +108,6 @@ public class ReviewServiceImpl implements ReviewService {
 
     @Override
     @Transactional(readOnly = true)
-    public List<ReviewSearchResponse> findReviewByBuildingName(String buildingName) {
-        List<ReviewSearchResponse> responseDtoList = new ArrayList<>();
-        HashMap<String,List<RoomReview>> reviewHashMap = new HashMap<>();
-
-        List<RoomReview> roomReviewList = reviewRepository.findByBuildingSearch(buildingName); // 건물 이름으로
-
-        for (RoomReview roomReview : roomReviewList) {
-            String roomBuildingName = roomReview.getAddress().split(" ")[4];
-
-            if (reviewHashMap.containsKey(roomBuildingName)) {
-                reviewHashMap.get(roomBuildingName).add(roomReview);
-            } else {
-                List<RoomReview> newRoomList = new ArrayList<>();
-                newRoomList.add(roomReview);
-                reviewHashMap.put(roomBuildingName,newRoomList);
-            }
-        }
-
-        for (Map.Entry<String, List<RoomReview>> hashMap : reviewHashMap.entrySet()) {
-            String address = hashMap.getValue().get(0).getAddress();
-            String imgUrl = "";
-
-            if (roomRepository.findByAddress(address,1L).isPresent()) {
-                Room room = roomRepository.findByAddress(address,1L)
-                        .orElseThrow(() -> new RoomNotFoundException(address));
-
-                Image image = imageRepository.findMainImage(room.getRoomId(),0L)
-                        .orElseThrow(() -> new ImageNotFoundException(room.getRoomId()));
-
-                imgUrl = image.getImageUrl();
-            }
-
-            ReviewSearchResponse reviewSearchResponse = ReviewSearchResponse.of(hashMap.getValue(),imgUrl);
-            responseDtoList.add(reviewSearchResponse);
-        }
-
-        responseDtoList.sort( //별점 순 조회
-                Comparator.comparing(ReviewSearchResponse::getAvgTotalRate).reversed()
-        );
-        
-        return responseDtoList;
-    }
-
-    @Override
-    @Transactional(readOnly = true)
     public List<ReviewSearchResponse> findReviewByAddress(String address) {
         List<ReviewSearchResponse> responseDtoList = new ArrayList<>();
         HashMap<String,List<RoomReview>> reviewHashMap = new HashMap<>();
@@ -160,14 +115,14 @@ public class ReviewServiceImpl implements ReviewService {
         List<RoomReview> roomReviewList = reviewRepository.findByAddressSearch(address);
 
         for (RoomReview roomReview : roomReviewList) {
-            String roomBuildingName = roomReview.getAddress().split(" ")[4];
+            String roomAddress = roomReview.getAddress();
 
-            if (reviewHashMap.containsKey(roomBuildingName)) {
-                reviewHashMap.get(roomBuildingName).add(roomReview);
+            if (reviewHashMap.containsKey(roomAddress)) {
+                reviewHashMap.get(roomAddress).add(roomReview);
             } else {
                 List<RoomReview> newRoomList = new ArrayList<>();
                 newRoomList.add(roomReview);
-                reviewHashMap.put(roomBuildingName,newRoomList);
+                reviewHashMap.put(roomAddress,newRoomList);
             }
         }
 
@@ -201,7 +156,7 @@ public class ReviewServiceImpl implements ReviewService {
     public List<ReviewResponseDto> findReviewByStar(Integer pages) {
         List<ReviewResponseDto> responseDtoList = new ArrayList<>();
         Sort sort = Sort.by(Sort.Direction.DESC,"totalRate");
-        Pageable pageable = PageRequest.of(pages,5,sort);
+        Pageable pageable = PageRequest.of(pages,10,sort);
         Slice<RoomReview> roomReviewList = reviewRepository.findActiveReview(pageable);
 
         for (RoomReview roomReview : roomReviewList) {

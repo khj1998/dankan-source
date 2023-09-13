@@ -28,8 +28,6 @@ public class PostDetailResponseDto {
     // room 응답
     private Long itemNumber;
     private String address;
-    private String addressDetails;
-    private String buildingName;
     private String dealType;
     private String roomType;
     private Long elevators;
@@ -127,8 +125,6 @@ public class PostDetailResponseDto {
                 .etcOptions(etcOptions)
                 .itemNumber(room.getRoomId())
                 .address(room.getRoomAddress().getAddress())
-                .addressDetails(room.getRoomAddress().getAddressDetail())
-                .buildingName(room.getRoomAddress().getBuildingName())
                 .deposit(room.getRoomCost().getDeposit())
                 .price(room.getRoomCost().getPrice())
                 .managementCost(room.getRoomCost().getManagementCost())

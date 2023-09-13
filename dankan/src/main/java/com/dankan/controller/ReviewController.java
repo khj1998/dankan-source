@@ -116,17 +116,7 @@ public class ReviewController {
         return ResponseEntity.ok().build();
     }
 
-    @ApiOperation("건물명으로 후기 검색 API")
-    @ApiResponses({
-            @ApiResponse(responseCode = "200",description = "건물명으로 후기 검색 성공")
-    })
-    @GetMapping("/building")
-    public ResponseEntity<List<ReviewSearchResponse>> searchByBuilding(@RequestParam("buildingName") String buildingName) {
-        List<ReviewSearchResponse> responseDtoList = reviewService.findReviewByBuildingName(buildingName);
-        return ResponseEntity.ok(responseDtoList);
-    }
-
-    @ApiOperation("도로명 주소로 후기 검색 API")
+    @ApiOperation("도로명 주소/건물 이름으로 후기 검색 API")
     @ApiResponses({
             @ApiResponse(responseCode = "200",description = "도로명 주소로 후기 검색 성공")
     })

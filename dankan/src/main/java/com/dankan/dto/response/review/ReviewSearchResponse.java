@@ -13,7 +13,6 @@ import java.util.List;
 @AllArgsConstructor
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class ReviewSearchResponse {
-    private String buildingName;
     private String address;
     private Double avgTotalRate;
     private Long detailReviewCount;
@@ -21,7 +20,6 @@ public class ReviewSearchResponse {
 
     public static ReviewSearchResponse of(List<RoomReview> roomReviewList,String imgUrl) {
         Double avgTotalRate = 0.0;
-        String buildingName = roomReviewList.get(0).getAddress().split(" ")[4];
 
         for (RoomReview roomReview : roomReviewList) {
             avgTotalRate += roomReview.getTotalRate();
@@ -32,7 +30,6 @@ public class ReviewSearchResponse {
         }
 
         return ReviewSearchResponse.builder()
-                .buildingName(buildingName)
                 .address(roomReviewList.get(0).getAddress())
                 .avgTotalRate(Math.round(avgTotalRate*10)/10.0)
                 .detailReviewCount((long) roomReviewList.size())

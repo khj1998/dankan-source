@@ -244,11 +244,11 @@ public class ReviewServiceImpl implements ReviewService {
 
     @Override
     @Transactional(readOnly = true)
-    public List<ReviewDetailResponseDto> findReviewDetail(ReviewDetailRequestDto reviewDetailRequestDto) {
+    public List<ReviewDetailResponseDto> findReviewDetail(String address, Integer pages) {
         List<ReviewDetailResponseDto> responseDtoList = new ArrayList<>();
         Sort sort = Sort.by(Sort.Direction.DESC,"createdAt");
-        Pageable pageable = PageRequest.of(reviewDetailRequestDto.getPages(),5,sort);
-        List<RoomReview> roomReviewList = reviewRepository.findByAddress(reviewDetailRequestDto.getAddress(),pageable);
+        Pageable pageable = PageRequest.of(pages,10,sort);
+        List<RoomReview> roomReviewList = reviewRepository.findByAddress(address,pageable);
 
         for (RoomReview roomReview : roomReviewList) {
             Long userId = roomReview.getUserId();

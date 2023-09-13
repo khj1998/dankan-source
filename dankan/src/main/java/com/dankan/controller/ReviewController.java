@@ -73,9 +73,9 @@ public class ReviewController {
     @ApiResponses({
             @ApiResponse(responseCode = "200",description = "매물 상세 리뷰 조회 API")
     })
-    @PostMapping("/detail")
-    public ResponseEntity<List<ReviewDetailResponseDto>> getReviewDetail(@RequestBody ReviewDetailRequestDto reviewDetailRequestDto) {
-        List<ReviewDetailResponseDto> responseDtoList = reviewService.findReviewDetail(reviewDetailRequestDto);
+    @GetMapping("/detail")
+    public ResponseEntity<List<ReviewDetailResponseDto>> getReviewDetail(@RequestParam String address,@RequestParam Integer pages) {
+        List<ReviewDetailResponseDto> responseDtoList = reviewService.findReviewDetail(address,pages);
         return ResponseEntity.ok(responseDtoList);
     }
 

@@ -12,7 +12,7 @@ import java.util.UUID;
 
 public interface ReviewService {
     ReviewResponseDto addReview(ReviewRequestDto reviewRequestDto);
-    List<ReviewDetailResponseDto> findReviewDetail(ReviewDetailRequestDto reviewDetailRequestDto);
+    List<ReviewDetailResponseDto> findReviewDetail(String address,Integer pages);
     ReviewRateResponseDto findReviewRate(String address);
     List<ReviewResponseDto> findRecentReview(Integer pages);
     List<ReviewResponseDto> findReviewByStar(Integer pages);

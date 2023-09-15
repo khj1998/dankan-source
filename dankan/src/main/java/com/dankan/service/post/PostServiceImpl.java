@@ -414,6 +414,7 @@ public class PostServiceImpl implements PostService {
                 .orElseThrow(() -> new UserIdNotFoundException(userId.toString()));
 
         Room room = Room.of(postRoomRequestDto,user);
+        room.setRoomId(System.currentTimeMillis());
         room.setDateId(dateLog.getId());
 
         roomRepository.save(room);

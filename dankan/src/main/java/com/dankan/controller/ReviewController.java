@@ -54,8 +54,8 @@ public class ReviewController {
             @ApiResponse(responseCode = "200",description = "매물 후기 별점순 조회 성공 ")
     })
     @GetMapping("/star")
-    public ResponseEntity<List<ReviewResponseDto>> getReviewsByStar(@RequestParam("pages") Integer pages) {
-        List<ReviewResponseDto> responseDtoList = reviewService.findReviewByStar(pages);
+    public ResponseEntity<List<ReviewSearchResponse>> getReviewsByStar(@RequestParam("pages") Integer pages) {
+        List<ReviewSearchResponse> responseDtoList = reviewService.findReviewByStar(pages);
         return ResponseEntity.ok(responseDtoList);
     }
 

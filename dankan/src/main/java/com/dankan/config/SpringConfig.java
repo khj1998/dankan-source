@@ -123,7 +123,7 @@ public class SpringConfig {
 
     @Bean
     public ReviewService reviewService() {
-        return new ReviewServiceImpl(userRepository, reviewRepository, roomRepository,dateLogRepository,optionsRepository,imageRepository);
+        return new ReviewServiceImpl(userRepository, reviewRepository, roomRepository,dateLogRepository,imageRepository);
     }
 
     @Bean

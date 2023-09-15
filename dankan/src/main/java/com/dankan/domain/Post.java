@@ -29,7 +29,7 @@ public class Post {
     @Column(name = "date_id",nullable = false, columnDefinition = "int")
     private Long dateId;
 
-    @Column(name = "room_id",nullable = false, columnDefinition = "int")
+    @Column(name = "room_id",nullable = false, columnDefinition = "bigint")
     private Long roomId;
 
     @Column(name = "user_id",nullable = false,columnDefinition = "bigint")

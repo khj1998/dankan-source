@@ -32,7 +32,6 @@ public class ReviewServiceImpl implements ReviewService {
     private final ReviewRepository reviewRepository;
     private final RoomRepository roomRepository;
     private final DateLogRepository dateLogRepository;
-    private final OptionsRepository optionsRepository;
     private final ImageRepository imageRepository;
 
 
@@ -40,13 +39,11 @@ public class ReviewServiceImpl implements ReviewService {
             ,ReviewRepository reviewRepository
             ,RoomRepository roomRepository
             ,DateLogRepository dateLogRepository
-            ,OptionsRepository optionsRepository
             ,ImageRepository imageRepository) {
         this.userRepository = userRepository;
         this.reviewRepository = reviewRepository;
         this.roomRepository = roomRepository;
         this.dateLogRepository = dateLogRepository;
-        this.optionsRepository = optionsRepository;
         this.imageRepository = imageRepository;
     }
 
@@ -153,24 +150,45 @@ public class ReviewServiceImpl implements ReviewService {
 
     @Override
     @Transactional(readOnly = true)
-    public List<ReviewResponseDto> findReviewByStar(Integer pages) {
-        List<ReviewResponseDto> responseDtoList = new ArrayList<>();
-        Sort sort = Sort.by(Sort.Direction.DESC,"totalRate");
-        Pageable pageable = PageRequest.of(pages,10,sort);
-        Slice<RoomReview> roomReviewList = reviewRepository.findActiveReview(pageable);
+    public List<ReviewSearchResponse> findReviewByStar(Integer pages) {
+        List<ReviewSearchResponse> responseDtoList = new ArrayList<>();
+        HashMap<String,List<RoomReview>> reviewHashMap = new HashMap<>();
+
+        List<RoomReview> roomReviewList = reviewRepository.findAll();
 
         for (RoomReview roomReview : roomReviewList) {
-            String imgUrls = "";
+            String roomAddress = roomReview.getAddress();
 
-            if (roomReview.getImageId()!=null) {
-                Image image = imageRepository.findById(roomReview.getImageId())
-                        .orElseThrow(() -> new ImageNotFoundException(roomReview.getImageId()));
-                imgUrls = image.getImageUrl();
+            if (reviewHashMap.containsKey(roomAddress)) {
+                reviewHashMap.get(roomAddress).add(roomReview);
+            } else {
+                List<RoomReview> newRoomList = new ArrayList<>();
+                newRoomList.add(roomReview);
+                reviewHashMap.put(roomAddress,newRoomList);
+            }
+        }
+
+        for (Map.Entry<String, List<RoomReview>> hashMap : reviewHashMap.entrySet()) {
+            String reviewAddress = hashMap.getValue().get(0).getAddress();
+            String imgUrl = "";
+
+            if (roomRepository.findByAddress(reviewAddress,1L).isPresent()) {
+                Room room = roomRepository.findByAddress(reviewAddress,1L)
+                        .orElseThrow(() -> new RoomNotFoundException(reviewAddress));
+
+                Image image = imageRepository.findMainImage(room.getRoomId(),0L)
+                        .orElseThrow(() -> new ImageNotFoundException(room.getRoomId()));
+
+                imgUrl = image.getImageUrl();
             }
 
-            ReviewResponseDto responseDto = ReviewResponseDto.of(roomReview,imgUrls);
-            responseDtoList.add(responseDto);
+            ReviewSearchResponse reviewSearchResponse = ReviewSearchResponse.of(hashMap.getValue(),imgUrl);
+            responseDtoList.add(reviewSearchResponse);
         }
+
+        responseDtoList.sort( //별점 순 조회
+                Comparator.comparing(ReviewSearchResponse::getAvgTotalRate).reversed()
+        );
 
         return responseDtoList;
     }

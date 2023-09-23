@@ -54,8 +54,8 @@ public class ReviewController {
             @ApiResponse(responseCode = "200",description = "매물 후기 별점순 조회 성공 ")
     })
     @GetMapping("/star")
-    public ResponseEntity<List<ReviewResponseDto>> getReviewsByStar(@RequestParam("pages") Integer pages) {
-        List<ReviewResponseDto> responseDtoList = reviewService.findReviewByStar(pages);
+    public ResponseEntity<List<ReviewSearchResponse>> getReviewsByStar(@RequestParam("pages") Integer pages) {
+        List<ReviewSearchResponse> responseDtoList = reviewService.findReviewByStar(pages);
         return ResponseEntity.ok(responseDtoList);
     }
 
@@ -73,9 +73,9 @@ public class ReviewController {
     @ApiResponses({
             @ApiResponse(responseCode = "200",description = "매물 상세 리뷰 조회 API")
     })
-    @PostMapping("/detail")
-    public ResponseEntity<List<ReviewDetailResponseDto>> getReviewDetail(@RequestBody ReviewDetailRequestDto reviewDetailRequestDto) {
-        List<ReviewDetailResponseDto> responseDtoList = reviewService.findReviewDetail(reviewDetailRequestDto);
+    @GetMapping("/detail")
+    public ResponseEntity<List<ReviewDetailResponseDto>> getReviewDetail(@RequestParam String address,@RequestParam Integer pages) {
+        List<ReviewDetailResponseDto> responseDtoList = reviewService.findReviewDetail(address,pages);
         return ResponseEntity.ok(responseDtoList);
     }
 
@@ -116,17 +116,7 @@ public class ReviewController {
         return ResponseEntity.ok().build();
     }
 
-    @ApiOperation("건물명으로 후기 검색 API")
-    @ApiResponses({
-            @ApiResponse(responseCode = "200",description = "건물명으로 후기 검색 성공")
-    })
-    @GetMapping("/building")
-    public ResponseEntity<List<ReviewSearchResponse>> searchByBuilding(@RequestParam("buildingName") String buildingName) {
-        List<ReviewSearchResponse> responseDtoList = reviewService.findReviewByBuildingName(buildingName);
-        return ResponseEntity.ok(responseDtoList);
-    }
-
-    @ApiOperation("도로명 주소로 후기 검색 API")
+    @ApiOperation("도로명 주소/건물 이름으로 후기 검색 API")
     @ApiResponses({
             @ApiResponse(responseCode = "200",description = "도로명 주소로 후기 검색 성공")
     })

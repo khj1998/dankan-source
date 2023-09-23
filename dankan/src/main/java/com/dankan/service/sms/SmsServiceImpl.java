@@ -11,6 +11,7 @@ import net.nurigo.java_sdk.api.Message;
 import net.nurigo.java_sdk.exceptions.CoolsmsException;
 import org.json.simple.JSONObject;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.HashMap;
 import java.util.Random;
@@ -66,6 +67,7 @@ public class SmsServiceImpl implements SmsService {
     }
 
     @Override
+    @Transactional
     public Boolean verifyNumber(CertificationRequestDto certificationRequestDto) {
         if(userNum.get(certificationRequestDto.getPhoneNumber()).equals(certificationRequestDto.getNumber().toString())) {
             User user = userRepository.findById(JwtUtil.getMemberId()).orElseThrow(

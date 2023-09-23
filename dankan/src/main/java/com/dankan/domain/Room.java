@@ -29,8 +29,7 @@ import java.util.List;
 public class Room {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "room_id", columnDefinition = "int")
+    @Column(name = "room_id", columnDefinition = "bigint")
     private Long roomId;
 
     @Column(name = "user_id",nullable = false, columnDefinition = "bigint")

@@ -20,7 +20,7 @@ public class Image {
     @Column(name = "image_id",columnDefinition = "int")
     private Long imageId;
 
-    @Column(name = "id",nullable = false,columnDefinition = "int")
+    @Column(name = "id",nullable = false,columnDefinition = "bigint")
     private Long id;
 
     @Column(name = "image_type",columnDefinition = "int")

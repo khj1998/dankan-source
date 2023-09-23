@@ -26,7 +26,7 @@ public class Options {
     private String codeKey;
 
     @Id
-    @Column(name = "room_id",nullable = false,columnDefinition = "int")
+    @Column(name = "room_id",nullable = false,columnDefinition = "bigint")
     private Long roomId;
 
     @Column(name = "value",length = 16,nullable = false,columnDefinition = "varchar")

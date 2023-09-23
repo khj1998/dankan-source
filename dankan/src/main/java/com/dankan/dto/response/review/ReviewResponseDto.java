@@ -24,40 +24,25 @@ public class ReviewResponseDto {
     private String univ;
     private String content;
     private Double totalRate;
-    private Long cleanRate;
-    private Long noiseRate;
-    private Long accessRate;
-    private Long hostRate;
-    private Long facilityRate;
     private LocalDate startedAt;
     private LocalDate endAt;
-    private String buildingName;
     private String address;
     private String imgUrl;
 
     public static ReviewResponseDto of(User user,RoomReview roomReview) {
-        String[] addressInfo = roomReview.getAddress().split(" ");
-
         return ReviewResponseDto.builder()
                 .reviewId(roomReview.getReviewId())
                 .createdAt(roomReview.getCreatedAt())
                 .totalRate(roomReview.getTotalRate())
-                .cleanRate(roomReview.getCleanRate())
-                .noiseRate(roomReview.getNoiseRate())
-                .accessRate(roomReview.getAccessRate())
-                .hostRate(roomReview.getHostRate())
-                .facilityRate(roomReview.getFacilityRate())
                 .nickName(user.getNickname())
                 .content(roomReview.getContent())
                 .startedAt(roomReview.getResidencePeriod().getStartedAt())
                 .endAt(roomReview.getResidencePeriod().getEndAt())
-                .buildingName(addressInfo[4])
+                .address(roomReview.getAddress())
                 .build();
     }
 
     public static ReviewResponseDto of(User user, RoomReview roomReview, String imgUrls) {
-       String[] addressInfo = roomReview.getAddress().split(" ");
-
         return ReviewResponseDto.builder()
                 .reviewId(roomReview.getReviewId())
                 .createdAt(roomReview.getCreatedAt())
@@ -66,21 +51,19 @@ public class ReviewResponseDto {
                 .content(roomReview.getContent())
                 .startedAt(roomReview.getResidencePeriod().getStartedAt())
                 .endAt(roomReview.getResidencePeriod().getEndAt())
-                .buildingName(addressInfo[4])
+                .address(roomReview.getAddress())
                 .imgUrl(imgUrls)
                 .build();
     }
 
     public static ReviewResponseDto of(RoomReview roomReview,String imgUrls) {
-        String[] addressInfo = roomReview.getAddress().split(" ");
-
         return ReviewResponseDto.builder()
                 .reviewId(roomReview.getReviewId())
                 .totalRate(roomReview.getTotalRate())
                 .address(roomReview.getAddress())
                 .createdAt(roomReview.getCreatedAt())
                 .content(roomReview.getContent())
-                .buildingName(addressInfo[4])
+                .address(roomReview.getAddress())
                 .imgUrl(imgUrls)
                 .build();
     }

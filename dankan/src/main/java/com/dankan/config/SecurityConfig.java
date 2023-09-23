@@ -1,5 +1,6 @@
 package com.dankan.config;
 
+import com.dankan.repository.TokenRepository;
 import com.dankan.repository.UserRepository;
 import com.dankan.util.JwtCustomFilter;
 import org.springframework.context.annotation.Bean;
@@ -21,9 +22,11 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 @EnableGlobalMethodSecurity(prePostEnabled = true)//@PreAuthorize 어노테이션을 메소드 단위로 추가하기 위해
 public class SecurityConfig {
     private final UserRepository userRepository;
+    private final TokenRepository tokenRepository;
 
-    public SecurityConfig(final UserRepository userRepository) {
+    public SecurityConfig(final UserRepository userRepository, TokenRepository tokenRepository) {
         this.userRepository = userRepository;
+        this.tokenRepository = tokenRepository;
     }
 
     @Bean
@@ -31,6 +34,7 @@ public class SecurityConfig {
         CorsConfiguration configuration = new CorsConfiguration();
 
         configuration.addAllowedOrigin("http://localhost:3000");
+        configuration.addAllowedOrigin("https://dankan-api.com:443");
         configuration.addAllowedHeader("*");
         configuration.addAllowedMethod("*");
         configuration.setAllowCredentials(true);
@@ -78,7 +82,7 @@ public class SecurityConfig {
                 .configurationSource(corsConfigurationSource())
                 .and()
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and()
-                .addFilterAfter(new JwtCustomFilter(userRepository), UsernamePasswordAuthenticationFilter.class)
+                .addFilterAfter(new JwtCustomFilter(userRepository, tokenRepository), UsernamePasswordAuthenticationFilter.class)
                 .authorizeRequests()
                 .antMatchers("/post/**").hasAnyAuthority("ROLE_ADMIN", "ROLE_USER")
                 .antMatchers("/room/**").hasAnyAuthority("ROLE_ADMIN", "ROLE_USER")

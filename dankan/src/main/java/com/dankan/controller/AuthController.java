@@ -1,7 +1,7 @@
 package com.dankan.controller;
 
 import com.dankan.domain.Authority;
-import com.dankan.service.univ.user.UserService;
+import com.dankan.service.user.UserService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;

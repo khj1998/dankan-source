@@ -26,7 +26,6 @@ public class PostResponseDto {
     private Long price;
     private Long deposit;
     private String address;
-    private String buildingName;
     private String structure;
     private Long floor;
     private Double roomSize;
@@ -63,7 +62,6 @@ public class PostResponseDto {
                 .price(room.getRoomCost().getPrice())
                 .deposit(room.getRoomCost().getDeposit())
                 .address(room.getRoomAddress().getAddress())
-                .buildingName(room.getRoomAddress().getBuildingName())
                 .floor(room.getRoomStructure().getFloor())
                 .roomSize(room.getRoomStructure().getRoomSize())
                 .roomRealSize(room.getRoomStructure().getRealRoomSize())
@@ -99,7 +97,6 @@ public class PostResponseDto {
                 .price(room.getRoomCost().getPrice())
                 .deposit(room.getRoomCost().getDeposit())
                 .address(room.getRoomAddress().getAddress())
-                .buildingName(room.getRoomAddress().getBuildingName())
                 .floor(room.getRoomStructure().getFloor())
                 .roomSize(room.getRoomStructure().getRoomSize())
                 .roomRealSize(room.getRoomStructure().getRealRoomSize())

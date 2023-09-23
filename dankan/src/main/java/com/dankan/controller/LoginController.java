@@ -5,7 +5,7 @@ import com.dankan.dto.response.login.LoginResponseDto;
 import com.dankan.dto.response.login.OauthLoginResponseDto;
 import com.dankan.service.login.OAuthService;
 import com.dankan.service.login.SocialLoginType;
-import com.dankan.service.univ.user.UserService;
+import com.dankan.service.user.UserService;
 import io.swagger.annotations.Api;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

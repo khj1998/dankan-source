@@ -25,7 +25,6 @@ public class PostCreateResponseDto {
     // room 응답
     private Long roomId;
     private String address;
-    private String addressDetails;
     private String buildingName;
     private String dealType;
     private String roomType;
@@ -135,7 +134,6 @@ public class PostCreateResponseDto {
                 .latitude(room.getRoomAddress().getLatitude())
                 .longitude(room.getRoomAddress().getLongitude())
                 .address(room.getRoomAddress().getAddress())
-                .addressDetails(room.getRoomAddress().getAddressDetail())
                 .build();
     }
 }

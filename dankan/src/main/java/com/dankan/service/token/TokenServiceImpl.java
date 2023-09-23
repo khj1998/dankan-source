@@ -10,6 +10,7 @@ import com.dankan.repository.UserRepository;
 import com.dankan.util.JwtUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.Optional;
@@ -27,6 +28,7 @@ public class TokenServiceImpl implements TokenService {
     }
 
     @Override
+    @Transactional
     public TokenResponseDto reissueAccessToken(final TokenRequestDto tokenRequestDto) {
         String accessToken = JwtUtil.getAccessToken();
 
@@ -58,6 +60,7 @@ public class TokenServiceImpl implements TokenService {
     }
 
     @Override
+    @Transactional
     public TokenResponseDto findByUserId(final Long id) {
         Token token = tokenRepository.findByUserId(id).orElseThrow(() -> new TokenNotFoundException(id.toString()));
 

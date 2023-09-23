@@ -9,7 +9,7 @@ import com.dankan.service.chatting.ChattingService;
 import com.dankan.service.chatting.DynamoDBService;
 import com.dankan.service.report.ReportService;
 import com.dankan.service.token.TokenService;
-import com.dankan.service.univ.user.UserService;
+import com.dankan.service.user.UserService;
 import com.dankan.vo.UserInfo;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;

@@ -1,5 +1,8 @@
 # Dankan-BackEnd
 
+### ERD
+![dankanERD](https://github.com/khj1998/dankan-source/assets/80220062/33ce4d1d-7f2c-46d7-b8e7-ffc3af5acdfb)
+
 ### BackEnd Architecture
 ![단칸 아키텍처](https://github.com/Nestsoft-Team/Dankan-Backend/assets/80220062/6f5046dd-005e-4b54-b771-def090c654f9)
 

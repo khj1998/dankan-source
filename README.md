@@ -1,5 +1,15 @@
 # Dankan-BackEnd
 
+### 프로젝트 소개
+백엔드 개발 : 총 2인
+
+backend tech : Spring Boot, Spring Security, Spring Data JPA, Spring MVC, Hibernate, Oauth2, Query DSL
+
+devops tech : Mysql, RDS, EC2, DynamoDB, Redis 
+
+단칸은 자취생들이 원하는 매물을 쉽게 확인해 볼 수 있는 플랫폼입니다. 실제 설문조사를 통해 대학생들이 방을 구하면서 어려웠던 점 중 매물을 볼 수 있는 플랫폼의 부족을 확인하였습니다.
+매물 확인 플랫폼 부족의 니즈에 맞게, 단칸은 대학교 주변 매물을 한눈에 쉽게 확인할 수 있도록 기획된 프로젝트입니다.
+
 ### ERD
 ![dankanERD](https://github.com/khj1998/dankan-source/assets/80220062/33ce4d1d-7f2c-46d7-b8e7-ffc3af5acdfb)
 

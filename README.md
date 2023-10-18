@@ -11,7 +11,7 @@ devops tech : Mysql, RDS, EC2, DynamoDB, Redis
 매물 확인 플랫폼 부족의 니즈에 맞게, 단칸은 대학교 주변 매물을 한눈에 쉽게 확인할 수 있도록 기획된 프로젝트입니다.
 
 ### ERD
-![dankanERD](https://github.com/khj1998/dankan-source/assets/80220062/33ce4d1d-7f2c-46d7-b8e7-ffc3af5acdfb)
+![dankanERD](https://github.com/khj1998/dankan-source/assets/80220062/f0addb49-2c78-41c3-a3c0-2e5ec7c51d12)
 
 ### BackEnd Architecture
 ![단칸 아키텍처](https://github.com/Nestsoft-Team/Dankan-Backend/assets/80220062/6f5046dd-005e-4b54-b771-def090c654f9)
